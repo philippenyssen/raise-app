@@ -185,7 +185,7 @@ export default function EnrichmentPage() {
   return (
     <div className="page-content" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
       {fetchError && (
-        <div className="rounded-lg p-4" style={{ background: 'var(--danger-muted)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div role="alert" className="rounded-lg p-4" style={{ background: 'var(--danger-muted)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <span style={textSmSecondary}>
             Enrichment data failed to load. If this persists, check Settings for API credentials.</span>
           <button onClick={fetchData} className="btn btn-secondary btn-sm">Retry</button></div>

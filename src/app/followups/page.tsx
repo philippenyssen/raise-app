@@ -26,6 +26,11 @@ const completedOutcomeBox = { background: 'var(--surface-2)', borderRadius: 'var
 const completingFormBox = { background: 'var(--surface-2)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-3)' } as const;
 const draftSubjectBox: React.CSSProperties = { background: 'var(--surface-1)', borderRadius: 'var(--radius-md)', padding: 'var(--space-2) var(--space-3)', fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', fontWeight: 400 };
 const draftBodyBox: React.CSSProperties = { background: 'var(--surface-1)', borderRadius: 'var(--radius-md)', padding: 'var(--space-3)', fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', lineHeight: 1.6, whiteSpace: 'pre-line' };
+const skelCardPad4 = { padding: 'var(--space-4)' } as const;
+const skelAvatar = { width: '32px', height: '32px', borderRadius: '50%', flexShrink: 0 } as const;
+const skelLabelSm = { width: '80px', height: '16px', borderRadius: 'var(--radius-sm)' } as const;
+const skelLabelTiny = { width: '100px', height: '14px', borderRadius: 'var(--radius-sm)' } as const;
+const skelErrorHeading: React.CSSProperties = { fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', marginBottom: 'var(--space-1)' };
 const VEL_CONFIG: Record<string, { color: string; bg: string; icon: typeof ArrowUpRight; label: string }> = {
   accelerating: { color: 'var(--text-secondary)', bg: 'var(--success-muted)', icon: ArrowUpRight, label: 'Rising' },
   decelerating: { color: 'var(--text-primary)', bg: 'var(--danger-muted)', icon: ArrowDownRight, label: 'Falling' },
@@ -767,13 +772,13 @@ function FollowupsContent() {
       {loading ? (
         <div className="space-y-3">
           {[...Array(5)].map((_, i) => (
-            <div key={i} className="card" style={{ padding: 'var(--space-4)' }}>
+            <div key={i} className="card" style={skelCardPad4}>
               <div className="flex items-start gap-3">
-                <div className="skeleton" style={{ width: '32px', height: '32px', borderRadius: '50%', flexShrink: 0 }} />
+                <div className="skeleton" style={skelAvatar} />
                 <div className="flex-1 space-y-2">
                   <div className="flex items-center gap-2">
-                    <div className="skeleton" style={{ width: '80px', height: '16px', borderRadius: 'var(--radius-sm)' }} />
-                    <div className="skeleton" style={{ width: '100px', height: '14px', borderRadius: 'var(--radius-sm)' }} />
+                    <div className="skeleton" style={skelLabelSm} />
+                    <div className="skeleton" style={skelLabelTiny} />
                   </div>
                   <div className="skeleton" style={{ width: `${70 - i * 8}%`, height: '14px', borderRadius: 'var(--radius-sm)' }}
                     /></div></div></div>
@@ -783,7 +788,7 @@ function FollowupsContent() {
           className="text-center py-12"
           style={{ borderRadius: 'var(--radius-xl)' }}>
           <AlertTriangle className="w-10 h-10 mx-auto mb-3" style={{ color: 'var(--danger)' }} />
-          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', marginBottom: 'var(--space-1)' }}>
+          <h3 style={skelErrorHeading}>
             Failed to load follow-ups</h3>
           <p style={{ ...labelMuted, marginBottom: 'var(--space-4)' }}>
             {fetchError}</p>

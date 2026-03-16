@@ -683,7 +683,7 @@ export default function SettingsPage() {
                 )}</div></div>
 
             {keyTest.error && (
-              <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', background: 'var(--danger-muted)', borderRadius: 'var(--radius-md)', padding: 'var(--space-3)', fontFamily: 'var(--font-mono)' }}>
+              <div role="alert" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', background: 'var(--danger-muted)', borderRadius: 'var(--radius-md)', padding: 'var(--space-3)', fontFamily: 'var(--font-mono)' }}>
                 {keyTest.error}</div>
             )}
 

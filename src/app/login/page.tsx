@@ -52,7 +52,7 @@ function LoginForm() {
       </div>
 
       {error && (
-        <p style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)', textAlign: 'center' }}>{error}</p>
+        <p role="alert" style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)', textAlign: 'center' }}>{error}</p>
       )}
 
       <button

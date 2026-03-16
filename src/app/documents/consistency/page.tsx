@@ -83,7 +83,7 @@ export default function ConsistencyPage() {
 
       {/* Error */}
       {error && !loading && (
-        <div className="rounded-xl p-6 text-center" style={{ border: '1px solid var(--danger-muted)', background: 'var(--danger-muted)' }}>
+        <div role="alert" className="rounded-xl p-6 text-center" style={{ border: '1px solid var(--danger-muted)', background: 'var(--danger-muted)' }}>
           <AlertTriangle className="w-8 h-8 mx-auto mb-2" style={stTextPrimary} />
           <p className="font-normal" style={stTextPrimary}>{error}</p>
           <button

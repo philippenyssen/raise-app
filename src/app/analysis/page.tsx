@@ -123,6 +123,7 @@ export default function AnalysisPage() {
         <div className="space-y-6">
           {data.error && (
             <div
+              role="alert"
               className="rounded-lg p-4 text-sm"
               style={{ background: 'var(--danger-muted)', color: 'var(--text-primary)' }}>
               {data.error}</div>

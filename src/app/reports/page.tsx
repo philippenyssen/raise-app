@@ -169,7 +169,7 @@ export default function ReportsPage() {
 
       {/* Error */}
       {error && (
-        <div className="rounded-lg p-4 text-sm" style={errorBoxStyle}>
+        <div role="alert" className="rounded-lg p-4 text-sm" style={errorBoxStyle}>
           {error}</div>
       )}
 
