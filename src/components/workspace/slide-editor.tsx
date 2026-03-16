@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { ChevronLeft, ChevronRight, Plus, Trash2, Type, Image as ImageIcon } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, Trash2, Type, StickyNote } from 'lucide-react';
 
 export interface SlideElement {
   id: string;
@@ -125,6 +125,7 @@ function createDefaultSlide(): Slide {
 export function SlideEditor({ slides, onChange, editable = true }: SlideEditorProps) {
   const [activeIdx, setActiveIdx] = useState(0);
   const [editingElement, setEditingElement] = useState<string | null>(null);
+  const [showNotes, setShowNotes] = useState(false);
 
   const activeSlide = slides[activeIdx] || null;
 
@@ -158,6 +159,14 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
           el.id === elementId ? { ...el, content: newContent } : el
         ),
       };
+    });
+    onChange(updated);
+  }, [slides, activeIdx, onChange]);
+
+  const updateNotes = useCallback((notes: string) => {
+    const updated = slides.map((slide, i) => {
+      if (i !== activeIdx) return slide;
+      return { ...slide, notes };
     });
     onChange(updated);
   }, [slides, activeIdx, onChange]);
@@ -284,6 +293,15 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
                 Bullets
               </button>
               <div style={{ width: '1px', height: '16px', background: 'var(--border-subtle)' }} />
+              <button
+                onClick={() => setShowNotes(!showNotes)}
+                className="btn btn-ghost btn-sm"
+                style={{ fontSize: 'var(--font-size-xs)', ...(showNotes ? { background: 'var(--accent-muted)', color: 'var(--accent)' } : {}) }}
+                title="Speaker Notes"
+              >
+                <StickyNote className="w-3.5 h-3.5" /> Notes
+              </button>
+              <div style={{ width: '1px', height: '16px', background: 'var(--border-subtle)' }} />
               <button onClick={deleteSlide} className="btn btn-ghost btn-sm" title="Delete Slide" disabled={slides.length <= 1}>
                 <Trash2 className="w-3.5 h-3.5" />
               </button>
@@ -348,6 +366,34 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
             })}
           </div>
         </div>
+
+        {/* Speaker notes */}
+        {showNotes && activeSlide && (
+          <div
+            className="shrink-0"
+            style={{
+              borderTop: '1px solid var(--border-subtle)',
+              background: 'var(--surface-0)',
+              padding: 'var(--space-2) var(--space-4)',
+            }}
+          >
+            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-1)' }}>
+              Speaker Notes
+            </div>
+            <textarea
+              value={activeSlide.notes || ''}
+              onChange={e => updateNotes(e.target.value)}
+              placeholder="Add speaker notes for this slide..."
+              className="input resize-none"
+              style={{
+                width: '100%',
+                minHeight: '60px',
+                maxHeight: '120px',
+                fontSize: 'var(--font-size-sm)',
+              }}
+            />
+          </div>
+        )}
 
         {/* Navigation */}
         <div

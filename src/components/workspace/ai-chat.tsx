@@ -325,7 +325,13 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
             background: 'var(--accent-muted)',
             padding: 'var(--space-3) var(--space-4)',}}>
           <div className="flex items-center justify-between">
-            <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--accent)' }}>AI has proposed edits — review before applying</span>
+            <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--accent)' }}>
+              {documentType === 'model' || documentType === 'spreadsheet'
+                ? 'AI has proposed cell updates — review before applying'
+                : documentType === 'presentation' || documentType === 'deck'
+                ? 'AI has proposed slide changes — review before applying'
+                : 'AI has proposed edits — review before applying'}
+            </span>
             <div className="flex" style={{ gap: 'var(--space-2)' }}>
               <button onClick={() => setPendingChange(null)} className="btn btn-ghost btn-sm">
                 <XCircle style={{ width: '14px', height: '14px' }} /> Discard</button>
