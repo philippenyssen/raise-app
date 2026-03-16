@@ -119,8 +119,6 @@ export default function AnalyticsPage() {
   const [loading, setLoading] = useState(true);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
     new Set(['funnel', 'velocity', 'risks', 'engagement', 'winloss']));
-  const [refreshHovered, setRefreshHovered] = useState(false);
-  const [retryHovered, setRetryHovered] = useState(false);
 
   useEffect(() => { document.title = 'Raise | Process Analytics'; }, []);
   useEffect(() => { fetchAnalytics(); }, []);
@@ -172,10 +170,8 @@ export default function AnalyticsPage() {
           <p style={{ ...stTextTertiary, ...stFontSm }}>Could not load analytics data.</p>
           <button
             onClick={fetchAnalytics}
-            onMouseEnter={() => setRetryHovered(true)}
-            onMouseLeave={() => setRetryHovered(false)}
-            className="px-4 py-2 rounded-lg text-sm transition-colors"
-            style={{ background: retryHovered ? 'var(--surface-3)' : 'var(--surface-2)', ...stTextPrimary }}>
+            className="px-4 py-2 rounded-lg text-sm transition-colors btn-surface"
+            style={{ background: 'var(--surface-2)', ...stTextPrimary }}>
             Retry</button></div>
       </div>);
   }
@@ -195,10 +191,8 @@ export default function AnalyticsPage() {
             Updated {relativeTime(data.generatedAt)}</span>
           <button
             onClick={fetchAnalytics}
-            onMouseEnter={() => setRefreshHovered(true)}
-            onMouseLeave={() => setRefreshHovered(false)}
-            className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs transition-colors"
-            style={{ background: refreshHovered ? 'var(--surface-3)' : 'var(--surface-2)', ...stTextPrimary }}>
+            className="flex items-center gap-2 px-3 py-2 rounded-lg text-xs transition-colors btn-surface"
+            style={{ background: 'var(--surface-2)', ...stTextPrimary }}>
             <RefreshCw className="w-3.5 h-3.5" /> Refresh</button></div></div>
 
       {/* ── Summary Cards ───────────────────────────────────────── */}
@@ -808,16 +802,12 @@ function CollapsibleSection({
   onToggle: () => void; children: React.ReactNode;
   badge?: { text: string; color: string };
 }) {
-  const [hovered, setHovered] = useState(false);
-
   return (
     <div className="rounded-xl overflow-hidden">
       <button
         onClick={onToggle}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-        className="w-full flex items-center justify-between px-5 py-4 transition-colors"
-        style={{ background: hovered ? 'var(--surface-1)' : 'transparent' }}>
+        className="w-full flex items-center justify-between px-5 py-4 transition-colors hover-row"
+        style={{ background: 'transparent' }}>
         <div className="flex items-center gap-3">
           <span style={stTextTertiary}>{icon}</span>
           <span className="text-sm font-normal" style={stTextPrimary}>{title}</span>
@@ -928,8 +918,6 @@ function RiskSection({
 }
 
 function StaleInvestorRow({ inv }: { inv: { id: string; name: string; status: string; tier: number; type: string; daysSinceLastMeeting: number | null } }) {
-  const [hovered, setHovered] = useState(false);
-
   const tierStyle = inv.tier === 1
     ? { background: 'color-mix(in srgb, var(--accent) 20%, transparent)', color: 'var(--accent)' }
     : inv.tier === 2
@@ -939,10 +927,7 @@ function StaleInvestorRow({ inv }: { inv: { id: string; name: string; status: st
   return (
     <Link
       href={`/investors/${inv.id}`}
-      className="flex items-center justify-between py-2 px-3 rounded-lg transition-colors group"
-      style={{ background: hovered ? 'var(--surface-1)' : 'transparent' }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}>
+      className="flex items-center justify-between py-2 px-3 rounded-lg transition-colors group hover-row">
       <div className="flex items-center gap-3 min-w-0">
         <span className="px-1.5 py-0.5 rounded" style={{ fontSize: 'var(--font-size-xs)', ...tierStyle }}>
           T{inv.tier}</span>
@@ -953,14 +938,12 @@ function StaleInvestorRow({ inv }: { inv: { id: string; name: string; status: st
           {inv.daysSinceLastMeeting !== null
             ? `${inv.daysSinceLastMeeting}d ago`
             : 'No meetings'}</span>
-        <ArrowRight className="w-3 h-3 transition-colors" style={{ color: hovered ? 'var(--text-tertiary)' : 'var(--text-muted)' }}
+        <ArrowRight className="w-3 h-3 transition-colors" style={{ color: 'var(--text-muted)' }}
           /></div>
     </Link>);
 }
 
 function DecliningEnthusiasmRow({ inv }: { inv: { id: string; name: string; tier: number; type: string; previousScore: number; currentScore: number } }) {
-  const [hovered, setHovered] = useState(false);
-
   const tierStyle = inv.tier === 1
     ? { background: 'color-mix(in srgb, var(--accent) 20%, transparent)', color: 'var(--accent)', border: '1px solid color-mix(in srgb, var(--accent) 30%, transparent)' }
     : { background: 'color-mix(in srgb, var(--accent-muted) 20%, transparent)', color: 'var(--accent-muted)', border: '1px solid color-mix(in srgb, var(--accent-muted) 30%, transparent)' };
@@ -968,10 +951,7 @@ function DecliningEnthusiasmRow({ inv }: { inv: { id: string; name: string; tier
   return (
     <Link
       href={`/investors/${inv.id}`}
-      className="flex items-center justify-between py-2 px-3 rounded-lg transition-colors group"
-      style={{ background: hovered ? 'var(--surface-1)' : 'transparent' }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}>
+      className="flex items-center justify-between py-2 px-3 rounded-lg transition-colors group hover-row">
       <div className="flex items-center gap-3 min-w-0">
         <span className="px-1.5 py-0.5 rounded" style={{ fontSize: 'var(--font-size-xs)', ...tierStyle }}>T{inv.tier}</span>
         <span className="text-sm font-normal truncate" style={stTextPrimary}>{inv.name}</span></div>
@@ -979,21 +959,16 @@ function DecliningEnthusiasmRow({ inv }: { inv: { id: string; name: string; tier
         <EnthusiasmDots score={inv.previousScore} size="sm" />
         <span className="text-xs" style={stTextMuted}>{'>'}</span>
         <EnthusiasmDots score={inv.currentScore} size="sm" />
-        <ArrowRight className="w-3 h-3 ml-1 transition-colors" style={{ color: hovered ? 'var(--text-tertiary)' : 'var(--text-muted)' }}
+        <ArrowRight className="w-3 h-3 ml-1 transition-colors" style={{ color: 'var(--text-muted)' }}
           /></div>
     </Link>);
 }
 
 function HighTierStuckRow({ inv }: { inv: { id: string; name: string; tier: number; status: string; type: string; daysInStage: number } }) {
-  const [hovered, setHovered] = useState(false);
-
   return (
     <Link
       href={`/investors/${inv.id}`}
-      className="flex items-center justify-between py-2 px-3 rounded-lg transition-colors group"
-      style={{ background: hovered ? 'var(--surface-1)' : 'transparent' }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}>
+      className="flex items-center justify-between py-2 px-3 rounded-lg transition-colors group hover-row">
       <div className="flex items-center gap-3 min-w-0">
         <span
           className="px-1.5 py-0.5 rounded"
@@ -1008,7 +983,7 @@ function HighTierStuckRow({ inv }: { inv: { id: string; name: string; tier: numb
       <div className="flex items-center gap-2 shrink-0">
         <span className="text-xs" style={stTextTertiary}>
           {inv.daysInStage}d in stage</span>
-        <ArrowRight className="w-3 h-3 transition-colors" style={{ color: hovered ? 'var(--text-tertiary)' : 'var(--text-muted)' }}
+        <ArrowRight className="w-3 h-3 transition-colors" style={{ color: 'var(--text-muted)' }}
           /></div>
     </Link>);
 }

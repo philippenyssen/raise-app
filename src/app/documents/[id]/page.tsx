@@ -33,11 +33,6 @@ export default function DocumentEditorPage() {
   const [aiLoading, setAiLoading] = useState(false);
   const [aiResult, setAiResult] = useState<{ type: string; data: unknown } | null>(null);
   const [selectedText, setSelectedText] = useState('');
-  const [previewHovered, setPreviewHovered] = useState(false);
-  const [historyHovered, setHistoryHovered] = useState(false);
-  const [dismissHovered, setDismissHovered] = useState(false);
-  const [closeModalHovered, setCloseModalHovered] = useState(false);
-  const [applyHovered, setApplyHovered] = useState(false);
 
   useEffect(() => { document.title = 'Raise | Document'; }, []);
   const fetchDocument = useCallback(() => {
@@ -198,26 +193,22 @@ export default function DocumentEditorPage() {
             <option value="final">Final</option></select>
           <button
             onClick={() => setPreview(!preview)}
-            className="p-2 rounded-lg text-sm transition-colors"
+            className={`p-2 rounded-lg text-sm transition-colors ${!preview ? 'btn-surface' : ''}`}
             title={preview ? 'Edit mode' : 'Preview mode'}
             style={preview ? {
               background: 'var(--accent-muted)',
               color: 'var(--accent)',
             } : {
-              background: previewHovered ? 'var(--surface-3)' : 'var(--surface-2)',
-              color: 'var(--text-tertiary)', }}
-            onMouseEnter={() => setPreviewHovered(true)}
-            onMouseLeave={() => setPreviewHovered(false)}>
+              background: 'var(--surface-2)',
+              color: 'var(--text-tertiary)', }}>
             {preview ? <Edit3 className="w-4 h-4" /> : <Eye className="w-4 h-4" />}</button>
           <button
             onClick={loadVersions}
-            className="p-2 rounded-lg transition-colors"
+            className="p-2 rounded-lg transition-colors btn-surface"
             title="Version history"
             style={{
-              background: historyHovered ? 'var(--surface-3)' : 'var(--surface-2)',
-              color: 'var(--text-tertiary)', }}
-            onMouseEnter={() => setHistoryHovered(true)}
-            onMouseLeave={() => setHistoryHovered(false)}>
+              background: 'var(--surface-2)',
+              color: 'var(--text-tertiary)', }}>
             <History className="w-4 h-4" /></button>
           <button
             onClick={() => save()}
@@ -299,12 +290,10 @@ export default function DocumentEditorPage() {
                     {aiResult.data as string}</pre>
                   <button
                     onClick={applyAIResult}
-                    className="w-full px-3 py-1.5 rounded-lg text-xs font-normal transition-colors"
+                    className="w-full px-3 py-1.5 rounded-lg text-xs font-normal transition-colors btn-surface"
                     style={{
-                      background: applyHovered ? 'var(--success-muted)' : 'var(--success-muted)',
-                      color: 'var(--text-secondary)', }}
-                    onMouseEnter={() => setApplyHovered(true)}
-                    onMouseLeave={() => setApplyHovered(false)}>
+                      background: 'var(--success-muted)',
+                      color: 'var(--text-secondary)', }}>
                     <CheckCircle className="w-3 h-3 inline mr-1" /> Apply Changes</button>
                 </>
               )}
@@ -337,10 +326,8 @@ export default function DocumentEditorPage() {
 
               <button
                 onClick={() => setAiResult(null)}
-                className="w-full mt-3 px-3 py-1 text-xs"
-                style={{ color: dismissHovered ? 'var(--text-secondary)' : 'var(--text-muted)' }}
-                onMouseEnter={() => setDismissHovered(true)}
-                onMouseLeave={() => setDismissHovered(false)}>
+                className="w-full mt-3 px-3 py-1 text-xs icon-delete"
+                style={{}}>
                 Dismiss</button></div>
           )}</div></div>
 
@@ -360,19 +347,16 @@ export default function DocumentEditorPage() {
             )}
             <button
               onClick={() => setShowVersions(false)}
-              className="mt-4 w-full px-3 py-2 rounded-lg text-sm"
+              className="mt-4 w-full px-3 py-2 rounded-lg text-sm btn-surface"
               style={{
-                background: closeModalHovered ? 'var(--surface-3)' : 'var(--surface-2)',
-                color: 'var(--text-primary)', }}
-              onMouseEnter={() => setCloseModalHovered(true)}
-              onMouseLeave={() => setCloseModalHovered(false)}>
+                background: 'var(--surface-2)',
+                color: 'var(--text-primary)', }}>
               Close</button></div></div>
       )}
     </div>);
 }
 
 function VersionRow({ version: v, onRestore }: { version: Version; onRestore: (v: Version) => void }) {
-  const [restoreHovered, setRestoreHovered] = useState(false);
   return (
     <div
       className="flex items-center justify-between p-3 rounded-lg transition-colors">
@@ -385,26 +369,21 @@ function VersionRow({ version: v, onRestore }: { version: Version; onRestore: (v
           {fmtDateTime(v.created_at)} - {v.content.length.toLocaleString()} chars</div></div>
       <button
         onClick={() => onRestore(v)}
-        className="text-xs px-2 py-1 rounded"
+        className="text-xs px-2 py-1 rounded btn-surface"
         style={{
           color: 'var(--accent)',
-          background: restoreHovered ? 'var(--surface-2)' : 'transparent', }}
-        onMouseEnter={() => setRestoreHovered(true)}
-        onMouseLeave={() => setRestoreHovered(false)}>
+          background: 'transparent', }}>
         Restore</button>
     </div>);
 }
 
 function AIButton({ label, desc, loading, onClick }: { label: string; desc: string; loading: boolean; onClick: () => void }) {
-  const [hovered, setHovered] = useState(false);
   return (
     <button
       onClick={onClick}
       disabled={loading}
-      className="w-full text-left px-3 py-2 rounded-lg transition-colors disabled:opacity-50"
-      style={{ background: hovered ? 'var(--surface-2)' : 'var(--surface-1)' }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}>
+      className="w-full text-left px-3 py-2 rounded-lg transition-colors disabled:opacity-50 btn-surface"
+      style={{ background: 'var(--surface-1)' }}>
       <div className="text-xs font-normal" style={stTextSecondary}>{label}</div>
       <div style={labelMuted10}>{desc}</div>
     </button>);

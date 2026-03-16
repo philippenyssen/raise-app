@@ -1580,10 +1580,11 @@ export async function processPostMeetingIntelligence(
   }
 
   // 4. Generate document flags from objections
+  let allDocs: Awaited<ReturnType<typeof getAllDocuments>> = [];
   try {
     const objections = JSON.parse(meeting.objections || '[]') as { text: string; severity: string; topic: string }[];
     // Get all documents to match against
-    const allDocs = await getAllDocuments();
+    allDocs = await getAllDocuments();
 
     const flagPromises: Promise<typeof results.document_flags[0]>[] = [];
     for (const objection of objections) {
@@ -1635,7 +1636,7 @@ export async function processPostMeetingIntelligence(
     const engagementFlagPromises: Promise<typeof results.document_flags[0]>[] = [];
 
     if (signals.pricing_reception === 'negative') {
-      const pricingDocs = (await getAllDocuments()).filter(d => ['memo', 'exec_brief', 'one_pager', 'deck'].includes(d.type));
+      const pricingDocs = allDocs.filter(d => ['memo', 'exec_brief', 'one_pager', 'deck'].includes(d.type));
       for (const doc of pricingDocs) {
         engagementFlagPromises.push(createDocumentFlag({
           document_id: doc.id,
@@ -1652,7 +1653,7 @@ export async function processPostMeetingIntelligence(
     }
 
     if (signals.slides_that_fell_flat && signals.slides_that_fell_flat.length > 0) {
-      const deckDocs = (await getAllDocuments()).filter(d => d.type === 'deck');
+      const deckDocs = allDocs.filter(d => d.type === 'deck');
       for (const doc of deckDocs) {
         engagementFlagPromises.push(createDocumentFlag({
           document_id: doc.id,
@@ -1698,6 +1699,7 @@ export async function processPostMeetingIntelligence(
     const priorObjections = await getObjectionsByInvestor(investorId);
     const meetingNotes = ((meeting.raw_notes || '') + ' ' + (meeting.next_steps || '')).toLowerCase();
 
+    const objectionUpdatePromises: Promise<void>[] = [];
     for (const obj of priorObjections) {
       if (obj.effectiveness && obj.effectiveness !== 'unknown') continue; // already rated
 
@@ -1720,13 +1722,14 @@ export async function processPostMeetingIntelligence(
         else if (delta >= 0) effectiveness = 'partially_effective';
         else effectiveness = 'ineffective';
 
-        await updateObjectionResponse(
+        objectionUpdatePromises.push(updateObjectionResponse(
           obj.id,
           `Addressed in meeting on ${meeting.date}. Enthusiasm moved ${delta >= 0 ? '+' : ''}${delta}.`,
           effectiveness,
-        );
+        ));
       }
     }
+    await Promise.all(objectionUpdatePromises);
   } catch { /* non-blocking objection learning */ }
 
   // --- Followup Efficacy: Measure lift from recent followups ---
@@ -4033,20 +4036,20 @@ export async function generateAutoActions(): Promise<AutoActionResult> {
       );
       const activeInvestors = investorsResult.rows as unknown as Array<{ id: string; name: string; status: string }>;
 
-      for (const inv of activeInvestors) {
+      const rule2Results = await Promise.all(activeInvestors.map(async (inv) => {
         const lastMeetingResult = await db.execute({
           sql: `SELECT MAX(date) as last_date FROM meetings WHERE investor_id = ?`,
           args: [inv.id],
         });
         const lastDate = (lastMeetingResult.rows[0] as unknown as { last_date: string | null }).last_date;
-        if (!lastDate) continue;
+        if (!lastDate) return null;
 
         const daysSince = Math.round((now.getTime() - new Date(lastDate).getTime()) / (1000 * 60 * 60 * 24));
         if (daysSince >= 21) {
           patternsDetected++;
           if (await hasDuplicateAction(inv.id, 'stall_risk')) {
             skippedDuplicate++;
-            continue;
+            return null;
           }
           const action = await createAccelerationAction({
             investor_id: inv.id,
@@ -4060,8 +4063,12 @@ export async function generateAutoActions(): Promise<AutoActionResult> {
             actual_lift: null,
             executed_at: null,
           });
-          actionsCreated.push(action);
+          return action;
         }
+        return null;
+      }));
+      for (const action of rule2Results) {
+        if (action) actionsCreated.push(action);
       }
     }
   } catch { /* non-blocking */ }

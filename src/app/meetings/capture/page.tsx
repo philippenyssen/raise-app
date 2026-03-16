@@ -60,10 +60,6 @@ function QuickCaptureInner() {
   const [thinkingMsg, setThinkingMsg] = useState(0);
   const [result, setResult] = useState<Record<string, unknown> | null>(null);
 
-  const [submitHovered, setSubmitHovered] = useState(false);
-  const [detailsHovered, setDetailsHovered] = useState(false);
-  const [viewMeetingHovered, setViewMeetingHovered] = useState(false);
-  const [newCaptureHovered, setNewCaptureHovered] = useState(false);
 
   useEffect(() => { document.title = 'Raise | Quick Capture'; }, []);
   useEffect(() => {
@@ -317,24 +313,22 @@ function QuickCaptureInner() {
                 href={`/investors/${investorId}`}
                 className="btn btn-md transition-colors"
                 style={{
-                  background: viewMeetingHovered ? 'var(--accent-hover)' : 'var(--accent)',
+                  background: 'var(--accent)',
                   color: 'var(--text-primary)',
                   border: '1px solid transparent',
                   textDecoration: 'none',
                   gap: 'var(--space-2)', }}
-                onMouseEnter={() => setViewMeetingHovered(true)}
-                onMouseLeave={() => setViewMeetingHovered(false)}>
+                onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-hover)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'var(--accent)'; }}>
                 <ExternalLink className="w-3.5 h-3.5" /> View {selectedInvestor?.name || 'Investor'}</Link>
             )}
             <button
               onClick={handleReset}
-              className="btn btn-md transition-colors"
+              className="btn btn-md btn-surface transition-colors"
               title="Clear form and capture another meeting"
               style={{
-                background: newCaptureHovered ? 'var(--surface-3)' : 'var(--surface-2)',
-                color: 'var(--text-primary)', }}
-              onMouseEnter={() => setNewCaptureHovered(true)}
-              onMouseLeave={() => setNewCaptureHovered(false)}>
+                background: 'var(--surface-2)',
+                color: 'var(--text-primary)', }}>
               Capture Another</button></div></div>
       </div>);
   }
@@ -432,14 +426,12 @@ function QuickCaptureInner() {
           <button
             type="button"
             onClick={() => setShowDetails(!showDetails)}
-            className="btn btn-md"
+            className="btn btn-md btn-surface"
             style={{
-              background: detailsHovered ? 'var(--surface-3)' : 'transparent',
+              background: 'transparent',
               color: 'var(--text-tertiary)',
               width: '100%',
-              justifyContent: 'space-between', }}
-            onMouseEnter={() => setDetailsHovered(true)}
-            onMouseLeave={() => setDetailsHovered(false)}>
+              justifyContent: 'space-between', }}>
             <span style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
               <Clock className="w-3.5 h-3.5" />
               Optional details</span>
@@ -492,9 +484,9 @@ function QuickCaptureInner() {
           type="submit"
           disabled={loading || !investorId || !rawNotes.trim()}
           className="btn btn-lg transition-colors"
-          style={{ background: loading ? 'var(--surface-3)' : submitHovered ? 'var(--accent-hover)' : 'var(--accent)', color: loading ? 'var(--text-tertiary)' : 'white', border: '1px solid transparent', padding: 'var(--space-4) var(--space-6)', fontSize: 'var(--font-size-md)', fontWeight: 400, width: '100%', opacity: (!investorId || !rawNotes.trim()) && !loading ? 0.5 : 1, cursor: loading || !investorId || !rawNotes.trim() ? 'not-allowed' : 'pointer' }}
-          onMouseEnter={() => setSubmitHovered(true)}
-          onMouseLeave={() => setSubmitHovered(false)}>
+          style={{ background: loading ? 'var(--surface-3)' : 'var(--accent)', color: loading ? 'var(--text-tertiary)' : 'white', border: '1px solid transparent', padding: 'var(--space-4) var(--space-6)', fontSize: 'var(--font-size-md)', fontWeight: 400, width: '100%', opacity: (!investorId || !rawNotes.trim()) && !loading ? 0.5 : 1, cursor: loading || !investorId || !rawNotes.trim() ? 'not-allowed' : 'pointer' }}
+          onMouseEnter={e => { if (!loading) e.currentTarget.style.background = 'var(--accent-hover)'; }}
+          onMouseLeave={e => { if (!loading) e.currentTarget.style.background = 'var(--accent)'; }}>
           {loading ? (
             <span style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', justifyContent: 'center' }}>
               <Loader2 className="w-5 h-5" style={{ animation: 'spin 1s linear infinite' }} />

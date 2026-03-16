@@ -17,9 +17,6 @@ export default function ConsistencyPage() {
   const [result, setResult] = useState<ConsistencyResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [backHovered, setBackHovered] = useState(false);
-  const [recheckHovered, setRecheckHovered] = useState(false);
-  const [retryHovered, setRetryHovered] = useState(false);
 
   const fetchConsistency = useCallback(async () => {
     setLoading(true);
@@ -57,12 +54,9 @@ export default function ConsistencyPage() {
         <div className="flex items-center gap-4">
           <Link
             href="/documents"
-            className="p-2 rounded-lg transition-colors"
+            className="p-2 rounded-lg btn-surface transition-colors"
             style={{
-              color: backHovered ? 'var(--text-secondary)' : 'var(--text-tertiary)',
-              background: backHovered ? 'var(--surface-2)' : 'transparent', }}
-            onMouseEnter={() => setBackHovered(true)}
-            onMouseLeave={() => setBackHovered(false)}>
+              color: 'var(--text-tertiary)' }}>
             <ArrowLeft className="w-5 h-5" /></Link>
           <div>
             <h1 className="page-title">Consistency Check</h1>
@@ -71,12 +65,10 @@ export default function ConsistencyPage() {
         <button
           onClick={fetchConsistency}
           disabled={loading}
-          className="px-4 py-2 disabled:opacity-50 rounded-lg text-sm font-normal transition-colors flex items-center gap-2"
+          className="px-4 py-2 disabled:opacity-50 rounded-lg text-sm font-normal btn-surface transition-colors flex items-center gap-2"
           style={{
-            background: recheckHovered ? 'var(--surface-3)' : 'var(--surface-2)',
-            color: 'var(--text-primary)', }}
-          onMouseEnter={() => setRecheckHovered(true)}
-          onMouseLeave={() => setRecheckHovered(false)}>
+            background: 'var(--surface-2)',
+            color: 'var(--text-primary)', }}>
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           Re-check</button></div>
 
@@ -97,9 +89,9 @@ export default function ConsistencyPage() {
           <button
             onClick={fetchConsistency}
             className="mt-3 text-sm underline transition-colors"
-            style={{ color: retryHovered ? 'var(--text-secondary)' : 'var(--text-tertiary)' }}
-            onMouseEnter={() => setRetryHovered(true)}
-            onMouseLeave={() => setRetryHovered(false)}>
+            style={{ color: 'var(--text-tertiary)' }}
+            onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-secondary)'; }}
+            onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-tertiary)'; }}>
             Try again</button></div>
       )}
 

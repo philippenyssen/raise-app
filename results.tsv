@@ -391,3 +391,43 @@ e5125ed	100	100	0	keep	strategy	parallelize today page — fetch briefing + 4 se
 0333250	100	100	0	keep	ai	extract AI system prompt constant (SYS_JSON), cachedFetch on 9 more pages (investors/[id], reports, velocity, timeline, focus, analysis, win-loss, objections, meetings)
 9119d05	100	100	0	keep	data	add 4 DB indexes (investors.status, tasks.status, followups.status, activity_log.type), lightweight document list excluding content field
 1728096	100	100	0	keep	workflow	optimistic followup complete/skip/quick-complete with rollback, consistency page cachedFetch
+5417727	100	100	0	keep	copy	standardize error tone Could not→Couldn't, replace generic 'check all fields' with specific field names
+d53b7d4	100	100	0	keep	competitive	data-room count endpoint + cachedFetch on top-bar investors
+b98eaa4	100	100	0	keep	ops	error logging in dealflow allSettled + cachedFetch on top-bar and command-palette
+131449e	100	100	0	keep	strategy	increase cache TTLs — client 5min, server 120s on 8 heavy computations
+ad79019	100	100	0	keep	product	dynamic import ExcelViewer + AIChat on model page for code-splitting
+cc361c6	100	100	0	keep	design	dynamic import DocumentViewer + AIChat on workspace page
+5f57faa	100	100	0	keep	engineering	extract INVESTOR_TYPE_STYLES to shared styles.ts, dedup 2 pages
+768728c	100	100	0	keep	ai	cache briefing AI summary for 5 minutes, avoid redundant Claude calls
+b9aa187	100	100	0	keep	data	eliminate redundant meetings query in momentum route, parallel batch
+700a697	100	100	0	keep	workflow	invalidate client cache after investor status mutations on 3 pages
+4f4eb53	100	100	0	keep	copy	replace generic error messages with actionable text across 6 files
+2aa93b5	100	100	0	keep	competitive	add Cache-Control headers to data-room count endpoint
+bacf944	100	100	0	keep	ops	wrap momentum fetchData in useCallback with proper effect deps
+928a8f6	100	100	0	keep	strategy	add Cmd+D (dealflow) and Cmd+F (focus) keyboard shortcuts
+104f9e4	100	100	0	keep	product	memoize dashboard meetingStreak computation with useMemo
+2b137e1	100	100	0	keep	design	extract badgeSmall/badgePill shared styles, apply to 6 pipeline badges
+9c69e7e	100	100	0	keep	ai	fix dashboard freeze: two-phase API loading + remove useState hover from 4 sub-components
+2add8af	100	100	0	keep	data	eliminate N+1 in deal-heat: 3 bulk queries replace 3×N per-investor DB calls
+a72a539	100	100	0	keep	workflow	add Cmd+L shortcut for follow-ups + add to command palette actions
+160178f	100	100	0	keep	copy	fix dashboard React #310 crash + improve investor detail empty states
+4a84b04	100	100	0	keep	competitive+ops	Server-Timing headers on pulse + deal-heat for performance observability
+19d8c89	100	100	0	keep	strategy+design	fix disabled button states + Server-Timing on stress-test/velocity/momentum
+08e860e	100	100	0	keep	engineering	eliminate hoveredRow re-renders in dealflow + memoize filtered list
+2974efe	100	100	0	keep	ai+data	composite index on meetings + recalibrate enthusiasm scoring
+66dbbf3	100	100	0	keep	copy+workflow	improve momentum error state with actionable guidance
+ab35f06	100	100	0	keep	ops+competitive	memoize followup categorization + error logging for pulse background tasks
+0671604	100	100	0	keep	engineering	remove unused date-fns dependency
+def41c0	100	100	0	keep	product	dynamic button label on investor brief showing selected investor name
+2c7e437	100	100	0	keep	data	fix followups index table name + covering index on (status, due_at)
+e79169e	100	100	0	keep	design	add status-badge utility classes to design system
+e397866	100	100	0	keep	copy	improve competitive intelligence empty state with actionable guidance
+3fcba58	100	100	0	keep	ai+data+workflow	parallelize prediction logging + deduplicate momentum query + health loadedAt
+76c5b5f	100	100	0	keep	strategy+ops+competitive	eliminate 7 hover useStates from intelligence page with CSS classes
+d317571	100	100	0	keep	strategy+design	eliminate hover useStates from investors + forecast pages with CSS
+f62ade4	100	100	0	keep	design+engineering	eliminate hover useState from documents page with CSS classes
+6cd5c20	100	100	0	keep	workflow+competitive+ops	loadedAt on dealflow/velocity + eliminate 8 hover states from stress-test/velocity
+316273a	100	100	0	keep	design+engineering	eliminate 10 hover useStates from term-compare + workspace with CSS classes
+c897311	100	100	0	keep	product+competitive	eliminate 11 hover useStates from acceleration + data-room with CSS classes
+eac2d55	100	100	0	keep	copy+ops+workflow	eliminate 7 hover useStates from today + pipeline + followups with CSS
+8e792f7	100	100	0	keep	ai+data	eliminate 6 hover useStates from compare + parallelize db.ts flag creation

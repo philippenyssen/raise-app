@@ -136,8 +136,6 @@ export default function StrategicPage() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [refreshHover, setRefreshHover] = useState(false);
-  const [retryHover, setRetryHover] = useState(false);
 
   const fetchData = useCallback(async (silent = false) => {
     if (!silent) setLoading(true);
@@ -190,10 +188,7 @@ export default function StrategicPage() {
           <p style={stTextTertiary}>{error || 'Could not load strategic data.'}</p>
           <button
             onClick={() => fetchData()}
-            onMouseEnter={() => setRetryHover(true)}
-            onMouseLeave={() => setRetryHover(false)}
-            className="btn btn-sm btn-secondary transition-colors"
-            style={retryHover ? { background: 'var(--surface-3)' } : {}}>
+            className="btn btn-sm btn-secondary btn-surface transition-colors">
             Retry</button></div>
       </div>);
   }
@@ -214,10 +209,8 @@ export default function StrategicPage() {
         <button
           onClick={() => fetchData(true)}
           disabled={refreshing}
-          onMouseEnter={() => setRefreshHover(true)}
-          onMouseLeave={() => setRefreshHover(false)}
-          className="btn btn-sm btn-secondary transition-colors"
-          style={{ opacity: refreshing ? 0.5 : 1, ...(refreshHover && !refreshing ? { background: 'var(--surface-3)' } : {}) }}>
+          className="btn btn-sm btn-secondary btn-surface transition-colors"
+          style={{ opacity: refreshing ? 0.5 : 1 }}>
           <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
           {refreshing ? 'Refreshing...' : 'Refresh'}</button></div>
 
@@ -512,18 +505,14 @@ function deriveActionRoute(rec: StrategicRecommendation): { route: string; label
 }
 
 function RecommendationRow({ rec, isLast }: { rec: StrategicRecommendation; isLast: boolean }) {
-  const [hovered, setHovered] = useState(false);
-  const [btnHover, setBtnHover] = useState(false);
   const catCfg = CATEGORY_CONFIG[rec.category] || CATEGORY_CONFIG.pipeline;
   const CatIcon = catCfg.icon;
   const actionLink = deriveActionRoute(rec);
 
   return (
     <div
-      className="transition-colors"
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      style={{ padding: 'var(--space-5)', background: hovered ? 'var(--surface-1)' : 'transparent', transition: 'background 100ms ease', borderBottom: isLast ? 'none' : '1px solid var(--border-subtle)' }}>
+      className="hover-row transition-colors"
+      style={{ padding: 'var(--space-5)', borderBottom: isLast ? 'none' : '1px solid var(--border-subtle)' }}>
       <div className="flex items-start gap-4">
         {/* Priority badge */}
         <div className="flex flex-col items-center gap-1.5 shrink-0 pt-0.5">
@@ -563,10 +552,10 @@ function RecommendationRow({ rec, isLast }: { rec: StrategicRecommendation; isLa
               {rec.deadline}</span>
             <Link
               href={actionLink.route}
-              onMouseEnter={() => setBtnHover(true)}
-              onMouseLeave={() => setBtnHover(false)}
+              onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent)'; e.currentTarget.style.color = 'var(--surface-0)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'var(--accent-muted)'; e.currentTarget.style.color = 'var(--accent)'; }}
               className="ml-auto flex items-center gap-1 transition-colors"
-              style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, padding: '3px 10px', borderRadius: 'var(--radius-sm)', background: btnHover ? 'var(--accent)' : 'var(--accent-muted)', color: btnHover ? 'var(--surface-0)' : 'var(--accent)', border: '1px solid var(--accent-muted)', transition: 'all 150ms ease', textDecoration: 'none' }}>
+              style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, padding: '3px 10px', borderRadius: 'var(--radius-sm)', background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid var(--accent-muted)', transition: 'all 150ms ease', textDecoration: 'none' }}>
               {actionLink.label}
               <ExternalLink className="w-3 h-3" /></Link></div></div></div>
     </div>);

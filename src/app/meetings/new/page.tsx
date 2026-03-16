@@ -38,8 +38,6 @@ function NewMeetingContent() {
     attendees: searchParams.get('attendees') || '',
     duration_minutes: Number(searchParams.get('duration')) || 60,
     raw_notes: '',});
-  const [viewAllHovered, setViewAllHovered] = useState(false);
-  const [logAnotherHovered, setLogAnotherHovered] = useState(false);
 
   useEffect(() => { document.title = 'Raise | Log Meeting'; }, []);
   useEffect(() => {
@@ -258,21 +256,17 @@ function NewMeetingContent() {
             )}
             <button
               onClick={() => router.push('/meetings')}
-              className="px-4 py-2 rounded-lg text-sm transition-colors"
+              className="px-4 py-2 rounded-lg text-sm btn-surface transition-colors"
               style={{
-                background: viewAllHovered ? 'var(--surface-3)' : 'var(--surface-2)',
-                color: 'var(--text-primary)', }}
-              onMouseEnter={() => setViewAllHovered(true)}
-              onMouseLeave={() => setViewAllHovered(false)}>
+                background: 'var(--surface-2)',
+                color: 'var(--text-primary)', }}>
               All Meetings</button>
             <button
               onClick={() => { setResult(null); setForm({ investor_id: '', date: new Date().toISOString().split('T')[0], type: 'management_presentation', attendees: '', duration_minutes: 60, raw_notes: '' }); }}
-              className="px-4 py-2 rounded-lg text-sm transition-colors"
+              className="px-4 py-2 rounded-lg text-sm btn-surface transition-colors"
               style={{
-                background: logAnotherHovered ? 'var(--surface-3)' : 'var(--surface-2)',
-                color: 'var(--text-primary)', }}
-              onMouseEnter={() => setLogAnotherHovered(true)}
-              onMouseLeave={() => setLogAnotherHovered(false)}>
+                background: 'var(--surface-2)',
+                color: 'var(--text-primary)', }}>
               Log Another</button></div></div>
       )}
 

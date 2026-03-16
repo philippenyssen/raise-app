@@ -222,16 +222,13 @@ function StatsRow({ stats, meetingDensity }: { stats: FomoData['stats']; meeting
 }
 
 function PressureCard({ inv }: { inv: InvestorFomo }) {
-  const [hovered, setHovered] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const color = getIntensityColor(inv.intensity);
 
   return (
     <div
-      className="transition-colors"
-      style={{ padding: 'var(--space-4)', background: hovered ? 'var(--surface-2)' : 'var(--surface-1)', borderRadius: 'var(--radius-lg)', transition: 'all 150ms ease', cursor: 'pointer' }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      className="transition-colors hover-row"
+      style={{ padding: 'var(--space-4)', background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)', transition: 'all 150ms ease', cursor: 'pointer' }}
       onClick={() => setExpanded(!expanded)}>
       {/* Header row */}
       <div className="flex items-center gap-3">
@@ -319,8 +316,6 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
 }
 
 function TriggerEventCard({ event }: { event: TriggerEvent }) {
-  const [hovered, setHovered] = useState(false);
-
   const iconMap: Record<string, typeof Zap> = {
     status_change: ArrowRight,
     meeting_cluster: Users,
@@ -329,10 +324,8 @@ function TriggerEventCard({ event }: { event: TriggerEvent }) {
 
   return (
     <div
-      className="transition-colors"
-      style={{ padding: 'var(--space-3)', background: hovered ? 'var(--surface-2)' : 'var(--surface-1)', borderRadius: 'var(--radius-md)', transition: 'all 150ms ease' }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}>
+      className="transition-colors hover-row"
+      style={{ padding: 'var(--space-3)', background: 'var(--surface-1)', borderRadius: 'var(--radius-md)', transition: 'all 150ms ease' }}>
       <div className="flex items-start gap-3">
         <span className="flex items-center justify-center shrink-0" style={{ width: '28px', height: '28px', borderRadius: 'var(--radius-sm)', ...(IMPACT_STYLES[event.impactLevel] ?? IMPACT_STYLES.low) }}>
           <Icon className="w-3.5 h-3.5" /></span>
@@ -348,19 +341,15 @@ function TriggerEventCard({ event }: { event: TriggerEvent }) {
 }
 
 function StrategyCardComponent({ card }: { card: StrategyCard }) {
-  const [hovered, setHovered] = useState(false);
-
   return (
     <div
-      className="transition-colors"
+      className="transition-colors hover-row"
       style={{
         padding: 'var(--space-4)',
-        background: hovered ? 'var(--surface-2)' : 'var(--surface-1)',
+        background: 'var(--surface-1)',
         borderRadius: 'var(--radius-lg)',
         transition: 'all 150ms ease',
-        ...PRIORITY_STYLES[card.priority], }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}>
+        ...PRIORITY_STYLES[card.priority], }}>
       <div className="flex items-start gap-2 mb-2">
         <span style={{ flexShrink: 0, marginTop: '2px' }}>
           <Target className="w-4 h-4" style={{ color: card.priority === 'high' ? 'var(--danger)' : card.priority === 'medium' ? 'var(--warning)' : 'var(--text-muted)' }}
@@ -397,7 +386,6 @@ export default function FomoPage() {
   const [data, setData] = useState<FomoData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [refreshHovered, setRefreshHovered] = useState(false);
   const [filterIntensity, setFilterIntensity] = useState<'all' | 'high' | 'medium' | 'low' | 'none'>('all');
 
   const fetchData = useCallback(async () => {
@@ -480,15 +468,13 @@ export default function FomoPage() {
               Competitive pressure between investors — leverage asymmetry to accelerate the process</p></div>
           <button
             onClick={fetchData}
-            onMouseEnter={() => setRefreshHovered(true)}
-            onMouseLeave={() => setRefreshHovered(false)}
-            className="flex items-center gap-2 transition-colors"
+            className="flex items-center gap-2 transition-colors btn-surface"
             style={{
               padding: 'var(--space-2) var(--space-3)',
               borderRadius: 'var(--radius-md)',
               fontSize: 'var(--font-size-sm)',
               fontWeight: 400,
-              background: refreshHovered ? 'var(--surface-2)' : 'var(--surface-1)',
+              background: 'var(--surface-1)',
               color: 'var(--text-secondary)',
               cursor: 'pointer', }}>
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
