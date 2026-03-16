@@ -13,6 +13,7 @@ import {
 import { fmtDateTime } from '@/lib/format';
 import { useToast } from '@/components/toast';
 import { labelAccent, labelMuted, labelMuted10, labelSecondary, stAccent, stTextMuted, stTextPrimary, stTextSecondary } from '@/lib/styles';
+import { cachedFetch } from '@/lib/cache';
 
 const filterBtnBase: React.CSSProperties = { borderRadius: 'var(--radius-sm)', fontSize: 'var(--font-size-xs)', fontWeight: 400, transition: 'all 150ms ease' };
 const convictionBtnBase: React.CSSProperties = { ...filterBtnBase, padding: '0.25rem 0.5rem' };
@@ -201,7 +202,7 @@ function FollowupsContent() {
       const params = new URLSearchParams({ view: 'intelligence' });
       if (filter !== 'all') params.set('status', filter);
       if (investorFilter) params.set('investor_id', investorFilter);
-      const res = await fetch(`/api/followups?${params.toString()}`);
+      const res = await cachedFetch(`/api/followups?${params.toString()}`);
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
         throw new Error(errData.error || `Server error (${res.status})`);

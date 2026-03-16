@@ -416,7 +416,9 @@ export default function StressTestPage() {
           <h2 className="text-sm font-normal flex items-center gap-2 mb-4" style={stTextSecondary}>
             <AlertTriangle className="w-4 h-4" /> Risk Scenarios</h2>
           {data.risks.length === 0 ? (
-            <p className="text-sm" style={stTextMuted}>No significant risks identified.</p>
+            <div className="text-center py-6">
+              <AlertTriangle className="w-6 h-6 mx-auto mb-2" style={stTextMuted} />
+              <p className="text-sm" style={stTextMuted}>No significant risks flagged. Keep monitoring as your pipeline evolves.</p></div>
           ) : (
             <div className="space-y-2">
               {data.risks.map((risk, i) => {
@@ -464,7 +466,9 @@ export default function StressTestPage() {
             <div className="text-xs mb-2" style={stTextMuted}>
               Investors who must close to reach the EUR {formatEuro(data.target)} target:</div>
             {data.criticalPath.minimumViableSet.length === 0 ? (
-              <p className="text-sm" style={stTextMuted}>No investors with sufficient probability identified.</p>
+              <div className="text-center py-4">
+                <Zap className="w-5 h-5 mx-auto mb-2" style={stTextMuted} />
+                <p className="text-sm" style={stTextMuted}>Critical path requires more high-probability investors. Advance pipeline conversations or increase check sizes.</p></div>
             ) : (
               <div className="space-y-1.5">
                 {data.criticalPath.minimumViableSet.map((name, i) => {

@@ -747,7 +747,7 @@ function EffectivenessTab({
     return (
       <div className="rounded-xl p-12 text-center space-y-3" style={stSurface0}>
         <BarChart3 className="w-10 h-10 mx-auto" style={{ color: 'var(--border-default)' }} />
-        <p style={stTextMuted}>No effectiveness data available.</p>
+        <p style={stTextMuted}>Log objection responses in meetings to measure messaging effectiveness across investor types.</p>
       </div>);
   }
 
@@ -833,7 +833,7 @@ function EffectivenessTab({
             <div className="divide-y" style={stBorderSubtle}>
               {topic_effectiveness.length === 0 ? (
                 <div className="p-8 text-center">
-                  <p className="text-sm" style={stTextMuted}>No topic data available yet.</p></div>
+                  <p className="text-sm" style={stTextMuted}>Log objection responses to see effectiveness by topic. Topics are created from meeting notes.</p></div>
               ) : (
                 topic_effectiveness.map((te) => {
                   const color = getColor(te.topic);

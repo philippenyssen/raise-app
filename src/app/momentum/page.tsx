@@ -491,7 +491,9 @@ export default function MomentumPage() {
               <Users className="w-4 h-4" style={stTextSecondary} />
               <h2 className="text-sm font-normal tracking-wider" style={stTextSecondary}>Cohort Momentum</h2></div>
             {data.cohorts.length === 0 ? (
-              <p className="text-sm" style={stTextMuted}>No cohort data available.</p>
+              <div className="text-center py-6">
+                <Users className="w-6 h-6 mx-auto mb-2" style={stTextMuted} />
+                <p className="text-sm" style={stTextMuted}>No cohort data yet. Add more investors to see momentum patterns by type.</p></div>
             ) : (
               <div className="space-y-3">
                 {data.cohorts.map(cohort => {

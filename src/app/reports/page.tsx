@@ -55,7 +55,7 @@ export default function ReportsPage() {
         url += `&investor_id=${selectedInvestor}`;
       }
 
-      const res = await fetch(url);
+      const res = await cachedFetch(url);
       if (!res.ok) {
         const errData = await res.json().catch(e => { console.warn('[REPORTS_PARSE]', e instanceof Error ? e.message : e); return { error: 'Request failed' }; });
         throw new Error(errData.error || 'Couldn\'t generate report — check your API key');

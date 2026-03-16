@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import { Activity, AlertTriangle, CheckCircle2, XCircle, ChevronDown, ChevronRight } from 'lucide-react';
 import { useToast } from '@/components/toast';
+import { cachedFetch } from '@/lib/cache';
 import { fmtDateTime } from '@/lib/format';
 import { getHealthBg, getHealthColor, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
@@ -62,7 +63,7 @@ export default function SkillsPage() {
   useEffect(() => { document.title = 'Raise | Skill Health'; }, []);
   const fetchData = useCallback(() => {
     setLoading(true);
-    const safeFetch = (url: string) => fetch(url).then(r => { if (!r.ok) throw new Error(`${r.status}`); return r.json(); });
+    const safeFetch = (url: string) => cachedFetch(url).then(r => { if (!r.ok) throw new Error(`${r.status}`); return r.json(); });
     Promise.all([
       safeFetch('/api/skills?view=health'),
       safeFetch('/api/skills?view=executions&limit=100'),

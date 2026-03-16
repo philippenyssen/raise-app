@@ -72,7 +72,7 @@ export default function DocumentEditorPage() {
       if (!res.ok) throw new Error('Save failed');
       setDirty(false);
       toast('Saved');
-      const refreshRes = await fetch(`/api/documents/${id}`);
+      const refreshRes = await cachedFetch(`/api/documents/${id}`);
       if (refreshRes.ok) setDoc(await refreshRes.json());
     } catch (e) {
       console.warn('[DOC_SAVE]', e instanceof Error ? e.message : e);
@@ -94,7 +94,7 @@ export default function DocumentEditorPage() {
   }, [dirty, save]);
 
   async function loadVersions() {
-    const res = await fetch(`/api/documents/${id}/versions`);
+    const res = await cachedFetch(`/api/documents/${id}/versions`);
     setVersions(await res.json());
     setShowVersions(true);
   }
