@@ -288,6 +288,7 @@ export default function Dashboard() {
   const [pendingFollowups, setPendingFollowups] = useState<FollowupItem[]>([]);
   const [velocity, setVelocity] = useState<VelocityResponse | null>(null);
   const [bottlenecks, setBottlenecks] = useState<BottleneckResponse | null>(null);
+  const [dataRoomCount, setDataRoomCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [seeding, setSeeding] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -327,6 +328,7 @@ export default function Dashboard() {
       followups: () => safeFetch('followups', '/api/followups?view=pending', setPendingFollowups, silent),
       velocity: () => safeFetch('velocity', '/api/velocity', setVelocity, silent),
       bottlenecks: () => safeFetch('bottlenecks', '/api/bottlenecks', setBottlenecks, silent),
+      dataRoomCount: () => safeFetch<{ count: number }>('dataRoomCount', '/api/data-room/count', (d) => setDataRoomCount(d.count), silent),
       briefing: () => safeFetch<{ todaySummary?: string }>('briefing', '/api/briefing', (d) => { if (d && typeof d === 'object' && 'todaySummary' in d) setNarrativeBrief((d as { todaySummary?: string }).todaySummary ?? null); }, silent),};
     return map[key]?.() ?? Promise.resolve();
   }, [safeFetch]);
@@ -335,7 +337,7 @@ export default function Dashboard() {
     if (!silent) setLoading(true); else setRefreshing(true);
     // Critical path: load essential data first (health + pulse + stressTest)
     const critical = ['health', 'pulse', 'stressTest'];
-    const secondary = ['tasks','activity','dataQuality','atRisk','dealHeat','followups','velocity','bottlenecks','briefing'];
+    const secondary = ['tasks','activity','dataQuality','atRisk','dealHeat','followups','velocity','bottlenecks','briefing','dataRoomCount'];
     await Promise.allSettled(critical.map(k => fetchSection(k, silent)));
     setLoading(false); // Unblock render after critical data loads
     // Load remaining sections in background — each renders as it arrives
@@ -422,11 +424,11 @@ export default function Dashboard() {
     return [
       { label: 'Add target investors', done: data.totalInvestors > 0, link: '/investors', detail: `${data.totalInvestors} investor${data.totalInvestors !== 1 ? 's' : ''} added` },
       { label: 'Enrich investor profiles', done: dqDone, link: '/investors', detail: dqDone ? `${Math.round(dataQuality?.overallCompleteness ?? 0)}% complete` : 'Add partner names, check sizes, thesis fit' },
-      { label: 'Prepare data room', done: false, link: '/data-room', detail: 'Upload deck, financials, and key documents' },
+      { label: 'Prepare data room', done: dataRoomCount > 0, link: '/data-room', detail: dataRoomCount > 0 ? `${dataRoomCount} document${dataRoomCount !== 1 ? 's' : ''} uploaded` : 'Upload deck, financials, and key documents' },
       { label: 'Begin outreach', done: data.funnel.contacted > 0, link: '/pipeline', detail: data.funnel.contacted > 0 ? `${data.funnel.contacted} contacted` : 'Move investors to "Contacted" in the pipeline' },
       { label: 'Schedule first meeting', done: data.totalMeetings > 0, link: '/calendar', detail: data.totalMeetings > 0 ? `${data.totalMeetings} meeting${data.totalMeetings !== 1 ? 's' : ''} logged` : 'Log your first investor meeting' },
     ];
-  }, [data, dataQuality]);
+  }, [data, dataQuality, dataRoomCount]);
   const funnelStages = data ? [
     { label: 'Identified', value: identifiedCount > 0 ? identifiedCount : 0 },
     { label: 'Contacted', value: data.funnel.contacted },
@@ -478,6 +480,10 @@ export default function Dashboard() {
           <h1 className="page-title">Dashboard</h1>
           <p className="page-subtitle">
             Your raise at a glance
+            {fundraisePhase && (
+              <span style={{ marginLeft: 'var(--space-3)', padding: '1px 8px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', fontWeight: 400, textTransform: 'capitalize' }}>
+                {fundraisePhase === 'setup' ? 'Setting Up' : fundraisePhase === 'outreach' ? 'Outreach' : fundraisePhase === 'active' ? 'Active' : fundraisePhase === 'diligence' ? 'Diligence' : 'Closing'}</span>
+            )}
             {lastRefresh && (
               <span style={{ marginLeft: 'var(--space-3)', color: 'var(--text-muted)' }}>
                 Updated {relativeTime(lastRefresh)}</span>
