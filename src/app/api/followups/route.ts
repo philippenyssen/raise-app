@@ -130,7 +130,7 @@ export async function POST(req: NextRequest) {
       due_at,});
 
     emitContextChange('followup_created', `Follow-up for ${investor_name || investor_id}: ${action_type}`);
-    return NextResponse.json(followup, { status: 201 });
+    return NextResponse.json(followup, { status: 201, headers: { 'Cache-Control': 'no-store' } });
   } catch (e) {
     console.error('[FOLLOWUPS_POST]', e instanceof Error ? e.message : e);
     return NextResponse.json({ error: 'Failed to create follow-up' }, { status: 500 });
@@ -176,7 +176,7 @@ export async function PUT(req: NextRequest) {
         backfillEnthusiasmFromFollowups(invId).catch(e => { console.error('[FOLLOWUPS] backfill failed:', e instanceof Error ? e.message : e); });
       }}
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true }, { headers: { 'Cache-Control': 'no-store' } });
   } catch (err) {
     console.error('[FOLLOWUPS_PUT]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Failed to update follow-up' }, { status: 500 });

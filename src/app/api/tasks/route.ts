@@ -81,7 +81,7 @@ export async function POST(req: NextRequest) {
       auto_generated: (filtered.auto_generated as boolean) || false,});
 
     emitContextChange('task_created', `Task: ${filtered.title || 'untitled'}`);
-    return NextResponse.json(task, { status: 201 });
+    return NextResponse.json(task, { status: 201, headers: { 'Cache-Control': 'no-store' } });
   } catch (err) {
     console.error('[TASKS_POST]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Failed to create task' }, { status: 500 });
@@ -183,7 +183,7 @@ export async function PUT(req: NextRequest) {
       }}
 
     emitContextChange('task_updated', `Task ${id} ${updates.status === 'done' ? 'completed' : 'updated'}`);
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true }, { headers: { 'Cache-Control': 'no-store' } });
   } catch (err) {
     console.error('[TASKS_PUT]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Failed to update task' }, { status: 500 });
@@ -194,7 +194,7 @@ export async function DELETE(req: NextRequest) {
   if (!id) return NextResponse.json({ error: 'id is required' }, { status: 400 });
   try {
     await deleteTask(id);
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true }, { headers: { 'Cache-Control': 'no-store' } });
   } catch (err) {
     console.error('[TASKS_DELETE]', err instanceof Error ? err.message : err);
     return NextResponse.json({ error: 'Failed to delete task' }, { status: 500 });
