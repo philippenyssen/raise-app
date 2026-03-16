@@ -435,6 +435,7 @@ export default function StressTestPage() {
                       onClick={() => setExpandedRisks(prev =>
                         prev.includes(i) ? prev.filter(x => x !== i) : [...prev, i]
                       )}
+                      aria-expanded={isExpanded}
                       className="hover-row w-full flex items-start gap-3 p-3 text-left">
                       <span
                         className="px-1.5 py-0.5 rounded shrink-0 mt-0.5"

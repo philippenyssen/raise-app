@@ -130,12 +130,17 @@ export function Sidebar() {
       {mobileOpen && (
         <div
           className="md:hidden fixed inset-0 z-40"
+          role="button"
+          tabIndex={0}
+          aria-label="Close navigation menu"
           style={{ background: 'var(--overlay)', backdropFilter: 'blur(4px)' }}
-          onClick={() => setMobileOpen(false)}/>
+          onClick={() => setMobileOpen(false)}
+          onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setMobileOpen(false); }}/>
       )}
 
       {/* Sidebar — dark navy panel */}
       <aside
+        aria-label="Main navigation"
         className={`
           fixed md:static inset-y-0 left-0 z-50
           flex flex-col shrink-0

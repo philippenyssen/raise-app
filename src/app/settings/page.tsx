@@ -279,8 +279,9 @@ export default function SettingsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {/* Company Name */}
           <div className="md:col-span-2">
-            <label className="block" style={labelStyle}>Company Name</label>
+            <label htmlFor="raise-company" className="block" style={labelStyle}>Company Name</label>
             <input
+              id="raise-company"
               type="text"
               value={raise.data.company_name}
               onChange={e => raise.update('company_name', e.target.value)}
@@ -289,9 +290,10 @@ export default function SettingsPage() {
 
           {/* Round Type */}
           <div>
-            <label className="block" style={labelStyle}>Round Type</label>
+            <label htmlFor="raise-round" className="block" style={labelStyle}>Round Type</label>
             <div className="relative">
               <select
+                id="raise-round"
                 value={raise.data.round_type}
                 onChange={e => raise.update('round_type', e.target.value)}
                 className="input"
@@ -304,9 +306,10 @@ export default function SettingsPage() {
 
           {/* Currency */}
           <div>
-            <label className="block" style={labelStyle}>Currency</label>
+            <label htmlFor="raise-currency" className="block" style={labelStyle}>Currency</label>
             <div className="relative">
               <select
+                id="raise-currency"
                 value={raise.data.currency}
                 onChange={e => raise.update('currency', e.target.value)}
                 className="input"
@@ -325,6 +328,7 @@ export default function SettingsPage() {
                 Target Equity Raise</span></label>
             <div className="relative">
               <input
+                id="raise-equity"
                 type="number"
                 min="0"
                 value={raise.data.equity_amount || ''}
@@ -344,6 +348,7 @@ export default function SettingsPage() {
                 Target Debt Raise</span></label>
             <div className="relative">
               <input
+                id="raise-debt"
                 type="number"
                 min="0"
                 value={raise.data.debt_amount || ''}
@@ -363,6 +368,7 @@ export default function SettingsPage() {
                 Pre-money Valuation</span></label>
             <div className="relative">
               <input
+                id="raise-premoney"
                 type="number"
                 min="0"
                 value={raise.data.pre_money || ''}
@@ -390,6 +396,7 @@ export default function SettingsPage() {
                 <Calendar className="w-3 h-3" />
                 Target Close Date</span></label>
             <input
+              id="raise-close"
               type="date"
               value={raise.data.target_close}
               onChange={e => raise.update('target_close', e.target.value)}
@@ -402,6 +409,7 @@ export default function SettingsPage() {
                 <Users className="w-3 h-3" />
                 Target Investor Count</span></label>
             <input
+              id="raise-investor-count"
               type="number"
               value={raise.data.target_investor_count || ''}
               onChange={e => raise.update('target_investor_count', Number(e.target.value))}
@@ -415,6 +423,7 @@ export default function SettingsPage() {
               Minimum Check Size</label>
             <div className="relative">
               <input
+                id="raise-min-check"
                 type="number"
                 min="0"
                 value={raise.data.minimum_check_size || ''}
@@ -492,8 +501,9 @@ export default function SettingsPage() {
         <div className="space-y-4">
           {(Object.keys(WEIGHT_LABELS) as Array<keyof ScoringWeightsForm>).map(key => (
             <div key={key} className="flex items-center gap-4">
-              <label className="w-36 shrink-0" style={textSmSecondary}>{WEIGHT_LABELS[key]}</label>
+              <label htmlFor={`weight-${key}`} className="w-36 shrink-0" style={textSmSecondary}>{WEIGHT_LABELS[key]}</label>
               <input
+                id={`weight-${key}`}
                 type="range"
                 min={0}
                 max={50}
@@ -538,9 +548,10 @@ export default function SettingsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {/* Thank You Delay */}
           <div>
-            <label className="block" style={labelStyle}>Thank You Email Delay</label>
+            <label htmlFor="cadence-thankyou" className="block" style={labelStyle}>Thank You Email Delay</label>
             <div className="flex items-center gap-2">
               <input
+                id="cadence-thankyou"
                 type="number"
                 value={followup.data.thank_you_delay_hours}
                 onChange={e => followup.update('thank_you_delay_hours', Number(e.target.value))}
@@ -552,9 +563,10 @@ export default function SettingsPage() {
 
           {/* Objection Response Delay */}
           <div>
-            <label className="block" style={labelStyle}>Objection Response Delay</label>
+            <label htmlFor="cadence-objection" className="block" style={labelStyle}>Objection Response Delay</label>
             <div className="flex items-center gap-2">
               <input
+                id="cadence-objection"
                 type="number"
                 value={followup.data.objection_response_delay_hours}
                 onChange={e => followup.update('objection_response_delay_hours', Number(e.target.value))}
@@ -566,9 +578,10 @@ export default function SettingsPage() {
 
           {/* Schedule Next Meeting Delay */}
           <div>
-            <label className="block" style={labelStyle}>Schedule Next Meeting Delay</label>
+            <label htmlFor="cadence-schedule" className="block" style={labelStyle}>Schedule Next Meeting Delay</label>
             <div className="flex items-center gap-2">
               <input
+                id="cadence-schedule"
                 type="number"
                 value={followup.data.schedule_next_meeting_delay_hours}
                 onChange={e => followup.update('schedule_next_meeting_delay_hours', Number(e.target.value))}
@@ -580,9 +593,10 @@ export default function SettingsPage() {
 
           {/* Re-engagement Delay */}
           <div>
-            <label className="block" style={labelStyle}>Re-engagement Delay</label>
+            <label htmlFor="cadence-reengage" className="block" style={labelStyle}>Re-engagement Delay</label>
             <div className="flex items-center gap-2">
               <input
+                id="cadence-reengage"
                 type="number"
                 value={followup.data.reengagement_delay_days}
                 onChange={e => followup.update('reengagement_delay_days', Number(e.target.value))}
@@ -593,9 +607,10 @@ export default function SettingsPage() {
 
           {/* Escalation Delay */}
           <div>
-            <label className="block" style={labelStyle}>Escalation Delay</label>
+            <label htmlFor="cadence-escalation" className="block" style={labelStyle}>Escalation Delay</label>
             <div className="flex items-center gap-2">
               <input
+                id="cadence-escalation"
                 type="number"
                 value={followup.data.escalation_delay_days}
                 onChange={e => followup.update('escalation_delay_days', Number(e.target.value))}
@@ -606,9 +621,10 @@ export default function SettingsPage() {
 
           {/* Tier 1 Speed Multiplier */}
           <div>
-            <label className="block" style={labelStyle}>Tier 1 Speed Multiplier</label>
+            <label htmlFor="cadence-tier1" className="block" style={labelStyle}>Tier 1 Speed Multiplier</label>
             <div className="flex items-center gap-2">
               <input
+                id="cadence-tier1"
                 type="number"
                 value={followup.data.tier1_speed_multiplier}
                 onChange={e => followup.update('tier1_speed_multiplier', Number(e.target.value))}
