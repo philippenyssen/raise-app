@@ -24,7 +24,7 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error) {
-    console.error('ErrorBoundary caught:', error);
+    console.error('[ERROR_BOUNDARY]', error instanceof Error ? error.message : error);
   }
 
   render() {

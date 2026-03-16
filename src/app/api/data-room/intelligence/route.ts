@@ -15,6 +15,7 @@ const STAGE_RECOMMENDATIONS: Record<string, string[]> = {
   dropped: [],};
 
 export async function GET() {
+  try {
   const [files, accessRecords, investors] = await Promise.all([
     getAllDataRoomFiles(),
     getAllDataRoomAccess(),
@@ -107,6 +108,10 @@ export async function GET() {
     unreached_investors,
     total_files: files.length,
     total_access_events: accessRecords.length,}, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
+  } catch (e) {
+    console.error('[DATA_ROOM_INTEL]', e instanceof Error ? e.message : e);
+    return NextResponse.json({ error: 'Failed to load data room intelligence' }, { status: 500 });
+  }
 }
 
 export async function POST(req: NextRequest) {
