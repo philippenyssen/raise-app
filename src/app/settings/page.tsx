@@ -578,7 +578,7 @@ export default function SettingsPage() {
 
           {/* Schedule Next Meeting Delay */}
           <div>
-            <label htmlFor="cadence-schedule" className="block" style={labelStyle}>Schedule Next Meeting Delay</label>
+            <label htmlFor="cadence-schedule" className="block" style={labelStyle}>Hours before next-meeting outreach triggers</label>
             <div className="flex items-center gap-2">
               <input
                 id="cadence-schedule"

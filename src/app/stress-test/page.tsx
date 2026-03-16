@@ -250,7 +250,7 @@ export default function StressTestPage() {
             <div style={{ marginTop: 'var(--space-3)', background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)', border: '1px solid var(--border-subtle)' }}>
               <div className="flex items-center justify-between mb-3">
                 <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)' }}>
-                  Adjust probabilities to see forecast impact</span>
+                  Slide investor close probabilities to stress-test your raise outcome</span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
                   {Object.keys(probOverrides).length > 0 && (
                     <button onClick={() => setProbOverrides({})} className="btn btn-ghost btn-sm" style={{ fontSize: '10px' }}>Reset</button>
@@ -319,21 +319,21 @@ export default function StressTestPage() {
         {/* Best Case */}
         <ForecastCard
           label="Best Case"
-          sublabel="All engaged+ close"
+          sublabel="All warm leads convert on plan"
           amount={data.forecast.best}
           target={data.target}
           color="green" />
         {/* Base Case */}
         <ForecastCard
           label="Base Case"
-          sublabel="Expected value sum"
+          sublabel="Expected outcome if momentum holds"
           amount={data.forecast.base}
           target={data.target}
           color={data.forecast.base >= data.target ? 'green' : 'yellow'} />
         {/* Worst Case */}
         <ForecastCard
           label="Worst Case"
-          sublabel="Only term sheet+"
+          sublabel="Only committed investors close"
           amount={data.forecast.worst}
           target={data.target}
           color={data.forecast.worst >= data.target * 0.5 ? 'yellow' : 'red'} /></div>
