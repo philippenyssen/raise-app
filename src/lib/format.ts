@@ -33,8 +33,3 @@ export const fmtEur = (n: number | null | undefined): string => {
   return `€${n.toLocaleString('en-GB')}`;
 };
 
-/** "12.3%" */
-export const fmtPct = (n: number | null | undefined): string => {
-  if (n == null || isNaN(n)) return '—';
-  return `${n.toFixed(1)}%`;
-};
