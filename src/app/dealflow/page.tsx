@@ -195,9 +195,12 @@ export default function DealflowPage() {
 
   useEffect(() => { document.title = 'Raise | Dealflow'; }, []);
   useEffect(() => {
-    fetchData();
-    const interval = setInterval(() => fetchData(), 5 * MS_PER_MINUTE);
-    return () => clearInterval(interval);
+    let interval: ReturnType<typeof setInterval> | null = null;
+    const start = () => { fetchData(); interval = setInterval(() => fetchData(), 5 * MS_PER_MINUTE); };
+    const onVis = () => { if (document.hidden) { if (interval) { clearInterval(interval); interval = null; } } else { start(); } };
+    start();
+    document.addEventListener('visibilitychange', onVis);
+    return () => { if (interval) clearInterval(interval); document.removeEventListener('visibilitychange', onVis); };
   }, [fetchData]);
 
   useEffect(() => {

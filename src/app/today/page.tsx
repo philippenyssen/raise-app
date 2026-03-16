@@ -392,8 +392,11 @@ export default function TodayPage() {
 
   useEffect(() => { document.title = 'Raise | Morning Briefing'; }, []);
   useEffect(() => {
-    fetchBriefing();
-    const refreshInterval = setInterval(() => fetchBriefing(true), 5 * MS_PER_MINUTE);
+    let refreshInterval: ReturnType<typeof setInterval> | null = null;
+    const startRefresh = () => { fetchBriefing(); refreshInterval = setInterval(() => fetchBriefing(true), 5 * MS_PER_MINUTE); };
+    const onVis = () => { if (document.hidden) { if (refreshInterval) { clearInterval(refreshInterval); refreshInterval = null; } } else { startRefresh(); } };
+    startRefresh();
+    document.addEventListener('visibilitychange', onVis);
     const stalenessInterval = setInterval(() => {
       setStalenessMinutes(Math.floor((Date.now() - lastFetchedAt.current) / MS_PER_MINUTE));
     }, 30000);
@@ -403,8 +406,9 @@ export default function TodayPage() {
     }
     window.addEventListener('keydown', onKeyDown);
     return () => {
-      clearInterval(refreshInterval);
+      if (refreshInterval) clearInterval(refreshInterval);
       clearInterval(stalenessInterval);
+      document.removeEventListener('visibilitychange', onVis);
       window.removeEventListener('keydown', onKeyDown);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -176,9 +176,12 @@ export default function MomentumPage() {
 
   useEffect(() => { document.title = 'Raise | Deal Momentum'; }, []);
   useEffect(() => {
-    fetchData();
-    const interval = setInterval(() => fetchData(), 5 * MS_PER_MINUTE);
-    return () => clearInterval(interval);
+    let interval: ReturnType<typeof setInterval> | null = null;
+    const start = () => { fetchData(); interval = setInterval(() => fetchData(), 5 * MS_PER_MINUTE); };
+    const onVis = () => { if (document.hidden) { if (interval) { clearInterval(interval); interval = null; } } else { start(); } };
+    start();
+    document.addEventListener('visibilitychange', onVis);
+    return () => { if (interval) clearInterval(interval); document.removeEventListener('visibilitychange', onVis); };
   }, [fetchData]);
   useEffect(() => {
     const h = (e: KeyboardEvent) => { if (e.key === 'r' && !e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement)) { e.preventDefault(); fetchData(); } };

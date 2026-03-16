@@ -9,6 +9,8 @@ import { fmtDateTime } from '@/lib/format';
 import { labelTertiary, stFontSm, stFontXs, stTextMuted, stTextTertiary } from '@/lib/styles';
 import { CopyButton } from '@/components/copy-button';
 
+const labelMutedMb4 = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' } as const;
+
 const MEETING_TYPES = ['all', 'intro', 'management_presentation', 'deep_dive', 'site_visit', 'dd_session', 'negotiation', 'social'] as const;
 const STATUS_OPTIONS = ['all', 'met', 'engaged', 'in_dd', 'term_sheet', 'passed'] as const;
 
@@ -35,7 +37,7 @@ function RatingDots({ value, onChange, label }: { value: number | null; onChange
   const [hovered, setHovered] = useState<number | null>(null);
   return (
     <div>
-      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>{label}</div>
+      <div style={labelMutedMb4}>{label}</div>
       <div className="flex gap-1">
         {[1, 2, 3, 4, 5].map(n => (
           <button
@@ -178,7 +180,7 @@ function MeetingOutcomeSection({
 
         {existingObjections.length > 0 && (
           <div className="mt-2">
-            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>Objections Addressed</div>
+            <div style={labelMutedMb4}>Objections Addressed</div>
             <div className="flex flex-wrap gap-1">
               {existingObjections.map((o: string, i: number) => (
                 <span key={i} style={{ fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--success-muted)', color: 'var(--text-secondary)' }}>
@@ -188,7 +190,7 @@ function MeetingOutcomeSection({
 
         {existingMentions.length > 0 && (
           <div className="mt-2">
-            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>Competitors Mentioned</div>
+            <div style={labelMutedMb4}>Competitors Mentioned</div>
             <div className="flex flex-wrap gap-1">
               {existingMentions.map((c: string, i: number) => (
                 <span key={i} style={{ fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--warning-muted)', color: 'var(--text-tertiary)' }}>
