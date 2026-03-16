@@ -129,6 +129,14 @@ function MeetingPrepContent() {
   // load investor list on mount
   useEffect(() => { document.title = 'Raise | Meeting Prep'; }, []);
   useEffect(() => {
+    const h = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement) return;
+      if (e.key === 'r' && !e.metaKey && !e.ctrlKey) { e.preventDefault(); if (selectedId) { setLoadingPrep(true); setMeetingBrief(null); } }
+    };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [selectedId]);
+  useEffect(() => {
     (async () => {
       try {
         const res = await cachedFetch('/api/investors');
