@@ -432,12 +432,16 @@ export default function DealflowPage() {
                       {TYPE_LABELS[inv.type] || inv.type} · T{inv.tier} · {STATUS_LABELS[inv.status] || inv.status}</div></div>
                 </div>
 
-                {/* Heat Badge */}
-                <div className="flex justify-center">
+                {/* Heat Badge + Drivers */}
+                <div className="flex flex-col items-center gap-0.5">
                   <span
                     className="px-2 py-0.5 rounded-full text-xs font-normal"
-                    style={{ background: heatCfg.bg, color: heatCfg.text, border: `1px solid ${heatCfg.border}` }}>
-                    {heatCfg.label}</span></div>
+                    style={{ background: heatCfg.bg, color: heatCfg.text, border: `1px solid ${heatCfg.border}` }}
+                    title={inv.heatDrivers.length > 0 ? inv.heatDrivers.join(' · ') : undefined}>
+                    {heatCfg.label}</span>
+                  {inv.heatDrivers.length > 0 && (
+                    <span className="truncate max-w-[100px]" style={{ fontSize: '10px', color: 'var(--text-muted)', lineHeight: 1.2 }}>{inv.heatDrivers[0]}</span>
+                  )}</div>
 
                 {/* Velocity Score */}
                 <div className="flex items-center justify-center gap-1.5">
@@ -507,7 +511,7 @@ export default function DealflowPage() {
         <div className="text-center py-16" style={stTextMuted}>
           <Users className="w-8 h-8 mx-auto mb-2" />
           <p className="text-sm font-normal" style={dfEmptyStateText}>
-            {heatFilter !== 'all' ? `No investors in the "${heatFilter}" category right now` : 'No investor activity to display yet'}</p>
+            {heatFilter !== 'all' ? `No investors showing as "${heatFilter}" right now` : 'No deal signals yet — the dealflow dashboard populates after you log meetings'}</p>
           <p className="text-xs" style={stTextMuted}>
             {heatFilter !== 'all' ? (
               <button

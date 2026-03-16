@@ -9,6 +9,7 @@ import {
   TrendingUp, TrendingDown, Minus, Loader2, BookOpen, Building2,
   ArrowLeft, Zap, CircleDot, ExternalLink, Sparkles, Plus,
   ListChecks, MessageCircleQuestion, FolderOpen, ChevronRight, Timer, Copy,
+  Layers, Swords, Link2, ThumbsUp,
 } from 'lucide-react';
 import type {
   Investor, Meeting, Task, Objection, EngagementSignal,
@@ -133,6 +134,14 @@ function MeetingPrepContent() {
   const [generatingBrief, setGeneratingBrief] = useState(false);
   const [briefExpanded, setBriefExpanded] = useState(true);
 
+  // cross-investor intelligence (from /api/meetings/prep)
+  const [prepIntel, setPrepIntel] = useState<{
+    questionPatterns?: { summary: string; patterns: { topic: string; frequency: number; prepGuidance: string }[] };
+    competitiveIntel?: { summary: string; competitors: { name: string; mentionCount: number; prepGuidance: string }[] };
+    networkConnections?: { summary: string; connections: { relatedInvestor: string; relationshipType: string; strategicImplication: string }[] };
+    provenResponses?: { summary: string; responses: { topic: string; bestResponse: string; effectiveness: string; guidance: string }[] };
+  } | null>(null);
+
   // ui state
   const [loading, setLoading] = useState(true);
   const [loadingPrep, setLoadingPrep] = useState(false);
@@ -175,6 +184,7 @@ function MeetingPrepContent() {
 
     setLoadingPrep(true);
     setMeetingBrief(null);
+    setPrepIntel(null);
 
     const safeFetch = (url: string) => cachedFetch(url).then(r => r.ok ? r.json() : []).catch(() => []);
     Promise.all([
@@ -193,6 +203,12 @@ function MeetingPrepContent() {
     }).catch(() => {
       toast('Couldn\'t load prep data — select a different investor or refresh', 'error');
       setLoadingPrep(false);});
+
+    // Fetch cross-investor intelligence separately (non-blocking)
+    cachedFetch(`/api/meetings/prep?investor_id=${selectedId}`)
+      .then(r => r.ok ? r.json() : null)
+      .then(d => { if (d) setPrepIntel(d); })
+      .catch(() => { /* prep intel is supplementary */ });
   }, [selectedId, toast]);
 
   const investor = useMemo(() => investors.find(i => i.id === selectedId), [investors, selectedId]);
@@ -704,6 +720,103 @@ function MeetingPrepContent() {
                       Generated {fmtDateTime(meetingBrief.generated_at)}</div></div>
                 )}</section>
             )}
+
+            {/* ============ CROSS-INVESTOR INTELLIGENCE ============ */}
+            {prepIntel && (prepIntel.questionPatterns?.patterns?.length || prepIntel.competitiveIntel?.competitors?.length || prepIntel.networkConnections?.connections?.length || prepIntel.provenResponses?.responses?.length) ? (
+              <section className="rounded-xl p-5 print-card" style={{ border: '1px solid var(--border-subtle)' }}>
+                <h2 className="text-sm font-normal tracking-wider mb-4 flex items-center gap-2 print-section-title" style={stTextTertiary}>
+                  <span style={stAccent}><Layers className="w-4 h-4" /></span>
+                  Cross-Investor Intelligence</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                  {/* Question Patterns */}
+                  {prepIntel.questionPatterns?.patterns?.length ? (
+                    <div>
+                      <h3 className="text-xs font-normal tracking-wider mb-2 flex items-center gap-1.5" style={stAccent}>
+                        <MessageCircleQuestion className="w-3.5 h-3.5" />
+                        Likely Questions</h3>
+                      <p className="text-xs mb-2" style={stTextMuted}>{prepIntel.questionPatterns.summary}</p>
+                      <div className="space-y-2">
+                        {prepIntel.questionPatterns.patterns.slice(0, 5).map((p, i) => (
+                          <div key={i} className="rounded-lg p-2.5" style={stSurface1}>
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-xs font-normal" style={stTextSecondary}>{p.topic}</span>
+                              <span className="text-xs px-1.5 py-0.5 rounded" style={stAccentBadge}>{p.frequency}x asked</span>
+                            </div>
+                            <p className="text-xs" style={stTextTertiary}>{p.prepGuidance}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+
+                  {/* Competitive Intel */}
+                  {prepIntel.competitiveIntel?.competitors?.length ? (
+                    <div>
+                      <h3 className="text-xs font-normal tracking-wider mb-2 flex items-center gap-1.5" style={stAccent}>
+                        <Swords className="w-3.5 h-3.5" />
+                        Competitive Mentions</h3>
+                      <p className="text-xs mb-2" style={stTextMuted}>{prepIntel.competitiveIntel.summary}</p>
+                      <div className="space-y-2">
+                        {prepIntel.competitiveIntel.competitors.slice(0, 5).map((c, i) => (
+                          <div key={i} className="rounded-lg p-2.5" style={stSurface1}>
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-xs font-normal" style={stTextSecondary}>{c.name}</span>
+                              <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: 'var(--danger-muted)', color: 'var(--text-secondary)' }}>{c.mentionCount}x mentioned</span>
+                            </div>
+                            <p className="text-xs" style={stTextTertiary}>{c.prepGuidance}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+
+                  {/* Network Connections */}
+                  {prepIntel.networkConnections?.connections?.length ? (
+                    <div>
+                      <h3 className="text-xs font-normal tracking-wider mb-2 flex items-center gap-1.5" style={stAccent}>
+                        <Link2 className="w-3.5 h-3.5" />
+                        Network Connections</h3>
+                      <p className="text-xs mb-2" style={stTextMuted}>{prepIntel.networkConnections.summary}</p>
+                      <div className="space-y-2">
+                        {prepIntel.networkConnections.connections.slice(0, 5).map((c, i) => (
+                          <div key={i} className="rounded-lg p-2.5" style={stSurface1}>
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="text-xs font-normal" style={stTextSecondary}>{c.relatedInvestor}</span>
+                              <span className="text-xs" style={stTextMuted}>{c.relationshipType}</span>
+                            </div>
+                            <p className="text-xs" style={stTextTertiary}>{c.strategicImplication}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+
+                  {/* Proven Responses */}
+                  {prepIntel.provenResponses?.responses?.length ? (
+                    <div>
+                      <h3 className="text-xs font-normal tracking-wider mb-2 flex items-center gap-1.5" style={stAccent}>
+                        <ThumbsUp className="w-3.5 h-3.5" />
+                        Proven Responses</h3>
+                      <p className="text-xs mb-2" style={stTextMuted}>{prepIntel.provenResponses.summary}</p>
+                      <div className="space-y-2">
+                        {prepIntel.provenResponses.responses.slice(0, 5).map((r, i) => (
+                          <div key={i} className="rounded-lg p-2.5" style={stSurface1}>
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-xs font-normal" style={stTextSecondary}>{r.topic}</span>
+                              <span className="text-xs px-1.5 py-0.5 rounded" style={{ background: 'var(--success-muted)', color: 'var(--text-secondary)' }}>{r.effectiveness}</span>
+                            </div>
+                            <p className="text-xs mb-1" style={stTextTertiary}>{r.bestResponse}</p>
+                            <p className="text-xs italic" style={stTextMuted}>{r.guidance}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+
+                </div>
+              </section>
+            ) : null}
 
             {/* ============ INVESTOR PROFILE ============ */}
             <section className="rounded-xl p-5 print-card">
