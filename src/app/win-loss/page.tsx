@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import { cachedFetch } from '@/lib/cache';
+import { relativeTime } from '@/lib/time';
 import {
   TrendingDown, TrendingUp, RefreshCw, Users, Target, AlertTriangle,
   CheckCircle, XCircle, ArrowDown, Clock, Lightbulb, BarChart3,
@@ -117,6 +118,7 @@ const TYPE_LABELS: Record<string, string> = {
 export default function WinLossPage() {
   const [data, setData] = useState<WinLossData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadedAt, setLoadedAt] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const fetchData = () => {
@@ -126,7 +128,7 @@ export default function WinLossPage() {
       .then(r => {
         if (!r.ok) throw new Error('Could not load win/loss data — refresh to retry');
         return r.json();})
-      .then((d: WinLossData) => { setData(d); setLoading(false); })
+      .then((d: WinLossData) => { setData(d); setLoadedAt(new Date().toISOString()); setLoading(false); })
       .catch(e => { setError(e.message); setLoading(false); });
   };
 
@@ -176,7 +178,7 @@ export default function WinLossPage() {
         <div>
           <h1 className="page-title">Win/Loss Analysis</h1>
           <p className="page-subtitle" style={stFontSm}>
-            Patterns from closed and passed investors</p></div>
+            Patterns from closed and passed investors{loadedAt ? ` · Updated ${relativeTime(loadedAt)}` : ''}</p></div>
         <button onClick={fetchData} disabled={loading} className="btn btn-secondary btn-sm" style={{ gap: 'var(--space-2)', opacity: loading ? 0.6 : 1 }}>
           <RefreshCw className="w-3.5 h-3.5" />
           {loading ? 'Refreshing...' : 'Refresh'}</button></div>

@@ -12,7 +12,7 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { fmtDate } from '@/lib/format';
 import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
 import { stTextMuted } from '@/lib/styles';
-import { MS_PER_DAY } from '@/lib/time';
+import { MS_PER_DAY, relativeTime } from '@/lib/time';
 
 const STATUS_STYLES: Record<string, { background: string; color: string }> = {
   identified: { background: 'var(--surface-3)', color: 'var(--text-secondary)' },
@@ -80,6 +80,7 @@ export default function InvestorsPage() {
   const { toast } = useToast();
   const [investors, setInvestors] = useState<Investor[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadedAt, setLoadedAt] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [filter, setFilter] = useState<{ tier?: number; status?: string; type?: string; statusPreset: 'active' | 'passed' | 'all' }>({ statusPreset: 'active' });
@@ -117,6 +118,7 @@ export default function InvestorsPage() {
       const res = await cachedFetch('/api/investors');
       if (!res.ok) throw new Error(`Failed (${res.status})`);
       setInvestors(await res.json());
+      setLoadedAt(new Date().toISOString());
     } catch (e) {
       console.warn('[INVESTOR_FETCH]', e instanceof Error ? e.message : e);
       toast('Couldn\'t load investors — check your connection and refresh', 'error');
@@ -257,7 +259,7 @@ export default function InvestorsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="page-title">Investor CRM</h1>
-          <p className="page-subtitle">{filtered.length === investors.length ? `${investors.length} investors tracked` : `${filtered.length} of ${investors.length} investors`}</p></div>
+          <p className="page-subtitle">{filtered.length === investors.length ? `${investors.length} investors tracked` : `${filtered.length} of ${investors.length} investors`}{loadedAt ? ` · Updated ${relativeTime(loadedAt)}` : ''}</p></div>
         <div className="flex gap-2">
           <Link href="/pipeline" className="btn btn-secondary btn-md">
             <Columns3 className="w-3.5 h-3.5" /> Pipeline</Link>

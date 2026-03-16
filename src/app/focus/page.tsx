@@ -5,7 +5,7 @@ import { cachedFetch } from '@/lib/cache';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
 import { EmptyState } from '@/components/ui/empty-state';
-import { MS_PER_DAY } from '@/lib/time';
+import { MS_PER_DAY, relativeTime } from '@/lib/time';
 import { STATUS_LABELS, PIPELINE_STATUS_STYLES, MOMENTUM_STYLES, MOMENTUM_LABELS, TRIGGER_STYLES, TRIGGER_LABELS, CONFIDENCE_STYLES, URGENCY_STYLE, TYPE_LABELS_SHORT as TYPE_LABELS } from '@/lib/constants';
 import {
   AccelerationItem, AccelerationInvestorSummary as InvestorSummary, AccelerationData,
@@ -691,6 +691,7 @@ export default function FocusPage() {
   const [loading, setLoading] = useState(true);
   const [, setAccelLoading] = useState(true);
   const [executedIds, setExecutedIds] = useState<Set<string>>(new Set());
+  const [loadedAt, setLoadedAt] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -699,7 +700,7 @@ export default function FocusPage() {
       const [focusRes, accelRes] = await Promise.all([
         cachedFetch('/api/focus'),
         cachedFetch('/api/acceleration'),]);
-      if (focusRes.ok) setData(await focusRes.json());
+      if (focusRes.ok) { setData(await focusRes.json()); setLoadedAt(new Date().toISOString()); }
       if (accelRes.ok) setAccelData(await accelRes.json());
     } catch (e) {
       console.warn('[FOCUS_FETCH]', e instanceof Error ? e.message : e);
@@ -810,7 +811,7 @@ export default function FocusPage() {
         <div>
           <h1 className="page-title">CEO Focus</h1>
           <p className="page-subtitle">
-            Investors ranked by urgency and opportunity — {weeklyBudget.totalHoursRecommended}h recommended this week</p></div>
+            Investors ranked by urgency and opportunity — {weeklyBudget.totalHoursRecommended}h recommended this week{loadedAt ? ` · Updated ${relativeTime(loadedAt)}` : ''}</p></div>
         <button
           onClick={fetchData}
           className="btn btn-secondary btn-sm">

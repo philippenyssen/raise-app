@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import type { Investor, InvestorStatus, InvestorType } from '@/lib/types';
 import { useToast } from '@/components/toast';
 import { cachedFetch, invalidateCache } from '@/lib/cache';
+import { relativeTime } from '@/lib/time';
 import {
   Users, TrendingUp, Zap, Filter, X, GripVertical, Download,
   Building2, Landmark, Shield, Banknote, Home, Rocket,
@@ -88,6 +89,7 @@ export default function PipelinePage() {
   const { toast } = useToast();
   const [investors, setInvestors] = useState<Investor[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadedAt, setLoadedAt] = useState<string | null>(null);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [dragId, setDragId] = useState<string | null>(null);
   const [, setDragOverCol] = useState<string | null>(null);
@@ -125,6 +127,7 @@ export default function PipelinePage() {
         throw new Error(errData.error || 'Could not load pipeline data — refresh to retry');
       }
       setInvestors(await res.json());
+      setLoadedAt(new Date().toISOString());
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Couldn\'t load investors — check your connection and refresh';
       setFetchError(msg);
@@ -310,7 +313,7 @@ export default function PipelinePage() {
       <div className="flex items-center justify-between flex-shrink-0">
         <div>
           <h1 className="page-title" style={{ fontSize: 'var(--font-size-xl)' }}>Investor Pipeline</h1>
-          <p className="page-subtitle" style={{ ...textSmMuted, marginTop: 'var(--space-1)' }}>Drag to move through the pipeline</p>
+          <p className="page-subtitle" style={{ ...textSmMuted, marginTop: 'var(--space-1)' }}>Drag to move through the pipeline{loadedAt ? ` · Updated ${relativeTime(loadedAt)}` : ''}</p>
         </div>
         <div className="flex items-center gap-2">
           <FilterButton
