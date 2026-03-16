@@ -29,6 +29,8 @@ const investorTagStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)',
 const compGridRow: React.CSSProperties = { gridTemplateColumns: '32px 1fr 80px 1fr 120px', padding: 'var(--space-3) var(--space-4)', borderBottom: '1px solid var(--border-subtle)', cursor: 'pointer' };
 const mtgRowStyle = { fontSize: 'var(--font-size-sm)', padding: 'var(--space-2) var(--space-3)', background: 'var(--surface-0)', borderRadius: 'var(--radius-sm)' } as const;
 const mtgDateStyle = { color: 'var(--text-tertiary)', minWidth: '80px' } as const;
+const mtgContextLabel: React.CSSProperties = { fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-muted)', marginBottom: 'var(--space-2)', letterSpacing: '0.01em' };
+const mtgExpandedCard: React.CSSProperties = { padding: 'var(--space-3) var(--space-4) var(--space-3) var(--space-10)', background: 'var(--surface-1)', borderBottom: '1px solid var(--border-subtle)' };
 
 export default function CompetitivePage() {
   const { toast } = useToast();
@@ -192,12 +194,8 @@ export default function CompetitivePage() {
 
                 {/* Expanded Detail */}
                 {isExpanded && (
-                  <div
-                    style={{
-                      padding: 'var(--space-3) var(--space-4) var(--space-3) var(--space-10)',
-                      background: 'var(--surface-1)',
-                      borderBottom: '1px solid var(--border-subtle)', }}>
-                    <div style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-muted)', marginBottom: 'var(--space-2)', letterSpacing: '0.01em' }}>
+                  <div style={mtgExpandedCard}>
+                    <div style={mtgContextLabel}>
                       Meeting Context</div>
                     <div className="space-y-2">
                       {c.meetings.map((mtg, i) => (
