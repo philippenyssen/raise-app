@@ -30,6 +30,9 @@ const tdFactor: React.CSSProperties = { ...tdBase, color: 'var(--text-primary)',
 const tdNumSecondary: React.CSSProperties = { ...tdBase, color: 'var(--text-secondary)', textAlign: 'right', fontVariantNumeric: 'tabular-nums' };
 const tdNumPrimary: React.CSSProperties = { ...tdBase, color: 'var(--text-primary)', textAlign: 'right', fontVariantNumeric: 'tabular-nums' };
 const tdSigCell: React.CSSProperties = { ...tdBase, textAlign: 'right' };
+const dropOffLabel = { fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)' } as const;
+const arrowSpacing = { marginTop: 'var(--space-0)', marginBottom: 'var(--space-0)' } as const;
+const profileRowPad = { padding: 'var(--space-1) 0' } as const;
 
 // ── Types ─────────────────────────────────────────────────────────────
 
@@ -234,7 +237,7 @@ export default function WinLossPage() {
                         {conversionPct}% from prev</span>
                     )}
                     {stage.dropOff > 0 && (
-                      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)' }}>
+                      <span style={dropOffLabel}>
                         {stage.dropOff}% drop-off</span>
                     )}</div></div>
                 <div style={funnelBarContainer}>
@@ -249,7 +252,7 @@ export default function WinLossPage() {
                       transition: 'width 0.6s ease',
                     }} /></div>
                 {i < funnel.length - 1 && (
-                  <div className="flex justify-center" style={{ marginTop: 'var(--space-0)', marginBottom: 'var(--space-0)' }}>
+                  <div className="flex justify-center" style={arrowSpacing}>
                     <ArrowDown className="w-3 h-3" style={stTextMuted} /></div>
                 )}
               </div>);
@@ -277,7 +280,7 @@ export default function WinLossPage() {
                 { label: 'Common Tiers', value: patterns.winnerProfile.commonTiers },
                 { label: 'Common Types', value: patterns.winnerProfile.commonTypes },
               ].map(row => (
-                <div key={row.label} className="flex items-center justify-between" style={{ padding: 'var(--space-1) 0' }}>
+                <div key={row.label} className="flex items-center justify-between" style={profileRowPad}>
                   <span style={textSmTertiary}>{row.label}</span>
                   <span style={textSmPrimary400}>{row.value}</span>
                 </div>
@@ -306,7 +309,7 @@ export default function WinLossPage() {
                 { label: 'Common Tiers', value: patterns.loserProfile.commonTiers },
                 { label: 'Common Types', value: patterns.loserProfile.commonTypes },
               ].map(row => (
-                <div key={row.label} className="flex items-center justify-between" style={{ padding: 'var(--space-1) 0' }}>
+                <div key={row.label} className="flex items-center justify-between" style={profileRowPad}>
                   <span style={textSmTertiary}>{row.label}</span>
                   <span style={textSmPrimary400}>{row.value}</span>
                 </div>
@@ -388,11 +391,12 @@ export default function WinLossPage() {
             <span style={{ ...labelMuted, marginLeft: 'auto' }}>
               Winners vs Passers</span></div>
           <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <table aria-label="Distinguishing factors between winners and passers" style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr>
                   {['Factor', 'Winners Avg', 'Passers Avg', 'Delta', 'Significance'].map(h => (
                     <th
+                      scope="col"
                       key={h}
                       style={{
                         textAlign: h === 'Factor' ? 'left' : 'right',

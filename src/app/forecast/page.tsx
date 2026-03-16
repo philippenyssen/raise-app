@@ -393,7 +393,7 @@ export default function ForecastPage() {
           <EmptyState icon={Calendar} title="No forecasts yet" description="Add investors to forecast close dates, spot bottlenecks, and stress-test your timeline." />
         ) : (
           <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <table aria-label="Investor close forecast" style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr className="table-header">
                   <th scope="col" style={{ minWidth: '40px', textAlign: 'center', width: '40px' }}></th>

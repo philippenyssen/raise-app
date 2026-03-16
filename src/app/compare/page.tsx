@@ -350,12 +350,13 @@ export default function ComparePage() {
             className="overflow-hidden"
             style={{ borderRadius: 'var(--radius-xl)' }}>
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[640px]" style={stFontSm}>
+              <table className="w-full min-w-[640px]" style={stFontSm} aria-label="Investor profile comparison">
                 <thead
                   className="table-header sticky top-0 z-10"
                   style={{ background: 'var(--surface-1)', borderBottom: '1px solid var(--border-default)' }}>
                   <tr>
                     <th
+                      scope="col"
                       className="text-left sticky left-0 z-20"
                       style={{
                         padding: 'var(--space-3) var(--space-4)',

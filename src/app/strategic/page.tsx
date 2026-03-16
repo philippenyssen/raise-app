@@ -416,7 +416,7 @@ export default function StrategicPage() {
           {/* Investor forecasts table */}
           {data.raiseForecast.investorForecasts.length > 0 && (
             <div className="overflow-x-auto">
-              <table className="w-full" style={stFontXs}>
+              <table className="w-full" style={stFontXs} aria-label="Investor stage forecast">
                 <thead>
                   <tr className="table-header">
                     <th scope="col" className="text-left py-1.5 pr-3">Investor</th>

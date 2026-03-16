@@ -39,6 +39,9 @@ interface HealthData {
 }
 
 const bgSurface1 = { backgroundColor: 'var(--surface-1)' } as const;
+const bgSurface2 = { backgroundColor: 'var(--surface-2)' } as const;
+const bottleneckBg = { backgroundColor: 'var(--warning-muted)' } as const;
+const bottleneckText = { color: 'var(--warning)' } as const;
 
 const convergenceDimensions = [
   { key: 'story', label: 'Story Convergence', desc: 'Objection patterns stable, all pre-answered' },
@@ -160,7 +163,7 @@ export default function HealthPage() {
                       {delta >= 0 ? '+' : ''}{delta}pp</span>
                   )}</div>
                 <div className="text-xs mt-1" style={stTextMuted}>target: {target}%</div>
-                <div className="mt-2 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--surface-2)' }}>
+                <div className="mt-2 h-1.5 rounded-full overflow-hidden" style={bgSurface2}>
                   <div
                     className="h-full rounded-full"
                     style={{
@@ -188,8 +191,8 @@ export default function HealthPage() {
             {sortedTimeInStage.map(([status, { avg, count }]) => {
                 const isBottleneck = avg >= 14 && count >= 2;
                 return (
-                  <div key={status} className="rounded-lg p-3 text-center" style={{ backgroundColor: isBottleneck ? 'var(--warning-muted)' : 'var(--surface-1)' }}>
-                    <div className="text-lg font-normal" style={{ color: isBottleneck ? 'var(--warning)' : 'var(--text-primary)' }}>{avg}d</div>
+                  <div key={status} className="rounded-lg p-3 text-center" style={isBottleneck ? bottleneckBg : bgSurface1}>
+                    <div className="text-lg font-normal" style={isBottleneck ? bottleneckText : stTextPrimary}>{avg}d</div>
                     <div className="text-xs" style={stTextMuted}>{status.replace(/_/g, ' ')}</div>
                     <div className="text-xs mt-0.5" style={stTextMuted}>{count} investor{count !== 1 ? 's' : ''}</div>
                   </div>);

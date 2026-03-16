@@ -591,7 +591,7 @@ function MeetingPrepContent() {
                           <Target className="w-3.5 h-3.5" />
                           Key Metrics</h3>
                         <div className="rounded-lg overflow-hidden">
-                          <table className="w-full text-xs">
+                          <table className="w-full text-xs" aria-label="Key investor metrics">
                             <thead style={stSurface1Border}>
                               <tr>
                                 <th scope="col" className="text-left px-3 py-2 font-normal" style={stTextMuted}>Metric</th>
@@ -890,7 +890,7 @@ function MeetingPrepContent() {
                   <div>
                     <h3 className="text-xs font-normal tracking-wider mb-2" style={stTextMuted}>Portfolio Companies</h3>
                     <div className="rounded-lg overflow-hidden">
-                      <table className="w-full text-xs">
+                      <table className="w-full text-xs" aria-label="Comparable portfolio companies">
                         <thead style={stSurface1Border}>
                           <tr>
                             <th scope="col" className="text-left px-3 py-2 font-normal" style={stTextMuted}>Company</th>

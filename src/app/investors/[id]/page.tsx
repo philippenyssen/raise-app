@@ -978,7 +978,7 @@ export default function InvestorDetailPage() {
                   />
               ) : (
                 <div className="rounded-lg overflow-hidden">
-                  <table className="w-full text-sm">
+                  <table className="w-full text-sm" aria-label="Portfolio companies">
                     <thead style={{ background: 'var(--surface-1)', borderBottom: '1px solid var(--border-default)' }}>
                       <tr>
                         {['Company', 'Sector', 'Stage', 'Amount', 'Date', 'Status'].map(h => (

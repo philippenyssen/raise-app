@@ -373,7 +373,7 @@ export default function InvestorsPage() {
       <div
         style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
         <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
-        <table style={{ width: '100%', minWidth: '900px', fontSize: 'var(--font-size-sm)' }}>
+        <table aria-label="Investors database" style={{ width: '100%', minWidth: '900px', fontSize: 'var(--font-size-sm)' }}>
           <thead className="table-header">
             <tr>
               <th scope="col" style={{ width: '2.5rem', padding: 'var(--space-3) var(--space-4)' }}>

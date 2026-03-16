@@ -342,7 +342,7 @@ export default function StressTestPage() {
             <span className="text-xs" style={stTextMuted}>{data.investorForecasts.length} investors</span></div></div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full text-sm" aria-label="Investor stress test scenarios">
             <thead>
               <tr className="text-left " style={{ ...labelMuted, borderBottom: '1px solid var(--border-subtle)' }}>
                 <th scope="col" className="px-4 py-3">Investor</th>

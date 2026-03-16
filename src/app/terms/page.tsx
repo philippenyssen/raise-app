@@ -230,7 +230,7 @@ export default function TermsPage() {
       {/* Comparison Table */}
       {sheets.length > 0 && (
         <div className="rounded-xl overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full text-sm" aria-label="Term sheet comparison">
             <thead className="table-header">
               <tr>
                 <th scope="col" className="text-left px-4 py-3 text-xs font-normal w-40" style={stTextMuted}>Term</th>

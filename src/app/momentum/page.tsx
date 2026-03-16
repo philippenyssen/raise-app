@@ -376,10 +376,11 @@ export default function MomentumPage() {
             <span className="ml-auto text-xs" style={stTextMuted}>{data.matrix.length} active investors &middot; Score 0-100</span>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm" aria-label="Investor momentum heatmap">
               <thead>
                 <tr style={stSurface1}>
                   <th
+                    scope="col"
                     className="sticky left-0 z-10 text-left px-4 py-3 font-normal text-xs  tracking-wider min-w-[200px]"
                     style={{ background: 'var(--surface-1)', color: 'var(--text-muted)' }}>
                     Investor</th>

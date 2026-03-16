@@ -233,7 +233,7 @@ export default function BacklogPage() {
           description="Add your contracted backlog to enable auditable drill-down during DD." />
       ) : (
         <div className="rounded-xl overflow-hidden">
-          <table className="w-full text-sm">
+          <table className="w-full text-sm" aria-label="Revenue backlog and contracts">
             <thead>
               <tr className="table-header">
                 <th scope="col" className="text-left px-4 py-3">Customer</th>

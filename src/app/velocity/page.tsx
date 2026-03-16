@@ -201,7 +201,7 @@ export default function VelocityPage() {
             action={{ label: 'Go to Investors', href: '/investors' }} />
         ) : (
           <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <table aria-label="Investor velocity and pipeline timing" style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr className="table-header">
                   <th scope="col" style={{ minWidth: '180px' }}>Investor</th>
