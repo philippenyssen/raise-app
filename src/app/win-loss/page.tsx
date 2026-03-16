@@ -15,6 +15,8 @@ const textBaseNormal = { fontSize: 'var(--font-size-base)', fontWeight: 400, col
 const textSmSecNormal = { fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', fontWeight: 400 } as const;
 const mbSpace3 = { marginBottom: 'var(--space-3)' } as const;
 const funnelBarContainer: React.CSSProperties = { height: '24px', background: 'var(--surface-1)', borderRadius: 'var(--radius-sm)', overflow: 'hidden', position: 'relative' };
+const funnelStageName = { fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, minWidth: '120px' } as const;
+const mb4 = { marginBottom: '4px' } as const;
 
 // ── Types ─────────────────────────────────────────────────────────────
 
@@ -203,9 +205,9 @@ export default function WinLossPage() {
               : 100;
             return (
               <div key={stage.stage}>
-                <div className="flex items-center justify-between" style={{ marginBottom: '4px' }}>
+                <div className="flex items-center justify-between" style={mb4}>
                   <div className="flex items-center gap-2">
-                    <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, minWidth: '120px' }}>
+                    <span style={funnelStageName}>
                       {stage.stage}</span>
                     <span style={textSmSecNormal}>
                       {stage.count}</span></div>

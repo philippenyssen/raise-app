@@ -15,6 +15,7 @@ import { CopyButton } from '@/components/copy-button';
 
 const mbSpace1 = { marginBottom: 'var(--space-1)' } as const;
 const fontSmTertiary = { ...stFontSm, fontWeight: 400, ...stTextTertiary } as const;
+const trendValueBase = { fontSize: 'var(--font-size-lg)', fontWeight: 300, fontVariantNumeric: 'tabular-nums' } as const;
 
 // ---------------------------------------------------------------------------
 // Types
@@ -343,9 +344,7 @@ export default function StrategicPage() {
                     <Minus className="w-3.5 h-3.5" style={stTextMuted} />
                   )}
                   <span style={{
-                    fontSize: 'var(--font-size-lg)',
-                    fontWeight: 300,
-                    fontVariantNumeric: 'tabular-nums',
+                    ...trendValueBase,
                     color:
                       trend.direction === 'improving' ? 'var(--success)' :
                       trend.direction === 'declining' ? 'var(--danger)' :

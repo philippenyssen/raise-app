@@ -421,11 +421,9 @@ export default function MomentumPage() {
                           <td key={ws.week} className="px-1 py-1.5 text-center">
                             <div
                               className="inline-flex items-center justify-center w-14 h-8 rounded font-mono text-xs font-normal transition-all"
-                              style={{
-                                ...scoreColorStyle(ws.score),
-                                ...(isAnomalyCell ? {
-                                  boxShadow: `0 0 0 2px ${anomalyForWeek.direction === 'above' ? 'var(--accent-muted)' : 'var(--fg-6)'}`,
-                                } : {}), }}>
+                              style={isAnomalyCell
+                                ? { ...scoreColorStyle(ws.score), boxShadow: `0 0 0 2px ${anomalyForWeek.direction === 'above' ? 'var(--accent-muted)' : 'var(--fg-6)'}` }
+                                : scoreColorStyle(ws.score)}>
                               {ws.score}</div>
                           </td>);
                       })}
