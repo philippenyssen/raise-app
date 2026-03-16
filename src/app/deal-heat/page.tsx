@@ -24,6 +24,13 @@ interface DealHeatData {
 
 type HeatLevel = 'all' | 'hot' | 'warm' | 'cool' | 'cold' | 'frozen';
 
+const invNameStyle: React.CSSProperties = { fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' };
+const typeBadgeStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', fontWeight: 400, letterSpacing: '0.01em', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-secondary)' };
+const tierLabel: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' };
+const driverStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' };
+const filterBtnBase: React.CSSProperties = { padding: 'var(--space-1) var(--space-3)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)', fontWeight: 400, cursor: 'pointer', transition: 'all 150ms ease' };
+const countHidden: React.CSSProperties = { fontSize: 'var(--font-size-xs)', opacity: 0 };
+
 const HEAT_CONFIG: Record<string, { bg: string; border: string; text: string; glow: string; label: string }> = {
   hot:    { bg: 'var(--accent-8)', border: 'var(--accent-15)',  text: 'var(--text-primary)', glow: 'none', label: 'Hot' },
   warm:   { bg: 'var(--accent-muted)',  border: 'var(--accent-12)',  text: 'var(--text-secondary)', glow: 'none', label: 'Warm' },
@@ -160,16 +167,11 @@ export default function DealHeatPage() {
               onClick={() => setFilter(fb.level)}
               className="flex items-center gap-1.5"
               style={{
-                padding: 'var(--space-1) var(--space-3)',
-                borderRadius: 'var(--radius-md)',
-                fontSize: 'var(--font-size-sm)',
-                fontWeight: 400,
+                ...filterBtnBase,
                 background: active ? (cfg ? cfg.bg : 'var(--surface-2)') : 'transparent',
-                color: active ? (cfg ? cfg.text : 'var(--text-primary)') : 'var(--text-tertiary)',
-                cursor: 'pointer',
-                transition: 'all 150ms ease', }}>
+                color: active ? (cfg ? cfg.text : 'var(--text-primary)') : 'var(--text-tertiary)', }}>
               {fb.label}
-              <span style={{ fontSize: 'var(--font-size-xs)', opacity: 0 }}>
+              <span style={countHidden}>
                 {fb.count}</span>
             </button>);
         })}</div>
@@ -214,25 +216,12 @@ export default function DealHeatPage() {
                   {/* Header row */}
                   <div className="flex items-start justify-between" style={{ marginTop: 'var(--space-1)' }}>
                     <div className="min-w-0 flex-1">
-                      <div style={{
-                        fontSize: 'var(--font-size-sm)',
-                        fontWeight: 400,
-                        color: 'var(--text-primary)',
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',}}>
+                      <div style={invNameStyle}>
                         {inv.name}</div>
                       <div className="flex items-center gap-2" style={{ marginTop: '4px' }}>
-                        <span style={{
-                          fontSize: 'var(--font-size-xs)',
-                          fontWeight: 400,
-                          letterSpacing: '0.01em',
-                          padding: '1px 6px',
-                          borderRadius: 'var(--radius-sm)',
-                          background: 'var(--surface-2)',
-                          color: 'var(--text-secondary)',}}>
+                        <span style={typeBadgeStyle}>
                           {TYPE_LABELS[inv.type] || inv.type}</span>
-                        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                        <span style={tierLabel}>
                           T{inv.tier}</span></div></div>
                     {/* Heat score circle */}
                     <div style={{
@@ -259,13 +248,7 @@ export default function DealHeatPage() {
 
                   {/* Top driver */}
                   {topDriver && (
-                    <div style={{
-                      marginTop: 'var(--space-2)',
-                      fontSize: 'var(--font-size-xs)',
-                      color: 'var(--text-tertiary)',
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',}}>
+                    <div style={{ ...driverStyle, marginTop: 'var(--space-2)' }}>
                       {topDriver}</div>
                   )}
 

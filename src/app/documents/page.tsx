@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/components/toast';
 import { cachedFetch } from '@/lib/cache';
@@ -56,6 +56,7 @@ const FLAG_TYPE_STYLE_MAP: Record<string, React.CSSProperties> = {
   section_improvement: { backgroundColor: 'color-mix(in srgb, var(--accent) 20%, transparent)', color: 'var(--accent)' },};
 
 const DEFAULT_FLAG_STYLE: React.CSSProperties = { backgroundColor: 'var(--surface-2)', color: 'var(--text-tertiary)' };
+const flagCardBg: React.CSSProperties = { backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%, transparent)' };
 
 export default function DocumentsPage() {
   const { toast } = useToast();
@@ -91,7 +92,7 @@ export default function DocumentsPage() {
     try {
       const res = await cachedFetch('/api/document-flags?status=open');
       if (res.ok) setFlags(await res.json());
-    } catch { /* non-blocking */ }
+    } catch (e) { console.warn('[DOC_FLAGS]', e instanceof Error ? e.message : e); }
   }
 
   async function handleDelete() {
@@ -130,7 +131,7 @@ export default function DocumentsPage() {
       try {
         const res = await fetch(`/api/documents/${doc.id}`);
         if (res.ok) { const full = await res.json(); content = full.content || ''; }
-      } catch { /* use empty */ }
+      } catch (e) { console.warn('[DOC_DOWNLOAD]', e instanceof Error ? e.message : e); }
     }
     const blob = new Blob([content], { type: 'text/markdown' });
     const url = URL.createObjectURL(blob);
@@ -147,26 +148,26 @@ export default function DocumentsPage() {
     return sortBy === 'newest' ? db - da : da - db;
   };
 
-  // Group by type, sorted within each group
-  const grouped = docs.reduce<Record<string, Doc[]>>((acc, doc) => {
-    const type = doc.type || 'custom';
-    if (!acc[type]) acc[type] = [];
-    acc[type].push(doc);
-    return acc;
-  }, {});
-  for (const type in grouped) grouped[type].sort(sortDocs);
+  const grouped = useMemo(() => {
+    const g = docs.reduce<Record<string, Doc[]>>((acc, doc) => {
+      const type = doc.type || 'custom';
+      if (!acc[type]) acc[type] = [];
+      acc[type].push(doc);
+      return acc;
+    }, {});
+    for (const type in g) g[type].sort(sortDocs);
+    return g;
+  }, [docs, sortBy]);
 
-  // Count flags per document
-  const flagsByDoc = flags.reduce<Record<string, DocFlag[]>>((acc, flag) => {
+  const flagsByDoc = useMemo(() => flags.reduce<Record<string, DocFlag[]>>((acc, flag) => {
     if (flag.document_id) {
       if (!acc[flag.document_id]) acc[flag.document_id] = [];
       acc[flag.document_id].push(flag);
     }
     return acc;
-  }, {});
+  }, {}), [flags]);
 
-  // Flags without a specific document
-  const generalFlags = flags.filter(f => !f.document_id);
+  const generalFlags = useMemo(() => flags.filter(f => !f.document_id), [flags]);
 
   if (loading) {
     return (
@@ -228,7 +229,7 @@ export default function DocumentsPage() {
             Open Document Flags from Meetings</h3>
           <div className="space-y-2 max-h-64 overflow-y-auto">
             {flags.map(flag => (
-              <div key={flag.id} className="flex items-start gap-3 rounded-lg p-3" style={{ backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%, transparent)' }}>
+              <div key={flag.id} className="flex items-start gap-3 rounded-lg p-3" style={flagCardBg}>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-xs px-1.5 py-0.5 rounded font-normal" style={FLAG_TYPE_STYLE_MAP[flag.flag_type] || DEFAULT_FLAG_STYLE}>
@@ -338,7 +339,7 @@ export default function DocumentsPage() {
               </p>
               <div className="space-y-2">
                 {generalFlags.map(flag => (
-                  <div key={flag.id} className="rounded-lg p-3 flex items-start justify-between gap-3" style={{ backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%, transparent)' }}>
+                  <div key={flag.id} className="rounded-lg p-3 flex items-start justify-between gap-3" style={flagCardBg}>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
                         <span className="text-xs px-1.5 py-0.5 rounded font-normal" style={FLAG_TYPE_STYLE_MAP[flag.flag_type] || DEFAULT_FLAG_STYLE}>
