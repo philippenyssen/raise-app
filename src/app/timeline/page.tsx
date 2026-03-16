@@ -210,7 +210,7 @@ export default function TimelinePage() {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {PHASE_ORDER.slice(0, 4).map(phase => {
+        {PHASE_ORDER.map(phase => {
           const pTasks = tasks.filter(t => t.phase === phase);
           const pDone = pTasks.filter(t => t.status === 'done').length;
           return (
