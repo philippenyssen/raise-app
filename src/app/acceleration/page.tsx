@@ -370,15 +370,7 @@ export default function AccelerationPage() {
     return (
       <div className="space-y-6">
         <h1 className="page-title">Acceleration</h1>
-        <div className="rounded-xl p-8 text-center space-y-3">
-          <p style={stTextTertiary}>Unable to load acceleration data.</p>
-          <button
-            onClick={fetchData}
-            className="btn btn-primary inline-flex items-center gap-2 rounded-lg"
-            style={{
-              padding: '8px 16px',
-              fontSize: 'var(--font-size-sm)', }}>
-            <RefreshCw className="w-3.5 h-3.5" /> Retry</button></div>
+        <EmptyState icon={AlertTriangle} title="Unable to load acceleration data" action={{ label: 'Retry', onClick: fetchData }} />
       </div>);
   }
 

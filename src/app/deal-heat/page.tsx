@@ -31,6 +31,11 @@ const driverStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', colo
 const filterBtnBase: React.CSSProperties = { padding: 'var(--space-1) var(--space-3)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)', fontWeight: 400, cursor: 'pointer', transition: 'all 150ms ease' };
 const countHidden: React.CSSProperties = { fontSize: 'var(--font-size-xs)', opacity: 0 };
 const heatCountLabel = { ...labelMuted, marginTop: '2px' } as const;
+const heatCardBase: React.CSSProperties = { padding: 'var(--space-4)', background: 'var(--surface-0)', boxShadow: 'var(--shadow-sm)', cursor: 'pointer', position: 'relative', overflow: 'hidden' };
+const heatBarBase: React.CSSProperties = { position: 'absolute', top: 0, left: 0, right: 0, height: '3px' };
+const heatCircleBase: React.CSSProperties = { width: '44px', height: '44px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', flexShrink: 0 };
+const heatLabelBase: React.CSSProperties = { fontSize: 'var(--font-size-xs)', fontWeight: 400, letterSpacing: '0.01em' };
+const heatScoreText: React.CSSProperties = { fontSize: 'var(--font-size-sm)', fontWeight: 300, lineHeight: 1 };
 
 const HEAT_CONFIG: Record<string, { bg: string; border: string; text: string; glow: string; label: string }> = {
   hot:    { bg: 'var(--accent-8)', border: 'var(--accent-15)',  text: 'var(--text-primary)', glow: 'none', label: 'Hot' },
@@ -186,23 +191,9 @@ export default function DealHeatPage() {
                 style={{ textDecoration: 'none' }}>
                 <div
                   className="card deal-card-hover"
-                  style={{
-                    padding: 'var(--space-4)',
-                    border: `1px solid ${cfg.border}`,
-                    background: 'var(--surface-0)',
-                    boxShadow: 'var(--shadow-sm)',
-                    cursor: 'pointer',
-                    position: 'relative',
-                    overflow: 'hidden', }}>
+                  style={{ ...heatCardBase, border: `1px solid ${cfg.border}` }}>
                   {/* Heat bar at top */}
-                  <div style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: '3px',
-                    background: `linear-gradient(90deg, ${cfg.text} ${inv.dealHeat.heat}%, transparent ${inv.dealHeat.heat}%)`,
-                  }} />
+                  <div style={{ ...heatBarBase, background: `linear-gradient(90deg, ${cfg.text} ${inv.dealHeat.heat}%, transparent ${inv.dealHeat.heat}%)` }} />
 
                   {/* Header row */}
                   <div className="flex items-start justify-between" style={{ marginTop: 'var(--space-1)' }}>
@@ -215,24 +206,13 @@ export default function DealHeatPage() {
                         <span style={labelMuted}>
                           T{inv.tier}</span></div></div>
                     {/* Heat score circle */}
-                    <div style={{
-                      width: '44px',
-                      height: '44px',
-                      borderRadius: '50%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flexDirection: 'column',
-                      background: cfg.bg,
-                      border: `2px solid ${cfg.border}`,
-                      boxShadow: inv.dealHeat.label === 'hot' ? 'none' : 'none',
-                      flexShrink: 0,}}>
-                      <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 300, color: cfg.text, lineHeight: 1 }}>
+                    <div style={{ ...heatCircleBase, background: cfg.bg, border: `2px solid ${cfg.border}` }}>
+                      <span style={{ ...heatScoreText, color: cfg.text }}>
                         {inv.dealHeat.heat}</span></div></div>
 
                   {/* Heat label */}
                   <div className="flex items-center gap-2" style={{ marginTop: 'var(--space-3)' }}>
-                    <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: cfg.text, letterSpacing: '0.01em' }}>
+                    <span style={{ ...heatLabelBase, color: cfg.text }}>
                       {cfg.label}</span>
                     <span style={labelMuted}>
                       {STATUS_LABELS[inv.status] || inv.status}</span></div>

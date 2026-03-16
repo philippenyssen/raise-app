@@ -14,6 +14,7 @@ import {
 import { fmtDate } from '@/lib/format';
 import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
 import { labelMuted, labelMuted10, stFontSm, stFontXs, stTextMuted, textSmMuted, badgeSmall } from '@/lib/styles';
+import { EmptyState } from '@/components/ui/empty-state';
 import { MS_PER_MINUTE } from '@/lib/time';
 
 // ── Pipeline column order ────────────────────────────────────────────
@@ -298,15 +299,7 @@ export default function PipelinePage() {
   if (fetchError && investors.length === 0) {
     return (
       <div className="page-content flex items-center justify-center" style={{ minHeight: '400px' }}>
-        <div style={{ textAlign: 'center' }}>
-          <Users className="w-10 h-10 mx-auto mb-3" style={{ color: 'var(--danger)' }} />
-          <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', marginBottom: 'var(--space-1)' }}>
-            Could not load pipeline</h3>
-          <p style={{ ...labelMuted, marginBottom: 'var(--space-4)' }}>{fetchError}</p>
-          <button
-            onClick={fetchInvestors}
-            className="btn btn-secondary btn-sm">
-            Retry</button></div>
+        <EmptyState icon={Users} title="Could not load pipeline" description={fetchError} action={{ label: 'Retry', onClick: fetchInvestors }} />
       </div>);
   }
 
