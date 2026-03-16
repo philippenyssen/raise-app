@@ -172,6 +172,7 @@ export default function EnrichmentPage() {
   }
 
   const configuredCount = providers.filter(p => p.configured).length;
+  const needsKeyCount = providers.filter(p => p.requires_api_key && !p.configured).length;
   const freeCount = providers.filter(p => p.type === 'free' && p.configured).length;
 
   if (loading) {
@@ -198,7 +199,7 @@ export default function EnrichmentPage() {
         <div>
           <h1 className="page-title">Data Enrichment</h1>
           <p style={{ ...textSmMuted, marginTop: 'var(--space-1)' }}>
-            {configuredCount} sources active ({freeCount} free) &middot; {investors.length} investors in pipeline{loadedAt ? ` · ${relativeTime(loadedAt)}` : ''}</p></div>
+            {configuredCount} sources active ({freeCount} free){needsKeyCount > 0 ? ` · ${needsKeyCount} need API key` : ''} &middot; {investors.length} investors in pipeline{loadedAt ? ` · ${relativeTime(loadedAt)}` : ''}</p></div>
         <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
           <button
             onClick={enrichBulk}

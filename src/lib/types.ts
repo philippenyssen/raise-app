@@ -113,6 +113,7 @@ export interface InvestorPartner {
   linkedin: string;
   background: string;
   relevance_to_us: string;
+  source?: string;
   created_at: string;
   updated_at: string;
 }
@@ -127,6 +128,7 @@ export interface InvestorPortfolioCo {
   date: string;
   status: 'active' | 'exited' | 'written_off';
   relevance: string; // overlap/conflict/synergy with us
+  source?: string;
   created_at: string;
 }
 

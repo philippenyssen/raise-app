@@ -125,7 +125,8 @@ export async function POST(req: NextRequest) {
                 board_seats: '',
                 linkedin: '',
                 background: '',
-                relevance_to_us: '',});
+                relevance_to_us: '',
+                source: 'ai_research',});
             } catch (e) {
               console.error('[INTELLIGENCE] Failed to create partner:', p.name, e instanceof Error ? e.message : e);
             }
@@ -144,7 +145,8 @@ export async function POST(req: NextRequest) {
                 amount: (inv.amount || '').trim().substring(0, 100),
                 date: (inv.date || '').trim().substring(0, 20),
                 status: 'active',
-                relevance: '',});
+                relevance: '',
+                source: 'ai_research',});
             } catch (e) {
               console.error('[INTELLIGENCE] Failed to create portfolio co:', inv.company, e instanceof Error ? e.message : e);
             }

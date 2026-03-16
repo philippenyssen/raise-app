@@ -275,7 +275,8 @@ export async function POST(req: NextRequest) {
                 board_seats: '',
                 linkedin: partner.linkedin || '',
                 background: '',
-                relevance_to_us: '',});
+                relevance_to_us: '',
+                source: partner.source || '',});
             }}
         }
 
@@ -298,7 +299,8 @@ export async function POST(req: NextRequest) {
                 amount: inv.amount || '',
                 date: inv.date || '',
                 status: 'active',
-                relevance: '',});
+                relevance: '',
+                source: inv.source || '',});
             }}
         }}
 

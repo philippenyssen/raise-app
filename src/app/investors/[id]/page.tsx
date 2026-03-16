@@ -1311,9 +1311,12 @@ export default function InvestorDetailPage() {
                   {partners.map(p => (
                     <div key={p.id} className="rounded-lg p-4">
                       <div className="flex items-start justify-between">
-                        <div>
-                          <h4 className="font-normal" style={textPrimary}>{p.name}</h4>
-                          <p className="text-xs" style={textMuted}>{p.title}</p></div>
+                        <div className="flex items-center gap-2">
+                          <div>
+                            <h4 className="font-normal" style={textPrimary}>{p.name}</h4>
+                            <p className="text-xs" style={textMuted}>{p.title}</p></div>
+                          {p.source && <span className="text-xs px-1.5 py-0.5 rounded shrink-0" style={{ background: 'var(--accent-muted)', color: 'var(--accent)', fontWeight: 300 }}>{p.source.replace(/_/g, ' ')}</span>}
+                        </div>
                         <DeleteBtn onClick={() => deleteIntelItem('partner', p.id)} /></div>
                       <div className="mt-2 space-y-1 text-xs" style={textTertiary}>
                         {([['Focus', p.focus_areas], ['Deals', p.notable_deals], ['Boards', p.board_seats], ['Background', p.background]] as const).map(([label, val]) =>
@@ -1336,7 +1339,7 @@ export default function InvestorDetailPage() {
                   <table className="w-full text-sm" aria-label="Portfolio companies">
                     <thead style={{ background: 'var(--surface-1)', borderBottom: '1px solid var(--border-default)' }}>
                       <tr>
-                        {['Company', 'Sector', 'Stage', 'Amount', 'Date', 'Status'].map(h => (
+                        {['Company', 'Sector', 'Stage', 'Amount', 'Date', 'Status', 'Source'].map(h => (
                           <th scope="col" key={h} className="text-left px-4 py-2 text-xs font-normal" style={textMuted}>{h}</th>
                         ))}
                         <th scope="col" className="w-8"></th></tr></thead>
@@ -1362,6 +1365,7 @@ export default function InvestorDetailPage() {
                                   co.status === 'exited' ? 'var(--accent)' :
                                   'var(--danger)', }}
 >{co.status}</span></td>
+                          <td className="px-4 py-2 text-xs" style={textMuted}>{co.source ? co.source.replace(/_/g, ' ') : <span style={{ opacity: 0.4 }}>manual</span>}</td>
                           <td className="px-4 py-2">
                             <DeleteBtn onClick={() => deleteIntelItem('portfolio', co.id)} small /></td></tr>
                       ))}</tbody></table></div>

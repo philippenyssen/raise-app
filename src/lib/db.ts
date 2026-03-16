@@ -620,6 +620,10 @@ async function ensureInitialized() {
   try { await db.execute(`ALTER TABLE meetings ADD COLUMN key_takeaway TEXT DEFAULT ''`); } catch { /* column already exists */ }
   try { await db.execute(`ALTER TABLE meetings ADD COLUMN prep_usefulness INTEGER DEFAULT NULL`); } catch { /* column already exists */ }
 
+  // Migration: add source tracking to partners and portfolio
+  try { await db.execute(`ALTER TABLE investor_partners ADD COLUMN source TEXT DEFAULT ''`); } catch { /* column already exists */ }
+  try { await db.execute(`ALTER TABLE investor_portfolio ADD COLUMN source TEXT DEFAULT ''`); } catch { /* column already exists */ }
+
   // Indexes for frequent foreign key lookups
   try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_enrichment_investor ON enrichment_records(investor_id)`); } catch { /* */ }
   try { await db.execute(`CREATE UNIQUE INDEX IF NOT EXISTS idx_enrichment_dedup ON enrichment_records(investor_id, source_id, field_name)`); } catch { /* */ }
