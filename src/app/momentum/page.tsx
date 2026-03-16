@@ -25,6 +25,15 @@ const anomalyBadgeStyle = { background: 'var(--warning-muted)', color: 'var(--te
 const scheduleButtonStyle = { background: 'var(--accent-15)', color: 'var(--accent)', boxShadow: 'inset 0 0 0 1px var(--accent-25)' } as const;
 const anomalyBtnAbove = { background: 'var(--accent-30)', color: 'var(--success)', boxShadow: 'inset 0 0 0 1px var(--accent-40)' } as const;
 const anomalyBtnBelow = { background: 'var(--fg-30)', color: 'var(--danger)', boxShadow: 'inset 0 0 0 1px var(--fg-40)' } as const;
+const deltaUp = { color: 'var(--success)' } as const;
+const deltaDown = { color: 'var(--danger)' } as const;
+const deltaNeutral = { color: 'var(--text-muted)' } as const;
+const anomalyAboveBg = { background: 'var(--accent-20)' } as const;
+const anomalyBelowBg = { background: 'var(--fg-20)' } as const;
+const anomalyAboveDot = { background: 'var(--accent-40)' } as const;
+const anomalyBelowDot = { background: 'var(--fg-40)' } as const;
+const anomalyDirUp = { color: 'var(--success)' } as const;
+const anomalyDirDown = { color: 'var(--danger)' } as const;
 
 const TRAJECTORY_COLORS: Record<string, { bg: string; border: string; color: string }> = {
   critical_warning:  { border: 'var(--fg-50)',  bg: 'var(--fg-10)',  color: 'var(--danger)' },
@@ -437,7 +446,7 @@ export default function MomentumPage() {
                       <td className="px-3 py-2.5 text-center">
                         <div
                           className="inline-flex items-center gap-0.5 text-xs font-mono font-normal"
-                          style={{ color: delta > 0 ? 'var(--success)' : delta < 0 ? 'var(--danger)' : 'var(--text-muted)' }}>
+                          style={delta > 0 ? deltaUp : delta < 0 ? deltaDown : deltaNeutral}>
                           {delta > 0 ? (
                             <ArrowUpRight className="w-3 h-3" />
                           ) : delta < 0 ? (
@@ -558,11 +567,11 @@ export default function MomentumPage() {
                     <div
                       key={i}
                       className="rounded-lg p-3"
-                      style={{ background: isAbove ? 'var(--accent-20)' : 'var(--fg-20)' }}>
+                      style={isAbove ? anomalyAboveBg : anomalyBelowBg}>
                       <div className="flex items-start gap-3">
                         <div
                           className="w-8 h-8 rounded flex items-center justify-center flex-shrink-0"
-                          style={{ background: isAbove ? 'var(--accent-40)' : 'var(--fg-40)' }}>
+                          style={isAbove ? anomalyAboveDot : anomalyBelowDot}>
                           {isAbove ? (
                             <ArrowUpRight className="w-4 h-4" style={stTextSecondary} />
                           ) : (
@@ -584,7 +593,7 @@ export default function MomentumPage() {
                               {TYPE_LABELS[anomaly.type] || anomaly.type}</span>
                             <span
                               className="text-xs font-mono font-normal"
-                              style={{ color: isAbove ? 'var(--success)' : 'var(--danger)' }}>
+                              style={isAbove ? anomalyDirUp : anomalyDirDown}>
                               {anomaly.deviation > 0 ? '+' : ''}{anomaly.deviation}pts</span></div>
                           <div className="flex items-center justify-between mt-1">
                             <p className="text-xs flex-1" style={stTextMuted}>{anomaly.message}</p>

@@ -62,6 +62,14 @@ const dfVelBar = { background: 'var(--surface-3)' } as const;
 const dfVelLabel = { color: 'var(--text-primary)', fontSize: 'var(--font-size-xs)', fontWeight: 400 } as const;
 const dfTrendFontXs = { fontSize: 'var(--font-size-xs)' } as const;
 const dfSummaryLabel = { color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' } as const;
+const dfTrendUp = { ...dfTrendFontXs, color: 'var(--success)' } as const;
+const dfTrendDown = { ...dfTrendFontXs, color: 'var(--danger)' } as const;
+const dfTrendFlat = { ...dfTrendFontXs, color: 'var(--text-muted)' } as const;
+const dfDaysNormal = { fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' } as const;
+const dfDaysOverdue = { fontSize: 'var(--font-size-sm)', color: 'var(--danger)' } as const;
+const dfLastMeetNormal = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' } as const;
+const dfLastMeetStale = { fontSize: 'var(--font-size-xs)', color: 'var(--danger)' } as const;
+const dfVelFill = { background: 'var(--text-primary)' } as const;
 
 function heatBtnStyle(active: boolean): React.CSSProperties {
   return { background: active ? 'var(--surface-3)' : 'transparent', color: active ? 'var(--text-primary)' : 'var(--text-muted)', border: active ? '1px solid var(--border-default)' : '1px solid transparent' };
@@ -387,7 +395,7 @@ export default function DealflowPage() {
                 key={inv.id}
                 href={`/investors/${inv.id}`}
                 className="table-row grid gap-3 px-4 py-3 items-center transition-colors"
-                style={{ ...dfRowBase, boxShadow: inv.heat === 'hot' ? heatCfg.glow : 'none' }}>
+                style={dfRowBase}>
                 {/* Investor */}
                 <div className="flex items-center gap-2.5 min-w-0">
                   <div
@@ -415,18 +423,18 @@ export default function DealflowPage() {
                     style={dfVelBar}>
                     <div
                       className="h-full rounded-full"
-                      style={{ width: `${Math.min(inv.velocityScore, 100)}%`, background: 'var(--text-primary)' }} /></div>
+                      style={{ width: `${Math.min(inv.velocityScore, 100)}%`, ...dfVelFill }} /></div>
                   <span style={dfVelLabel}>
                     {inv.velocityScore}</span></div>
 
                 {/* Momentum Trend */}
                 <div className="flex items-center justify-center gap-1">
                   <TrendIcon trend={inv.trend} />
-                  <span style={{ ...dfTrendFontXs, color: inv.trend === 'up' ? 'var(--success)' : inv.trend === 'down' ? 'var(--danger)' : 'var(--text-muted)' }}>
+                  <span style={inv.trend === 'up' ? dfTrendUp : inv.trend === 'down' ? dfTrendDown : dfTrendFlat}>
                     {inv.currentMomentum > 0 ? inv.currentMomentum.toFixed(0) : '—'}</span></div>
 
                 {/* Days in Process */}
-                <div className="text-center" style={{ fontSize: 'var(--font-size-sm)', color: inv.daysInProcess > 45 ? 'var(--danger)' : 'var(--text-secondary)' }}>
+                <div className="text-center" style={inv.daysInProcess > 45 ? dfDaysOverdue : dfDaysNormal}>
                   {inv.daysInProcess > 0 ? `${inv.daysInProcess}d` : '—'}</div>
 
                 {/* Tracking Status */}
@@ -456,9 +464,7 @@ export default function DealflowPage() {
                   )}</div>
 
                 {/* Last Meeting */}
-                <div className="text-center" style={{
-                  fontSize: 'var(--font-size-xs)',
-                  color: inv.daysSinceLastMeeting > 14 ? 'var(--danger)' : 'var(--text-muted)',}}>
+                <div className="text-center" style={inv.daysSinceLastMeeting > 14 ? dfLastMeetStale : dfLastMeetNormal}>
                   {relativeDate(inv.lastMeeting)}</div>
               </Link>);
           })}</div>
