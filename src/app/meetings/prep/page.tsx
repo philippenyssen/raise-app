@@ -506,7 +506,7 @@ function MeetingPrepContent() {
           <div className="rounded-xl p-12 text-center" style={stSurface1}>
             <Users className="w-10 h-10 mx-auto mb-3" style={{ color: 'var(--surface-3)' }} />
             <p className="text-sm mb-3" style={stTextMuted}>No investors in pipeline yet.</p>
-            <Link href="/meetings/new" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm" style={btnAccentPrimary}>
+            <Link href={selectedId ? `/meetings/new?investor=${selectedId}` : '/meetings/new'} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm" style={btnAccentPrimary}>
               <Plus className="w-4 h-4" /> Schedule a Meeting</Link></div>
         )}
 
@@ -531,7 +531,7 @@ function MeetingPrepContent() {
                   {countdown && nextMeeting ? (
                     <div className="flex items-center gap-2"><span style={stAccent}><Timer className="w-4 h-4" /></span><div><div className="text-xs" style={stTextMuted}>Next meeting</div><div className="text-sm font-normal" style={stTextPrimary}>{countdown}</div></div></div>
                   ) : meetings.length === 0 ? (
-                    <div className="flex items-center gap-2"><span style={stTextMuted}><Calendar className="w-4 h-4" /></span><Link href="/meetings/new" className="text-xs" style={stAccent}>Schedule first meeting</Link></div>
+                    <div className="flex items-center gap-2"><span style={stTextMuted}><Calendar className="w-4 h-4" /></span><Link href={`/meetings/new?investor=${selectedId}`} className="text-xs" style={stAccent}>Schedule first meeting</Link></div>
                   ) : null}
                   {enthusiasmTrend && (
                     <div className="flex items-center gap-2" style={divider}>
@@ -1086,7 +1086,7 @@ function MeetingPrepContent() {
             {/* ============ QUICK LINKS (no-print) ============ */}
             <div className="flex flex-wrap gap-2 no-print">
               <QuickLink href={`/investors/${investor.id}`} icon={<ExternalLink className="w-3 h-3" />} label="Investor Detail" />
-              <QuickLink href="/meetings/new" icon={<Calendar className="w-3 h-3" />} label="Log New Meeting" />
+              <QuickLink href={`/meetings/new?investor=${investor.id}`} icon={<Calendar className="w-3 h-3" />} label="Log New Meeting" />
               <QuickLink href="/intelligence" icon={<BookOpen className="w-3 h-3" />} label="Intelligence Hub" /></div></div>
         )}</div>
     </>);
