@@ -6,7 +6,10 @@ import { cachedFetch } from '@/lib/cache';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import Link from 'next/link';
 import { Scale } from 'lucide-react';
-import { scoreColor as getScoreColor, stSurface0, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { scoreColor as getScoreColor, labelMuted, stSurface0, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+
+const scoreRowStyle = { background: 'var(--surface-1)', borderTop: '2px solid var(--border-strong)' } as const;
+const actionRowStyle = { background: 'var(--surface-0)', borderTop: '1px solid var(--border-subtle)' } as const;
 
 interface TermSheet {
   id: string;
@@ -210,7 +213,7 @@ export default function TermsPage() {
             <TsInput label="Exclusivity" value={form.exclusivity} onChange={v => setForm(f => ({ ...f, exclusivity: v }))} placeholder="e.g., 14 days"
               />
             <div>
-              <label className="label block mb-1" style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>Strategic Value (1-5)</label>
+              <label className="label block mb-1" style={labelMuted}>Strategic Value (1-5)</label>
               <input type="range" min="1" max="5" value={form.strategic_value}
                 onChange={e => setForm(f => ({ ...f, strategic_value: Number(e.target.value) }))}
                 className="w-full" />
@@ -265,7 +268,7 @@ export default function TermsPage() {
                   <td className="px-4 py-2.5 text-xs" style={stTextMuted}>{MARKET_STANDARDS[key] || '\u2014'}</td></tr>
               ))}
               {/* Score Row */}
-              <tr style={{ background: 'var(--surface-1)', borderTop: '2px solid var(--border-strong)' }}>
+              <tr style={scoreRowStyle}>
                 <td className="px-4 py-3 text-xs font-normal" style={stTextTertiary}>Score</td>
                 {sheets.map(ts => {
                   const { score, flags } = scoreSheet(ts);
@@ -280,7 +283,7 @@ export default function TermsPage() {
                 })}
                 <td className="px-4 py-3 text-xs" style={stTextMuted}>Benchmark</td></tr>
               {/* Action Row */}
-              <tr style={{ background: 'var(--surface-0)', borderTop: '1px solid var(--border-subtle)' }}>
+              <tr style={actionRowStyle}>
                 <td className="px-4 py-3 text-xs font-normal" style={stTextTertiary}>ACTION</td>
                 {sheets.map(ts => {
                   const { score, flags } = scoreSheet(ts);
@@ -331,7 +334,7 @@ function TsInput({ label, value, onChange, required, placeholder }: {
 }) {
   return (
     <div>
-      <label className="label block mb-1" style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)' }}>{label}</label>
+      <label className="label block mb-1" style={labelMuted}>{label}</label>
       <input value={value} onChange={e => onChange(e.target.value)} required={required} placeholder={placeholder}
         className="input" />
     </div>);

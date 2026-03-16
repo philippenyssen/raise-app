@@ -333,8 +333,9 @@ export default function ModelPage() {
 
   if (loading) {
     return (
-      <div className="h-[calc(100vh-4rem)] flex items-center justify-center">
-        <div className="text-sm" style={stTextTertiary}>Loading model...</div>
+      <div className="h-[calc(100vh-4rem)] flex flex-col">
+        <div className="skeleton" style={{ height: '40px', marginBottom: 'var(--space-2)' }} />
+        <div className="flex-1 skeleton" style={{ borderRadius: 'var(--radius-md)' }} />
       </div>);
   }
 
