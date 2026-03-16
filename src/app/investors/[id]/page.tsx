@@ -142,6 +142,13 @@ export default function InvestorDetailPage() {
   const [composing, setComposing] = useState(false);
   const [composeType, setComposeType] = useState<string>('follow_up');
   const [composeDraft, setComposeDraft] = useState<{ subject: string; body: string; tone: string; callToAction: string } | null>(null);
+  const [prediction, setPrediction] = useState<{
+    prediction: { closeProbability: number; estimatedDaysToClose: number; estimatedCloseDate: string; confidence: string; scoreTrend: string };
+    outcomes: { outcome: string; probability: number; label: string; timeframe: string }[];
+    risks: { factor: string; severity: 'high' | 'medium' | 'low'; detail: string }[];
+    nextSteps: { action: string; priority: 'critical' | 'high' | 'normal'; rationale: string }[];
+    context: { daysInStage: number; expectedDaysInStage: number; stageOverdue: boolean; totalMeetings: number; recentMeetings: number; unresolvedObjections: number; peerComparison: { avgPeerEnthusiasm: number; relativePosition: string } | null };
+  } | null>(null);
 
   const handleCompose = useCallback(async (type?: string) => {
     setComposing(true);
@@ -166,12 +173,14 @@ export default function InvestorDetailPage() {
 
   const fetchScore = useCallback(async () => {
     setScoreLoading(true);
-    const [scoreRes, trajRes] = await Promise.all([
+    const [scoreRes, trajRes, predRes] = await Promise.all([
       cachedFetch(`/api/investors/${id}/score`).catch(e => { console.warn('[INVESTOR_SCORE]', e instanceof Error ? e.message : e); return null; }),
       cachedFetch(`/api/investors/${id}/trajectory`).catch(e => { console.warn('[INVESTOR_TRAJECTORY]', e instanceof Error ? e.message : e); return null; }),
+      cachedFetch(`/api/investors/${id}/predict`).catch(e => { console.warn('[INVESTOR_PREDICT]', e instanceof Error ? e.message : e); return null; }),
     ]);
     if (scoreRes?.ok) { setScore(await scoreRes.json()); }
     if (trajRes?.ok) { setTrajectory(await trajRes.json()); }
+    if (predRes?.ok) { setPrediction(await predRes.json()); }
     setScoreLoading(false);
   }, [id]);
 
@@ -595,6 +604,92 @@ export default function InvestorDetailPage() {
                   <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', lineHeight: 1.5 }}>{s}</span></div>
               ))}</div></div>);
       })()}
+
+      {/* Predictive Close Timeline */}
+      {prediction && investor?.status !== 'passed' && investor?.status !== 'dropped' && investor?.status !== 'closed' && (
+        <div style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-5)', border: '1px solid var(--border-subtle)' }}>
+          <div className="flex items-center gap-2 mb-4">
+            <span style={{ color: 'var(--accent)' }}><Target className="w-4 h-4" /></span>
+            <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
+              Close Prediction</h3>
+            <span style={{ fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: prediction.prediction.confidence === 'high' ? 'var(--success-muted)' : prediction.prediction.confidence === 'medium' ? 'var(--warning-muted)' : 'var(--surface-3)', color: prediction.prediction.confidence === 'high' ? 'var(--success)' : prediction.prediction.confidence === 'medium' ? 'var(--warning)' : 'var(--text-muted)' }}>
+              {prediction.prediction.confidence} confidence</span>
+          </div>
+
+          {/* Probability + timeline */}
+          <div className="grid grid-cols-3 gap-3 mb-4">
+            <div style={{ padding: 'var(--space-3)', background: 'var(--surface-0)', borderRadius: 'var(--radius-md)', textAlign: 'center' }}>
+              <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: prediction.prediction.closeProbability >= 50 ? 'var(--success)' : prediction.prediction.closeProbability >= 25 ? 'var(--warning)' : 'var(--text-muted)' }}>
+                {prediction.prediction.closeProbability}%</div>
+              <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>close probability</div>
+            </div>
+            <div style={{ padding: 'var(--space-3)', background: 'var(--surface-0)', borderRadius: 'var(--radius-md)', textAlign: 'center' }}>
+              <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
+                {prediction.prediction.estimatedDaysToClose}d</div>
+              <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>est. to close</div>
+            </div>
+            <div style={{ padding: 'var(--space-3)', background: 'var(--surface-0)', borderRadius: 'var(--radius-md)', textAlign: 'center' }}>
+              <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
+                {prediction.prediction.estimatedCloseDate}</div>
+              <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>target date</div>
+            </div>
+          </div>
+
+          {/* Outcome distribution bar */}
+          <div style={{ marginBottom: 'var(--space-4)' }}>
+            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-1)' }}>Outcome distribution</div>
+            <div className="flex" style={{ height: '8px', borderRadius: 'var(--radius-sm)', overflow: 'hidden', gap: '2px' }}>
+              {prediction.outcomes.map(o => (
+                <div key={o.outcome} style={{
+                  flex: o.probability,
+                  background: o.outcome === 'close' ? 'var(--success)' : o.outcome === 'stall' ? 'var(--warning)' : 'var(--danger)',
+                  borderRadius: 'var(--radius-xs)',
+                }} title={`${o.label}: ${o.probability}%`} />
+              ))}
+            </div>
+            <div className="flex justify-between mt-1">
+              {prediction.outcomes.map(o => (
+                <span key={o.outcome} style={{ fontSize: '10px', color: o.outcome === 'close' ? 'var(--success)' : o.outcome === 'stall' ? 'var(--warning)' : 'var(--danger)' }}>
+                  {o.label} {o.probability}%</span>
+              ))}
+            </div>
+          </div>
+
+          {/* Risks */}
+          {prediction.risks.length > 0 && (
+            <div style={{ marginBottom: 'var(--space-3)' }}>
+              <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-2)' }}>Risk factors</div>
+              <div className="space-y-1">
+                {prediction.risks.slice(0, 4).map((r, i) => (
+                  <div key={i} className="flex items-center gap-2" style={{ fontSize: 'var(--font-size-xs)' }}>
+                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: r.severity === 'high' ? 'var(--danger)' : r.severity === 'medium' ? 'var(--warning)' : 'var(--text-muted)', flexShrink: 0 }} />
+                    <span style={{ color: 'var(--text-secondary)', fontWeight: 400 }}>{r.factor}</span>
+                    <span style={{ color: 'var(--text-muted)' }}>— {r.detail}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Next steps */}
+          {prediction.nextSteps.length > 0 && (
+            <div>
+              <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-2)' }}>Recommended actions</div>
+              <div className="space-y-1">
+                {prediction.nextSteps.slice(0, 3).map((s, i) => (
+                  <div key={i} className="flex items-start gap-2" style={{ fontSize: 'var(--font-size-xs)' }}>
+                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', marginTop: '4px', background: s.priority === 'critical' ? 'var(--danger)' : s.priority === 'high' ? 'var(--warning)' : 'var(--accent)', flexShrink: 0 }} />
+                    <div>
+                      <span style={{ color: 'var(--text-primary)', fontWeight: 400 }}>{s.action}</span>
+                      <span style={{ color: 'var(--text-muted)', marginLeft: 'var(--space-1)' }}>— {s.rationale}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Compose Panel */}
       {(composeDraft || composing) && (
