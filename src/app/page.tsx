@@ -926,9 +926,13 @@ export default function Dashboard() {
               ) : pendingFollowups.length > 0 ? (
                 <div className="space-y-1.5">
                   {pendingFollowups.slice(0, 5).map((fu) => (
-                    <FollowupRow key={fu.id} followup={fu} onComplete={(id) => {
-                      setPendingFollowups(prev => prev.filter(f => f.id !== id));
-                      fetch('/api/followups', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status: 'completed' }) }).catch(e => console.error('[FOLLOWUP_COMPLETE]', e instanceof Error ? e.message : e));
+                    <FollowupRow key={fu.id} followup={fu} onComplete={async (id) => {
+                      const prev = pendingFollowups;
+                      setPendingFollowups(p => p.filter(f => f.id !== id));
+                      try {
+                        const res = await fetch('/api/followups', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status: 'completed' }) });
+                        if (!res.ok) throw new Error(`${res.status}`);
+                      } catch (e) { console.error('[FOLLOWUP_COMPLETE]', e instanceof Error ? e.message : e); setPendingFollowups(prev); }
                     }} />
                   ))}</div>
               ) : (
@@ -1369,14 +1373,7 @@ function FollowupRow({ followup, onComplete }: { followup: FollowupItem; onCompl
       {onComplete && (
         <button
           onClick={() => { setCompleting(true); onComplete(followup.id); }}
-          className="w-5 h-5 rounded flex items-center justify-center shrink-0 transition-colors"
-          style={{
-            border: '1.5px solid var(--border-default)',
-            background: 'transparent',
-            cursor: 'pointer',
-            transition: 'all 150ms ease', }}
-          onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--accent)'; e.currentTarget.style.background = 'var(--accent-muted)'; }}
-          onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border-default)'; e.currentTarget.style.background = 'transparent'; }}
+          className="w-5 h-5 rounded flex items-center justify-center shrink-0 check-complete"
           title="Mark done">
           {completing && <CheckCircle2 className="w-3 h-3" style={stAccent} />}</button>
       )}

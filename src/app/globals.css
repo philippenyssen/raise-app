@@ -551,6 +551,16 @@ body {
   background-color: var(--danger-muted);
 }
 
+.check-complete {
+  border: 1.5px solid var(--border-default);
+  background: transparent;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+.check-complete:hover {
+  border-color: var(--accent);
+  background: var(--accent-muted);
+}
 .accept-btn {
   color: var(--text-muted);
   background-color: transparent;

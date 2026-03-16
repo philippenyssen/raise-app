@@ -101,9 +101,12 @@ export default function PipelinePage() {
   useEffect(() => { document.title = 'Raise | Investor Pipeline'; }, []);
   useEffect(() => {
     const load = () => { fetchInvestors(); cachedFetch('/api/at-risk').then(r => r.ok ? r.json() : null).then(d => { if (d?.scoreReversals) { const m = new Map<string, number>(); d.scoreReversals.forEach((r: { investorId: string; delta: number }) => m.set(r.investorId, r.delta)); setScoreDeltaMap(m); } }).catch(e => console.error('[PIPELINE_ATRISK]', e instanceof Error ? e.message : e)); };
-    load();
-    const interval = setInterval(load, 5 * MS_PER_MINUTE);
-    return () => clearInterval(interval);
+    let interval: ReturnType<typeof setInterval> | null = null;
+    const start = () => { load(); interval = setInterval(load, 5 * MS_PER_MINUTE); };
+    const onVis = () => { if (document.hidden) { if (interval) { clearInterval(interval); interval = null; } } else { start(); } };
+    start();
+    document.addEventListener('visibilitychange', onVis);
+    return () => { if (interval) clearInterval(interval); document.removeEventListener('visibilitychange', onVis); };
   }, []);
 
   async function fetchInvestors() {
