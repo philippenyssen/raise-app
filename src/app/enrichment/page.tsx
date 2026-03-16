@@ -12,6 +12,7 @@ import {
 import { useToast } from '@/components/toast';
 import { fmtDateTime } from '@/lib/format';
 import { labelMuted, labelTertiary, skelCardSm, stFontSm, stFontXs, stTextMuted, icon14, icon12, textSmMuted, textSmSecondary } from '@/lib/styles';
+import { EmptyState } from '@/components/ui/empty-state';
 
 const flexCenterGap2 = { display: 'flex', alignItems: 'center', gap: 'var(--space-2)' } as const;
 const investorRowGrid: React.CSSProperties = { display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr auto', gap: 'var(--space-2)', alignItems: 'center', padding: 'var(--space-2) var(--space-4)' };
@@ -278,8 +279,7 @@ export default function EnrichmentPage() {
               <span style={{ textAlign: 'right' }}>Actions</span></div>
             <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
               {investors.length === 0 ? (
-                <div style={{ padding: 'var(--space-8)', textAlign: 'center', color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>
-                  No investors in pipeline yet. <Link href="/investors" style={{ color: 'var(--accent)', textDecoration: 'none' }}>Add investors</Link> to start enriching their profiles with background intelligence.</div>
+                <EmptyState title="No investors in pipeline yet" description="Add investors to start enriching their profiles with background intelligence." action={{ label: 'Add investors', href: '/investors' }} />
               ) : (
                 investors.map(inv => (
                   <div

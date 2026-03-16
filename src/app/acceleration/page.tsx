@@ -13,6 +13,7 @@ import {
   TrendingDown, SkipForward,
 } from 'lucide-react';
 import { inlineBadgeStyle, labelMuted, labelMuted10, skelCardMd, stBorderTop, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, textSmMuted, textSmSecondary, INVESTOR_TYPE_STYLES } from '@/lib/styles';
+import { EmptyState } from '@/components/ui/empty-state';
 import { TierBadge, EnthusiasmDots } from '@/components/shared';
 import { relativeTime } from '@/lib/time';
 import { cachedFetch } from '@/lib/cache';
@@ -543,18 +544,14 @@ export default function AccelerationPage() {
 
       {/* Empty state for filtered views */}
       {allFiltered.length === 0 && data.termSheetReady.length === 0 && data.atRisk.length === 0 && data.deprioritize.length === 0 && (
-        <div className="rounded-xl p-8 text-center space-y-3">
-          <CheckCircle className="w-8 h-8 mx-auto" style={stTextSecondary} />
-          <p style={stTextTertiary}>No acceleration triggers detected — pipeline is healthy.</p>
-          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>Actions appear when investors stall, show high urgency, or are ready for a term sheet push. Check back after logging new meetings.</p>
-        </div>
+        <EmptyState icon={CheckCircle} title="No acceleration triggers detected" description="Pipeline is healthy. Actions appear when investors stall, show high urgency, or are ready for a term sheet push." />
       )}
 
       {activeTab !== 'all' && allFiltered.length === 0 && (
-        <div className="rounded-xl p-8 text-center space-y-3">
-          {activeTab === 'executed' ? <CheckCircle className="w-8 h-8 mx-auto" style={stTextSecondary} /> : <SkipForward className="w-8 h-8 mx-auto" style={stTextSecondary} />}
-          <p style={stTextTertiary}>No {activeTab} actions yet.</p>
-          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>{activeTab === 'executed' ? 'Execute actions from the pending tab to track what you\'ve done.' : 'Skipped actions will appear here.'}</p></div>
+        <EmptyState
+          icon={activeTab === 'executed' ? CheckCircle : SkipForward}
+          title={`No ${activeTab} actions yet`}
+          description={activeTab === 'executed' ? 'Execute actions from the pending tab to track what you\'ve done.' : 'Skipped actions will appear here.'} />
       )}
     </div>);
 }
