@@ -66,8 +66,10 @@ export async function POST(req: NextRequest) {
     }
     const validStatuses = ['pending', 'in_progress', 'done', 'blocked', 'cancelled'];
     const validPriorities = ['critical', 'high', 'medium', 'low'];
+    const validPhases = ['preparation', 'outreach', 'management_presentations', 'due_diligence', 'term_sheets', 'negotiation', 'closing'];
     if (filtered.status && !validStatuses.includes(filtered.status as string)) return NextResponse.json({ error: `status must be one of: ${validStatuses.join(', ')}` }, { status: 400 });
     if (filtered.priority && !validPriorities.includes(filtered.priority as string)) return NextResponse.json({ error: `priority must be one of: ${validPriorities.join(', ')}` }, { status: 400 });
+    if (filtered.phase && !validPhases.includes(filtered.phase as string)) return NextResponse.json({ error: `phase must be one of: ${validPhases.join(', ')}` }, { status: 400 });
     if (filtered.due_date && typeof filtered.due_date === 'string' && filtered.due_date.trim() && isNaN(new Date(filtered.due_date as string).getTime())) {
       return NextResponse.json({ error: 'due_date must be a valid date string' }, { status: 400 });
     }
