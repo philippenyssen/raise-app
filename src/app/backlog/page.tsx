@@ -93,7 +93,9 @@ export default function BacklogPage() {
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && showAdd) setShowAdd(false);
-      if (e.key === 'r' && !e.metaKey && !e.ctrlKey && !(e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement)) { e.preventDefault(); fetchData(); }
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement) return;
+      if (e.key === 'r' && !e.metaKey && !e.ctrlKey) { e.preventDefault(); fetchData(); }
+      if (e.key === 'n' && !e.metaKey && !e.ctrlKey && !showAdd) { e.preventDefault(); setShowAdd(true); }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
