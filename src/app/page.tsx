@@ -14,7 +14,7 @@ import {
   RefreshCw, Zap, TrendingUp, TrendingDown, Minus, AlertTriangle,
   ChevronRight, Clock, ArrowUpRight, ArrowDownRight, ShieldAlert,
   UserMinus, CalendarClock, Flame, Gauge, CheckCircle2, Mail,
-  Calendar, MessageSquare, ClipboardList, ShieldCheck, FolderOpen,
+  Calendar, MessageSquare, ClipboardList, ShieldCheck,
 } from 'lucide-react';
 import { DealHeatInvestor } from '@/lib/types';
 import { STATUS_LABELS } from '@/lib/constants';
@@ -722,8 +722,9 @@ export default function Dashboard() {
                 <div className="skeleton" style={{ height: '40px', borderRadius: 'var(--radius-md)' }} /></div></div>
           )}
 
-          {/* Pulse Strip */}
+          {/* Pulse Strip — hidden in setup/outreach when all zeros */}
           {sectionErrors.health && !data && <SectionError label="Health metrics" onRetry={() => fetchSection('health')} />}
+          {fundraisePhase !== 'setup' && fundraisePhase !== 'outreach' && (
           <div key={lastRefresh?.getTime()} className="grid grid-cols-2 lg:grid-cols-5 gap-3 card-stagger data-refreshed">
             <PulseCard label="Active investors" value={ph?.activeInvestors ?? data?.totalInvestors ?? 0} sub={`${data?.totalInvestors ?? 0} total`}
               />
@@ -732,6 +733,7 @@ export default function Dashboard() {
             <PulseCard label="Follow-ups due" value={ph?.overdueFollowups ?? 0} sub="overdue" />
             <PulseCard label="Deal heat" value={`${healthScoreMemo.heatScore}%`} sub={`${dealHeat?.counts.hot ?? 0} hot`}
               /></div>
+          )}
 
           {/* Pipeline Velocity */}
           {!focusMode && (velocity ? (
@@ -1144,24 +1146,7 @@ export default function Dashboard() {
                 </div>);
             })()}</div>}
 
-          {/* Deliverables — quick access to key workspace items */}
-          {!focusMode && (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-              {[
-                { href: '/data-room', label: 'Data Room', icon: FolderOpen },
-                { href: '/workspace', label: 'Workspace', icon: Sparkles },
-                { href: '/documents', label: 'Documents', icon: FileText },
-                { href: '/reports', label: 'Reports', icon: Activity },
-                { href: '/model', label: 'Financial Model', icon: Columns3 },
-              ].map(d => (
-                <Link key={d.href} href={d.href} className="flex items-center gap-2 rounded-lg transition-colors hover-surface-2"
-                  style={{ padding: 'var(--space-3) var(--space-4)', background: 'var(--surface-1)', textDecoration: 'none' }}>
-                  <d.icon className="w-4 h-4 shrink-0" style={{ color: 'var(--text-tertiary)' }} />
-                  <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 300 }}>{d.label}</span>
-                </Link>
-              ))}
-            </div>
-          )}
+          {/* Deliverables section removed — sidebar covers all navigation */}
 
           {/* Tasks + Activity */}
           {!focusMode && <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
