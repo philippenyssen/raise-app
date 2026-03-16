@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useCallback } from 'react';
-import { ChevronLeft, ChevronRight, Plus, Trash2, Type, StickyNote } from 'lucide-react';
+import { useState, useCallback, useRef } from 'react';
+import { ChevronLeft, ChevronRight, Plus, Trash2, Type, StickyNote, Copy } from 'lucide-react';
 
 export interface SlideElement {
   id: string;
@@ -126,6 +126,8 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
   const [activeIdx, setActiveIdx] = useState(0);
   const [editingElement, setEditingElement] = useState<string | null>(null);
   const [showNotes, setShowNotes] = useState(false);
+  const [dragIdx, setDragIdx] = useState<number | null>(null);
+  const [dragOverIdx, setDragOverIdx] = useState<number | null>(null);
 
   const activeSlide = slides[activeIdx] || null;
 
@@ -142,6 +144,40 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
     onChange(updated);
     setActiveIdx(updated.length - 1);
   }, [slides, onChange]);
+
+  const duplicateSlide = useCallback(() => {
+    if (!activeSlide) return;
+    const dup: Slide = {
+      ...activeSlide,
+      id: crypto.randomUUID(),
+      elements: activeSlide.elements.map(el => ({ ...el, id: crypto.randomUUID() })),
+    };
+    const updated = [...slides];
+    updated.splice(activeIdx + 1, 0, dup);
+    onChange(updated);
+    setActiveIdx(activeIdx + 1);
+  }, [slides, activeIdx, activeSlide, onChange]);
+
+  const handleDragStart = useCallback((idx: number) => {
+    setDragIdx(idx);
+  }, []);
+
+  const handleDragOver = useCallback((e: React.DragEvent, idx: number) => {
+    e.preventDefault();
+    setDragOverIdx(idx);
+  }, []);
+
+  const handleDragEnd = useCallback(() => {
+    if (dragIdx !== null && dragOverIdx !== null && dragIdx !== dragOverIdx) {
+      const updated = [...slides];
+      const [moved] = updated.splice(dragIdx, 1);
+      updated.splice(dragOverIdx, 0, moved);
+      onChange(updated);
+      setActiveIdx(dragOverIdx);
+    }
+    setDragIdx(null);
+    setDragOverIdx(null);
+  }, [dragIdx, dragOverIdx, slides, onChange]);
 
   const deleteSlide = useCallback(() => {
     if (slides.length <= 1) return;
@@ -217,7 +253,19 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
         }}
       >
         {slides.map((slide, idx) => (
-          <div key={slide.id} className="flex flex-col" style={{ gap: '2px' }}>
+          <div
+            key={slide.id}
+            className="flex flex-col"
+            style={{
+              gap: '2px',
+              opacity: dragIdx === idx ? 0.4 : 1,
+              borderTop: dragOverIdx === idx && dragIdx !== null && dragIdx !== idx ? '2px solid var(--accent)' : 'none',
+            }}
+            draggable={editable}
+            onDragStart={() => handleDragStart(idx)}
+            onDragOver={(e) => handleDragOver(e, idx)}
+            onDragEnd={handleDragEnd}
+          >
             <span style={{ fontSize: '10px', color: 'var(--text-muted)', paddingLeft: '4px' }}>{idx + 1}</span>
             <div
               onClick={() => goToSlide(idx)}
@@ -302,6 +350,9 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
                 <StickyNote className="w-3.5 h-3.5" /> Notes
               </button>
               <div style={{ width: '1px', height: '16px', background: 'var(--border-subtle)' }} />
+              <button onClick={duplicateSlide} className="btn btn-ghost btn-sm" title="Duplicate Slide" style={{ fontSize: 'var(--font-size-xs)' }}>
+                <Copy className="w-3.5 h-3.5" />
+              </button>
               <button onClick={deleteSlide} className="btn btn-ghost btn-sm" title="Delete Slide" disabled={slides.length <= 1}>
                 <Trash2 className="w-3.5 h-3.5" />
               </button>

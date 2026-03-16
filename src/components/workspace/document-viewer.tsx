@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
-import { FileText, Eye, Edit3, Save, Clock, Download, FileSpreadsheet, Presentation, FileType, History, Trash2, Search, X, Copy } from 'lucide-react';
+import { FileText, Eye, Edit3, Save, Clock, Download, FileSpreadsheet, Presentation, FileType, History, Trash2, Search, X, Copy, Maximize2, Minimize2 } from 'lucide-react';
 import { labelMuted, textSmSecondary } from '@/lib/styles';
 
 // Dynamically import heavy editor components
@@ -133,8 +133,29 @@ export function DocumentViewer({ document, onContentChange, onSave, onDelete, on
   const [findQuery, setFindQuery] = useState('');
   const [replaceQuery, setReplaceQuery] = useState('');
   const [findCount, setFindCount] = useState(0);
+  const [fullscreen, setFullscreen] = useState(false);
   const findInputRef = useRef<HTMLInputElement>(null);
   const versionDropdownRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const toggleFullscreen = useCallback(() => {
+    if (!containerRef.current) return;
+    if (!window.document.fullscreenElement) {
+      containerRef.current.requestFullscreen?.().catch(() => {});
+      setFullscreen(true);
+    } else {
+      window.document.exitFullscreen?.().catch(() => {});
+      setFullscreen(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    const handler = () => {
+      if (!window.document.fullscreenElement) setFullscreen(false);
+    };
+    window.document.addEventListener('fullscreenchange', handler);
+    return () => window.document.removeEventListener('fullscreenchange', handler);
+  }, []);
 
   // Keyboard shortcut: Cmd/Ctrl+F to open find
   useEffect(() => {
@@ -313,7 +334,7 @@ export function DocumentViewer({ document, onContentChange, onSave, onDelete, on
   }
 
   return (
-    <div className="h-full flex flex-col" style={{ background: 'var(--surface-0)' }}>
+    <div ref={containerRef} className="h-full flex flex-col" style={{ background: 'var(--surface-0)' }}>
       {/* Toolbar */}
       <div
         className="shrink-0 flex items-center justify-between"
@@ -549,6 +570,26 @@ export function DocumentViewer({ document, onContentChange, onSave, onDelete, on
               </div>
             )}
           </div>
+
+          {/* Fullscreen toggle */}
+          <button
+            onClick={toggleFullscreen}
+            className="rounded transition-colors"
+            style={{
+              padding: '6px',
+              background: 'transparent',
+              color: 'var(--text-muted)',
+              border: 'none',
+              cursor: 'pointer',
+            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+            title={fullscreen ? 'Exit fullscreen' : 'Fullscreen'}
+          >
+            {fullscreen
+              ? <Minimize2 style={{ width: '14px', height: '14px' }} />
+              : <Maximize2 style={{ width: '14px', height: '14px' }} />}
+          </button>
 
           <div style={{ width: '1px', height: '16px', background: 'var(--border-subtle)' }} />
 
