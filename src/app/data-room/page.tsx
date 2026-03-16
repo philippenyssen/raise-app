@@ -320,7 +320,10 @@ export default function DataRoomPage() {
               onDelete={() => setDeleteTarget({ id: file.id, filename: file.filename })} />
           ))}
           {filteredFiles.length === 0 && (
-            <p style={{ ...stTextMuted, ...stFontSm, padding: 'var(--space-4) 0', textAlign: 'center' }}>No files match your search. Try a different keyword or upload the document you need.</p>
+            <EmptyState
+              icon={Search}
+              title="No files match your search"
+              description="Try a different keyword or upload the document you need." />
           )}</div>
       )}
 

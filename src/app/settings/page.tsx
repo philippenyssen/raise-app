@@ -332,7 +332,7 @@ export default function SettingsPage() {
                 placeholder="e.g. 250000000 (€250M)"
                 className="input" />
               {raise.data.equity_amount > 0 && (
-                <span className="absolute right-3 top-1/2 -translate-y-1/2" style={{ ...stFontXs, ...stTextMuted }}>
+                <span className="absolute right-3 top-1/2 -translate-y-1/2" style={labelMuted}>
                   {formatCompact(raise.data.equity_amount, raise.data.currency)}</span>
               )}</div></div>
 
@@ -351,7 +351,7 @@ export default function SettingsPage() {
                 placeholder="e.g. 250000000 (€250M)"
                 className="input" />
               {raise.data.debt_amount > 0 && (
-                <span className="absolute right-3 top-1/2 -translate-y-1/2" style={{ ...stFontXs, ...stTextMuted }}>
+                <span className="absolute right-3 top-1/2 -translate-y-1/2" style={labelMuted}>
                   {formatCompact(raise.data.debt_amount, raise.data.currency)}</span>
               )}</div></div>
 
@@ -370,7 +370,7 @@ export default function SettingsPage() {
                 placeholder="e.g. 2000000000 (€2Bn)"
                 className="input" />
               {raise.data.pre_money > 0 && (
-                <span className="absolute right-3 top-1/2 -translate-y-1/2" style={{ ...stFontXs, ...stTextMuted }}>
+                <span className="absolute right-3 top-1/2 -translate-y-1/2" style={labelMuted}>
                   {formatCompact(raise.data.pre_money, raise.data.currency)}</span>
               )}</div></div>
 
@@ -422,7 +422,7 @@ export default function SettingsPage() {
                 placeholder="e.g. 25000000 (€25M)"
                 className="input" />
               {raise.data.minimum_check_size > 0 && (
-                <span className="absolute right-3 top-1/2 -translate-y-1/2" style={{ ...stFontXs, ...stTextMuted }}>
+                <span className="absolute right-3 top-1/2 -translate-y-1/2" style={labelMuted}>
                   {formatCompact(raise.data.minimum_check_size, raise.data.currency)}</span>
               )}</div></div></div>
 
@@ -616,7 +616,7 @@ export default function SettingsPage() {
                 max={100}
                 className="input flex-1" />
               <span style={unitLabelWide}>%</span></div>
-            <p style={{ ...stFontXs, ...stTextMuted, marginTop: 'var(--space-1)' }}>
+            <p style={{ ...labelMuted, marginTop: 'var(--space-1)' }}>
               {followup.data.tier1_speed_multiplier}% means Tier 1 investors get follow-ups {100 - followup.data.tier1_speed_multiplier}% faster
             </p></div></div>
 
@@ -625,16 +625,16 @@ export default function SettingsPage() {
           <p style={{ ...labelMuted, marginBottom: 'var(--space-2)' }}>Effective Tier 1 cadence:</p>
           <div className="grid grid-cols-3 gap-3" style={{ textAlign: 'center' }}>
             <div style={cadenceSummaryBox}>
-              <div style={{ ...stFontXs, ...stTextMuted }}>Thank you</div>
+              <div style={labelMuted}>Thank you</div>
               <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
                 {Math.round(followup.data.thank_you_delay_hours * followup.data.tier1_speed_multiplier / 100)}h</div></div>
             <div style={cadenceSummaryBox}>
-              <div style={{ ...stFontXs, ...stTextMuted }}>Objection</div>
+              <div style={labelMuted}>Objection</div>
               <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
                 {Math.round(followup.data.objection_response_delay_hours * followup.data.tier1_speed_multiplier / 100)}h</div>
             </div>
             <div style={cadenceSummaryBox}>
-              <div style={{ ...stFontXs, ...stTextMuted }}>Re-engage</div>
+              <div style={labelMuted}>Re-engage</div>
               <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
                 {Math.round(followup.data.reengagement_delay_days * followup.data.tier1_speed_multiplier / 100)}d</div></div>
           </div></div></div>
