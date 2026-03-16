@@ -320,6 +320,19 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
     setShowBgPicker(false);
   }, [slides, activeIdx, onChange]);
 
+  const updateElementFontSize = useCallback((elementId: string, fontSize: string) => {
+    const updated = slides.map((slide, i) => {
+      if (i !== activeIdx) return slide;
+      return {
+        ...slide,
+        elements: slide.elements.map(el =>
+          el.id === elementId ? { ...el, fontSize } : el
+        ),
+      };
+    });
+    onChange(updated);
+  }, [slides, activeIdx, onChange]);
+
   const addElement = useCallback((type: SlideElement['type']) => {
     if (!activeSlide) return;
     const newEl: SlideElement = {
@@ -583,6 +596,40 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
                           lineHeight: 'inherit',
                         }}
                       />
+                      {/* Element controls */}
+                      <div style={{
+                        position: 'absolute',
+                        top: '-28px',
+                        left: '0',
+                        display: 'flex',
+                        gap: '2px',
+                        background: 'var(--surface-1, #fff)',
+                        border: '1px solid var(--border-default, #ddd)',
+                        borderRadius: '4px',
+                        padding: '2px',
+                        zIndex: 5,
+                        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                      }}>
+                        {['0.6em', '0.8em', '1em', '1.2em', '1.5em', '2em', '3em'].map(size => (
+                          <button
+                            key={size}
+                            onClick={(e) => { e.stopPropagation(); updateElementFontSize(el.id, size); }}
+                            style={{
+                              padding: '1px 4px',
+                              fontSize: '10px',
+                              border: 'none',
+                              borderRadius: '2px',
+                              cursor: 'pointer',
+                              background: el.fontSize === size ? 'var(--accent, #3b82f6)' : 'transparent',
+                              color: el.fontSize === size ? 'white' : '#666',
+                              fontFamily: 'monospace',
+                            }}
+                            title={`Font size: ${size}`}
+                          >
+                            {parseFloat(size) * 16}
+                          </button>
+                        ))}
+                      </div>
                       <button
                         onClick={(e) => { e.stopPropagation(); deleteElement(el.id); }}
                         style={{

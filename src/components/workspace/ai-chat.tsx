@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Send, Loader2, Sparkles, RotateCcw, Copy, Check, CheckCircle, XCircle, Square } from 'lucide-react';
+import { Send, Loader2, Sparkles, RotateCcw, Copy, Check, CheckCircle, XCircle, Square, Search, X } from 'lucide-react';
 import { VoiceInput } from './voice-input';
 import { textSmMuted } from '@/lib/styles';
 import { useMemo } from 'react';
@@ -312,6 +312,8 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
   const [pendingChange, setPendingChange] = useState<PendingChange | null>(null);
   const [followUps, setFollowUps] = useState<SuggestedFollowUp[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showSearch, setShowSearch] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -331,6 +333,12 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
     }
     prevDocIdRef.current = documentId;
   }, [documentId]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const filteredMessages = useMemo(() => {
+    if (!searchQuery.trim()) return messages;
+    const q = searchQuery.toLowerCase();
+    return messages.filter(m => m.content.toLowerCase().includes(q));
+  }, [messages, searchQuery]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -543,6 +551,11 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
         {messages.length > 0 && (
           <div className="flex items-center" style={{ gap: 'var(--space-2)' }}>
             <button
+              onClick={() => setShowSearch(!showSearch)}
+              className="flex items-center transition-colors icon-delete"
+              style={{ fontSize: 'var(--font-size-xs)', gap: 'var(--space-1)', ...(showSearch ? { color: 'var(--accent)' } : {}) }}>
+              <Search style={{ width: '12px', height: '12px' }} /></button>
+            <button
               onClick={() => {
                 const text = messages.map(m => `${m.role === 'user' ? 'You' : 'AI'}: ${m.content}`).join('\n\n');
                 navigator.clipboard.writeText(text);
@@ -557,6 +570,34 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
               <RotateCcw style={{ width: '12px', height: '12px' }} /> Clear</button>
           </div>
         )}</div>
+
+      {/* Search bar */}
+      {showSearch && (
+        <div
+          className="shrink-0 flex items-center"
+          style={{ padding: '4px var(--space-3)', borderBottom: '1px solid var(--border-subtle)', gap: 'var(--space-2)' }}>
+          <Search style={{ width: '14px', height: '14px', color: 'var(--text-muted)', flexShrink: 0 }} />
+          <input
+            autoFocus
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            placeholder="Search messages..."
+            className="flex-1 bg-transparent outline-none"
+            style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', border: 'none' }}
+            onKeyDown={e => { if (e.key === 'Escape') { setShowSearch(false); setSearchQuery(''); } }}
+          />
+          {searchQuery && (
+            <span style={{ fontSize: '10px', color: 'var(--text-muted)', flexShrink: 0 }}>
+              {filteredMessages.length} / {messages.length}
+            </span>
+          )}
+          <button
+            onClick={() => { setShowSearch(false); setSearchQuery(''); }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: '2px', display: 'flex' }}>
+            <X style={{ width: '12px', height: '12px' }} />
+          </button>
+        </div>
+      )}
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto" style={{ padding: 'var(--space-4)', display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
@@ -604,7 +645,7 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
                 ))}</div></div></div>
         )}
 
-        {messages.map((msg, i) => (
+        {filteredMessages.map((msg, i) => (
           <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div
               className="max-w-[85%]"

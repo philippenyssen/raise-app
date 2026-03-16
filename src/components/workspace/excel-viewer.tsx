@@ -62,6 +62,7 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
   const [editingCell, setEditingCell] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; ref: string } | null>(null);
+  const [clipboard, setClipboard] = useState<{ ref: string; value: string; formula?: string } | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
@@ -208,6 +209,34 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
     setSelectedCell(cellRefStr(row, col));
   }, [rows, cols]);
 
+  const formatValue = useCallback((cell: CellData | undefined, ref: string): string => {
+    if (cell?.f) {
+      const computed = getComputedValue(ref);
+      if (computed !== null) {
+        if (typeof computed === 'number') {
+          if (cell.fmt === '%') return `${(computed * 100).toFixed(1)}%`;
+          if (cell.fmt === '$' || cell.fmt === '€') return `${cell.fmt}${computed.toLocaleString()}`;
+          if (cell.fmt === '#,##0') return computed.toLocaleString();
+          if (Math.abs(computed) >= 1000000) return `${(computed / 1000000).toFixed(1)}M`;
+          if (Math.abs(computed) >= 1000) return `${(computed / 1000).toFixed(1)}K`;
+          return computed.toLocaleString();
+        }
+        return String(computed);
+      }}
+    if (!cell) return '';
+    const val = cell.v;
+    if (val === undefined || val === null || val === '') return '';
+    if (typeof val === 'number') {
+      if (cell.fmt === '%') return `${(val * 100).toFixed(1)}%`;
+      if (cell.fmt === '$' || cell.fmt === '€') return `${cell.fmt}${val.toLocaleString()}`;
+      if (cell.fmt === '#,##0') return val.toLocaleString();
+      if (Math.abs(val) >= 1000000) return `${(val / 1000000).toFixed(1)}M`;
+      if (Math.abs(val) >= 1000) return `${(val / 1000).toFixed(1)}K`;
+      return val.toLocaleString();
+    }
+    return String(val);
+  }, [getComputedValue]);
+
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       if (editingCell) {
@@ -239,6 +268,24 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
       else if (e.key === 'ArrowDown') { e.preventDefault(); navigateCell(selectedCell, 'down'); }
       else if (e.key === 'ArrowLeft') { e.preventDefault(); navigateCell(selectedCell, 'left'); }
       else if (e.key === 'ArrowRight') { e.preventDefault(); navigateCell(selectedCell, 'right'); }
+      // Copy (Cmd/Ctrl+C)
+      else if (e.key === 'c' && (e.metaKey || e.ctrlKey)) {
+        const cell = cells[selectedCell];
+        const displayVal = cell ? formatValue(cell, selectedCell) : '';
+        navigator.clipboard.writeText(displayVal).catch(() => {});
+        setClipboard({ ref: selectedCell, value: String(cell?.v ?? ''), formula: cell?.f });
+      }
+      // Paste (Cmd/Ctrl+V)
+      else if (e.key === 'v' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        if (clipboard) {
+          onCellChange(selectedCell, clipboard.value, clipboard.formula);
+        } else {
+          navigator.clipboard.readText().then(text => {
+            if (text) onCellChange(selectedCell, text);
+          }).catch(() => {});
+        }
+      }
       // Type to start editing (alphanumeric, =, +, -)
       else if (e.key.length === 1 && !e.metaKey && !e.ctrlKey) {
         setEditingCell(selectedCell);
@@ -250,36 +297,7 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
         onCellChange(selectedCell, '');
       }
     }
-  }, [editingCell, selectedCell, handleEditComplete, handleCellDoubleClick, navigateCell, onCellChange]);
-
-  const formatValue = (cell: CellData | undefined, ref: string): string => {
-    if (cell?.f) {
-      const computed = getComputedValue(ref);
-      if (computed !== null) {
-        if (typeof computed === 'number') {
-          if (cell.fmt === '%') return `${(computed * 100).toFixed(1)}%`;
-          if (cell.fmt === '$' || cell.fmt === '€') return `${cell.fmt}${computed.toLocaleString()}`;
-          if (cell.fmt === '#,##0') return computed.toLocaleString();
-          if (Math.abs(computed) >= 1000000) return `${(computed / 1000000).toFixed(1)}M`;
-          if (Math.abs(computed) >= 1000) return `${(computed / 1000).toFixed(1)}K`;
-          return computed.toLocaleString();
-        }
-        return String(computed);
-      }}
-
-    if (!cell) return '';
-    const val = cell.v;
-    if (val === undefined || val === null || val === '') return '';
-    if (typeof val === 'number') {
-      if (cell.fmt === '%') return `${(val * 100).toFixed(1)}%`;
-      if (cell.fmt === '$' || cell.fmt === '€') return `${cell.fmt}${val.toLocaleString()}`;
-      if (cell.fmt === '#,##0') return val.toLocaleString();
-      if (Math.abs(val) >= 1000000) return `${(val / 1000000).toFixed(1)}M`;
-      if (Math.abs(val) >= 1000) return `${(val / 1000).toFixed(1)}K`;
-      return val.toLocaleString();
-    }
-    return String(val);
-  };
+  }, [editingCell, selectedCell, handleEditComplete, handleCellDoubleClick, navigateCell, onCellChange, cells, clipboard, formatValue]);
 
   // Close context menu on click elsewhere
   useEffect(() => {
