@@ -13,6 +13,8 @@ import Link from 'next/link';
 import { STATUS_LABELS, TYPE_LABELS, MEETING_TYPE_LABELS } from '@/lib/constants';
 import { labelMuted, labelMuted10, stAccent, stFontSm, stFontXs, stSurface1, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
+const cellPad34 = { padding: 'var(--space-3) var(--space-4)' } as const;
+
 // ---------------------------------------------------------------------------
 // API response types
 // ---------------------------------------------------------------------------
@@ -387,7 +389,7 @@ export default function ComparePage() {
                   <TableRow>
                     <StickyLabel>Overall Score</StickyLabel>
                     {compareData.profiles.map(p => (
-                      <td key={p.investor.id} style={{ padding: 'var(--space-3) var(--space-4)' }}>
+                      <td key={p.investor.id} style={cellPad34}>
                         <div
                           className="inline-flex items-center gap-2"
                           style={{
@@ -408,7 +410,7 @@ export default function ComparePage() {
                   <TableRow>
                     <StickyLabel>Conviction Trajectory</StickyLabel>
                     {compareData.profiles.map(p => (
-                      <td key={p.investor.id} style={{ padding: 'var(--space-3) var(--space-4)' }}>
+                      <td key={p.investor.id} style={cellPad34}>
                         <div className="flex flex-col gap-1">
                           <div className="flex items-center gap-2">
                             <MomentumIcon momentum={p.convictionTrajectory.trend} />
@@ -437,7 +439,7 @@ export default function ComparePage() {
                   <TableRow>
                     <StickyLabel>Enthusiasm Trend</StickyLabel>
                     {compareData.profiles.map(p => (
-                      <td key={p.investor.id} style={{ padding: 'var(--space-3) var(--space-4)' }}>
+                      <td key={p.investor.id} style={cellPad34}>
                         <EnthusiasmTrendDots trend={p.meetingHistory.enthusiasmTrend} /></td>
                     ))}</TableRow>
 
@@ -445,7 +447,7 @@ export default function ComparePage() {
                   <TableRow>
                     <StickyLabel>Objections</StickyLabel>
                     {compareData.profiles.map(p => (
-                      <td key={p.investor.id} style={{ padding: 'var(--space-3) var(--space-4)' }}>
+                      <td key={p.investor.id} style={cellPad34}>
                         {p.objectionProfile.totalCount === 0 ? (
                           <span style={labelMuted}>No objections logged</span>
                         ) : (
@@ -468,7 +470,7 @@ export default function ComparePage() {
                   <TableRow>
                     <StickyLabel>Meeting Engagement</StickyLabel>
                     {compareData.profiles.map(p => (
-                      <td key={p.investor.id} style={{ padding: 'var(--space-3) var(--space-4)' }}>
+                      <td key={p.investor.id} style={cellPad34}>
                         <div className="flex flex-col gap-1">
                           <div className="flex items-center gap-3" style={stFontXs}>
                             <span style={{ color: 'var(--text-primary)', fontWeight: 400 }}>{p.meetingHistory.totalMeetings} meetings</span>
@@ -501,7 +503,7 @@ export default function ComparePage() {
                   <TableRow>
                     <StickyLabel>Follow-up Health</StickyLabel>
                     {compareData.profiles.map(p => (
-                      <td key={p.investor.id} style={{ padding: 'var(--space-3) var(--space-4)' }}>
+                      <td key={p.investor.id} style={cellPad34}>
                         <div className="flex items-center gap-3" style={stFontXs}>
                           {p.followupStatus.pendingCount > 0 && (
                             <span style={stTextTertiary}>{p.followupStatus.pendingCount} pending</span>
@@ -527,7 +529,7 @@ export default function ComparePage() {
                   <TableRow>
                     <StickyLabel>Acceleration Status</StickyLabel>
                     {compareData.profiles.map(p => (
-                      <td key={p.investor.id} style={{ padding: 'var(--space-3) var(--space-4)' }}>
+                      <td key={p.investor.id} style={cellPad34}>
                         <AccelerationBadge status={p.accelerationStatus} /></td>
                     ))}</TableRow>
 

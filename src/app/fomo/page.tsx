@@ -10,8 +10,10 @@ import {
 import { getIntensityColor, inlineBadgeStyle, labelMuted, stAccent, stFontSm, stFontXs, stTextPrimary } from '@/lib/styles';
 import { TierBadge, EnthusiasmDots } from '@/components/shared';
 import { MS_PER_HOUR } from '@/lib/time';
-
 import { fmtDateTime } from '@/lib/format';
+
+const cardSurface1 = { padding: 'var(--space-4)', background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)' } as const;
+const textXlLight = { fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' } as const;
 
 // ---------------------------------------------------------------------------
 // Types
@@ -181,11 +183,11 @@ function StatsRow({ stats, meetingDensity }: { stats: FomoData['stats']; meeting
         return (
           <div
             key={item.label}
-            style={{ padding: 'var(--space-4)', background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)' }}>
+            style={cardSurface1}>
             <div className="flex items-center gap-2 mb-1">
               <Icon className="w-3.5 h-3.5" style={{ color: item.color }} />
               <span style={labelMuted}>{item.label}</span></div>
-            <span style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>{item.value}</span>
+            <span style={textXlLight}>{item.value}</span>
           </div>);
       })}
     </div>);
@@ -543,13 +545,13 @@ export default function FomoPage() {
 
             {/* Meeting Density */}
             <div
-              style={{ padding: 'var(--space-4)', background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)' }}>
+              style={cardSurface1}>
               <div className="flex items-center gap-2 mb-2">
                 <Activity className="w-4 h-4" style={stAccent} />
                 <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', margin: 0 }}>
                   Meeting Cadence</h3></div>
               <div className="flex items-end gap-2 mb-2">
-                <span style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
+                <span style={textXlLight}>
                   {data.meetingDensity.densityScore}</span>
                 <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', paddingBottom: '3px' }}>
                   / 100 density</span></div>
