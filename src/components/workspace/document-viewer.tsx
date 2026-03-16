@@ -355,9 +355,10 @@ export function DocumentViewer({ document, onContentChange, onSave, onDelete, on
         className="shrink-0 flex items-center justify-between"
         style={{
           borderBottom: '1px solid var(--border-subtle)',
-          padding: 'var(--space-2) var(--space-3)',
+          padding: 'var(--space-1) var(--space-3)',
           background: 'var(--surface-0)',
           backdropFilter: 'blur(8px)',
+          minHeight: '40px',
         }}
       >
         <div className="flex items-center min-w-0" style={{ gap: 'var(--space-3)' }}>
@@ -428,9 +429,9 @@ export function DocumentViewer({ document, onContentChange, onSave, onDelete, on
               {docStats.label}
             </span>
           )}
-          <span className="flex items-center" style={{ ...labelMuted, gap: 'var(--space-1)' }}>
+          <span className="flex items-center" style={{ ...labelMuted, gap: 'var(--space-1)' }} title={new Date(document.updated_at).toLocaleString()}>
             <Clock style={{ width: '12px', height: '12px' }} />
-            {new Date(document.updated_at).toLocaleString()}
+            {new Date(document.updated_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
           </span>
 
           {/* Format-specific mode toggle */}
