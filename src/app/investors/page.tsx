@@ -492,7 +492,7 @@ function Select({ label, value, onChange, options }: { label: string; value: str
   return (
     <div>
       <label className="label" style={{ display: 'block' }}>{label}</label>
-      <select value={value} onChange={e => onChange(e.target.value)} className="input">
+      <select value={value} onChange={e => onChange(e.target.value)} aria-label={label} className="input">
         {options.map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select>
     </div>);
 }

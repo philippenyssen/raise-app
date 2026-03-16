@@ -484,6 +484,7 @@ export default function ObjectionsPage() {
                                   <select
                                     value={editEffectiveness}
                                     onChange={e => setEditEffectiveness(e.target.value)}
+                                    aria-label="Response effectiveness"
                                     className="input"
                                     style={{ width: 'auto', ...stFontXs, padding: 'var(--space-1) var(--space-2)' }}>
                                     <option value="unknown">Unknown</option>
@@ -594,6 +595,7 @@ export default function ObjectionsPage() {
                 onChange={e => {
                   setSelectedInvestor(e.target.value);
                   loadInvestorObjections(e.target.value); }}
+                aria-label="Select investor for meeting prep"
                 className="input"
                 style={{ ...stFontXs, padding: 'var(--space-1) var(--space-2)' }}>
                 <option value="">Select investor...</option>

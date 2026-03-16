@@ -466,6 +466,7 @@ export default function MeetingsPage() {
         <select
           value={typeFilter}
           onChange={e => setTypeFilter(e.target.value)}
+          aria-label="Filter by meeting type"
           className="input"
           style={{ width: 'auto' }}>
           {MEETING_TYPES.map(t => (
@@ -474,6 +475,7 @@ export default function MeetingsPage() {
         <select
           value={statusFilter}
           onChange={e => setStatusFilter(e.target.value)}
+          aria-label="Filter by meeting status"
           className="input"
           style={{ width: 'auto' }}>
           {STATUS_OPTIONS.map(s => (

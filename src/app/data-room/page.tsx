@@ -295,6 +295,7 @@ export default function DataRoomPage() {
             <select
               value={pasteCategory}
               onChange={e => setPasteCategory(e.target.value)}
+              aria-label="Document category"
               className="input"
               style={{ width: 'auto' }}>
               {CATEGORIES.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}</select></div>
@@ -608,6 +609,7 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
               <select
                 value={logDocId}
                 onChange={e => setLogDocId(e.target.value)}
+                aria-label="Select document to log access"
                 className="input flex-1"
                 style={stFontXs}>
                 <option value="">Select a document...</option>

@@ -195,6 +195,7 @@ export default function IntelligencePage() {
           <select
             value={researchType}
             onChange={e => setResearchType(e.target.value as 'investor' | 'competitor' | 'market')}
+            aria-label="Research type"
             className="input"
             style={{ width: 'auto', padding: 'var(--space-2) var(--space-3)' }}>
             <option value="investor">Research Investor</option>

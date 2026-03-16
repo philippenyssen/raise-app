@@ -301,6 +301,7 @@ export default function TermComparePage() {
 
               <FormField label="Liquidation Preference">
                 <select
+                  aria-label="Liquidation preference"
                   className="input"
                   value={scenario.liquidation_preference}
                   onChange={e => updateScenario(idx, 'liquidation_preference', parseFloat(e.target.value))}>
@@ -312,6 +313,7 @@ export default function TermComparePage() {
 
               <FormField label="Participation">
                 <select
+                  aria-label="Participation type"
                   className="input"
                   value={scenario.participation ? 'true' : 'false'}
                   onChange={e => updateScenario(idx, 'participation', e.target.value === 'true')}>
@@ -320,6 +322,7 @@ export default function TermComparePage() {
 
               <FormField label="Anti-Dilution">
                 <select
+                  aria-label="Anti-dilution provision"
                   className="input"
                   value={scenario.anti_dilution}
                   onChange={e => updateScenario(idx, 'anti_dilution', e.target.value)}>
@@ -329,6 +332,7 @@ export default function TermComparePage() {
 
               <FormField label="Board Seats">
                 <select
+                  aria-label="Board seats"
                   className="input"
                   value={scenario.board_seats}
                   onChange={e => updateScenario(idx, 'board_seats', parseInt(e.target.value))}>
@@ -339,6 +343,7 @@ export default function TermComparePage() {
 
               <FormField label="Pro-Rata Rights">
                 <select
+                  aria-label="Pro-rata rights"
                   className="input"
                   value={scenario.pro_rata_rights ? 'true' : 'false'}
                   onChange={e => updateScenario(idx, 'pro_rata_rights', e.target.value === 'true')}>

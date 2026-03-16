@@ -192,6 +192,7 @@ export default function DocumentEditorPage() {
           <select
             value={doc.status}
             onChange={e => updateStatus(e.target.value)}
+            aria-label="Document status"
             className="rounded-lg px-2 py-1 text-xs"
             style={{ background: 'var(--surface-1)', border: '1px solid var(--border-default)', color: 'var(--text-secondary)' }}>
             <option value="draft">Draft</option>

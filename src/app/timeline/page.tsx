@@ -232,14 +232,14 @@ export default function TimelinePage() {
                 /></div>
             <div>
               <label className="text-xs block mb-1" style={stTextMuted}>Priority</label>
-              <select name="priority" defaultValue="medium" className="w-full rounded-lg px-3 py-2 text-sm" style={filterSelectStyle}>
+              <select name="priority" defaultValue="medium" aria-label="Task priority" className="w-full rounded-lg px-3 py-2 text-sm" style={filterSelectStyle}>
                 <option value="critical">Critical</option>
                 <option value="high">High</option>
                 <option value="medium">Medium</option>
                 <option value="low">Low</option></select></div>
             <div>
               <label className="text-xs block mb-1" style={stTextMuted}>Phase</label>
-              <select name="phase" defaultValue="preparation" className="w-full rounded-lg px-3 py-2 text-sm" style={filterSelectStyle}>
+              <select name="phase" defaultValue="preparation" aria-label="Task phase" className="w-full rounded-lg px-3 py-2 text-sm" style={filterSelectStyle}>
                 {PHASE_ORDER.map(p => <option key={p} value={p}>{PHASE_LABELS[p]}</option>)}</select></div>
             <div>
               <label className="text-xs block mb-1" style={stTextMuted}>Due Date</label>
@@ -300,6 +300,7 @@ export default function TimelinePage() {
             <select
               value={filterPhase}
               onChange={e => setFilterPhase(e.target.value)}
+              aria-label="Filter by phase"
               className="rounded-lg px-3 py-1.5 text-sm"
               style={filterSelectStyle}>
               <option value="">All Phases</option>
@@ -307,6 +308,7 @@ export default function TimelinePage() {
             <select
               value={filterStatus}
               onChange={e => setFilterStatus(e.target.value)}
+              aria-label="Filter by status"
               className="rounded-lg px-3 py-1.5 text-sm"
               style={filterSelectStyle}>
               <option value="">All Statuses</option>
@@ -372,6 +374,7 @@ export default function TimelinePage() {
                           <select
                             value={task.status}
                             onChange={e => updateTaskStatus(task.id, e.target.value)}
+                            aria-label={`Status for task: ${task.title}`}
                             className="rounded px-1.5 py-0.5 text-xs"
                             style={taskStatusSelect}>
                             <option value="pending">Pending</option>

@@ -419,6 +419,7 @@ function MeetingPrepContent() {
             <select
               value={selectedId}
               onChange={e => setSelectedId(e.target.value)}
+              aria-label="Select investor for meeting prep"
               className="w-full md:w-96 rounded-lg px-4 py-2.5 text-sm focus:outline-none appearance-none cursor-pointer pr-10"
               style={{ background: 'var(--surface-1)', color: 'var(--text-secondary)' }}>
               <option value="">Select investor for this meeting...</option>

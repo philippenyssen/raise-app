@@ -361,6 +361,7 @@ function QuickCaptureInner() {
             value={investorId}
             onChange={e => setInvestorId(e.target.value)}
             required
+            aria-label="Select investor"
             className="input"
             style={{ cursor: 'pointer' }}>
             <option value="">Choose investor for this meeting</option>
@@ -460,6 +461,7 @@ function QuickCaptureInner() {
                 <select
                   value={meetingType}
                   onChange={e => setMeetingType(e.target.value)}
+                  aria-label="Meeting type"
                   className="input"
                   style={{ cursor: 'pointer' }}>
                   <option value="intro">Intro Call</option>

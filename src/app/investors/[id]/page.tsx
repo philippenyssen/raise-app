@@ -424,6 +424,7 @@ export default function InvestorDetailPage() {
               <select
                 value={editForm.tier}
                 onChange={e => setEditForm(f => ({ ...f, tier: Number(e.target.value) }))}
+                aria-label="Investor tier"
                 className="input"
                 style={selectCompact}>
                 {[1, 2, 3, 4].map(t => (
@@ -445,6 +446,7 @@ export default function InvestorDetailPage() {
               <select
                 value={editForm.status}
                 onChange={e => setEditForm(f => ({ ...f, status: e.target.value }))}
+                aria-label="Investor status"
                 className="input"
                 style={selectCompact}>
                 {Object.entries(STATUS_LABELS).map(([val, label]) => (
@@ -453,6 +455,7 @@ export default function InvestorDetailPage() {
             ) : (
               <select
                 value={investor.status}
+                aria-label="Quick update investor status"
                 onChange={async (e) => {
                   const newStatus = e.target.value;
                   try {

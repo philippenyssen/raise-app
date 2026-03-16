@@ -150,6 +150,7 @@ export default function ReportsPage() {
           <select
             value={selectedInvestor}
             onChange={e => setSelectedInvestor(e.target.value)}
+            aria-label="Select investor for brief"
             className="w-full px-3 py-2 rounded-lg text-sm mb-3 focus:outline-none"
             style={selectStyle}>
             <option value="">Choose an investor to brief...</option>
