@@ -91,7 +91,7 @@ function QuickCaptureInner() {
   }, [loading]);
 
   useEffect(() => {
-    const h = (e: KeyboardEvent) => { if (e.key === 's' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); const btn = document.querySelector('button[type="submit"]') as HTMLButtonElement | null; if (btn && !btn.disabled) btn.click(); } };
+    const h = (e: KeyboardEvent) => { if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement) return; if (e.key === 'r' && !e.metaKey && !e.ctrlKey) { e.preventDefault(); cachedFetch('/api/investors').then(r => r.json()).then(setInvestors).catch(e2 => console.warn('[CAPTURE_REFRESH]', e2 instanceof Error ? e2.message : e2)); } if (e.key === 's' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); const btn = document.querySelector('button[type="submit"]') as HTMLButtonElement | null; if (btn && !btn.disabled) btn.click(); } };
     window.addEventListener('keydown', h);
     return () => window.removeEventListener('keydown', h);
   }, []);

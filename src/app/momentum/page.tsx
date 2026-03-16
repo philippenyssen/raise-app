@@ -22,6 +22,9 @@ const alertBadgeStyle = { background: 'var(--surface-2)', color: 'var(--text-mut
 const actionCellStyle = { background: 'transparent', color: 'var(--text-muted)' } as const;
 const heatRowBg = { background: 'var(--fg-95)' } as const;
 const anomalyBadgeStyle = { background: 'var(--warning-muted)', color: 'var(--text-tertiary)', boxShadow: 'inset 0 0 0 1px var(--warn-40)' } as const;
+const scheduleButtonStyle = { background: 'var(--accent-15)', color: 'var(--accent)', boxShadow: 'inset 0 0 0 1px var(--accent-25)' } as const;
+const anomalyBtnAbove = { background: 'var(--accent-30)', color: 'var(--success)', boxShadow: 'inset 0 0 0 1px var(--accent-40)' } as const;
+const anomalyBtnBelow = { background: 'var(--fg-30)', color: 'var(--danger)', boxShadow: 'inset 0 0 0 1px var(--fg-40)' } as const;
 
 const TRAJECTORY_COLORS: Record<string, { bg: string; border: string; color: string }> = {
   critical_warning:  { border: 'var(--fg-50)',  bg: 'var(--fg-10)',  color: 'var(--danger)' },
@@ -341,7 +344,7 @@ export default function MomentumPage() {
                       <Link
                         href={`/meetings/new?investor=${alert.investorId}`}
                         className="px-2.5 py-1 rounded text-xs font-normal hover-accent-bg"
-                        style={{ background: 'var(--accent-15)', color: 'var(--accent)', boxShadow: 'inset 0 0 0 1px var(--accent-25)' }}>
+                        style={scheduleButtonStyle}>
                         Schedule</Link>
                       <Link
                         href={`/investors/${alert.investorId}`}
@@ -588,7 +591,7 @@ export default function MomentumPage() {
                             <Link
                               href={isAbove ? `/meetings/prep?investor=${anomaly.investorId}` : `/meetings/new?investor=${anomaly.investorId}`}
                               className="ml-3 px-2 py-0.5 rounded text-xs font-normal shrink-0 hover-opacity-link"
-                              style={{ background: isAbove ? 'var(--accent-30)' : 'var(--fg-30)', color: isAbove ? 'var(--success)' : 'var(--danger)', boxShadow: `inset 0 0 0 1px ${isAbove ? 'var(--accent-40)' : 'var(--fg-40)'}` }}>
+                              style={isAbove ? anomalyBtnAbove : anomalyBtnBelow}>
                               {isAbove ? 'Prep Meeting' : 'Re-engage'}</Link></div></div></div>
                     </div>);
                 })}</div>
