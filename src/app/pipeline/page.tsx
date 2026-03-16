@@ -10,7 +10,7 @@ import { relativeTime } from '@/lib/time';
 import {
   Users, TrendingUp, Zap, Filter, X, GripVertical, Download,
   Building2, Landmark, Shield, Banknote, Home, Rocket,
-  Calendar, SendHorizonal, ClipboardList,
+  Calendar, SendHorizonal, ClipboardList, Search, AlertTriangle,
 } from 'lucide-react';
 import { fmtDate } from '@/lib/format';
 import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
@@ -111,6 +111,8 @@ export default function PipelinePage() {
   const toggleCompare = useCallback((id: string) => setCompareIds(prev => { const next = new Set(prev); if (next.has(id)) next.delete(id); else next.add(id); return next; }), []);
   const [quickAddCol, setQuickAddCol] = useState<string | null>(null);
   const [quickAddName, setQuickAddName] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showStaleOnly, setShowStaleOnly] = useState(false);
 
   useEffect(() => { document.title = 'Raise | Investor Pipeline'; }, []);
   const loadPipeline = useCallback(() => {
@@ -139,13 +141,22 @@ export default function PipelinePage() {
   }
 
   // ── Filtering ────────────────────────────────────────────────────
-  const filtered = useMemo(() => investors.filter(inv => {
-    if (filters.tiers.size > 0 && !filters.tiers.has(inv.tier)) return false;
-    if (filters.types.size > 0 && !filters.types.has(inv.type)) return false;
-    return true;
-  }), [investors, filters]);
+  const filtered = useMemo(() => {
+    const q = searchQuery.toLowerCase().trim();
+    return investors.filter(inv => {
+      if (filters.tiers.size > 0 && !filters.tiers.has(inv.tier)) return false;
+      if (filters.types.size > 0 && !filters.types.has(inv.type)) return false;
+      if (q && !inv.name.toLowerCase().includes(q) && !(inv.partner || '').toLowerCase().includes(q) && !(inv.sector_thesis || '').toLowerCase().includes(q)) return false;
+      if (showStaleOnly) {
+        const days = inv.last_meeting_date ? Math.floor((Date.now() - new Date(inv.last_meeting_date).getTime()) / 864e5) : 999;
+        if (days < 14) return false;
+      }
+      return true;
+    });
+  }, [investors, filters, searchQuery, showStaleOnly]);
 
-  const hasActiveFilters = filters.tiers.size > 0 || filters.types.size > 0;
+  const hasActiveFilters = filters.tiers.size > 0 || filters.types.size > 0 || searchQuery.length > 0 || showStaleOnly;
+  const staleCount = useMemo(() => investors.filter(i => { const d = i.last_meeting_date ? Math.floor((Date.now() - new Date(i.last_meeting_date).getTime()) / 864e5) : 999; return d >= 14 && !['passed', 'dropped', 'closed'].includes(i.status); }).length, [investors]);
 
   const toggleTier = useCallback((tier: number) => {
     setFilters(f => {
@@ -163,6 +174,8 @@ export default function PipelinePage() {
 
   const clearFilters = useCallback(() => {
     setFilters({ tiers: new Set(), types: new Set() });
+    setSearchQuery('');
+    setShowStaleOnly(false);
   }, []);
 
   // ── Stats ────────────────────────────────────────────────────────
@@ -195,6 +208,8 @@ export default function PipelinePage() {
       else if (e.key === 'ArrowDown') { e.preventDefault(); setKbRow(r => { const max = (colGrid[kbCol]?.length ?? 1) - 1; return Math.min(r + 1, max); }); }
       else if (e.key === 'ArrowUp') { e.preventDefault(); setKbRow(r => Math.max(r - 1, 0)); }
       else if (e.key === 'Enter' && selectedId) { e.preventDefault(); router.push(`/investors/${selectedId}`); }
+      else if (e.key === '/' && !e.metaKey && !e.ctrlKey) { e.preventDefault(); const el = document.querySelector<HTMLInputElement>('input[placeholder="Search investors..."]'); el?.focus(); }
+      else if (e.key === 'Escape') { setSearchQuery(''); setShowStaleOnly(false); }
       else if (e.key === 'r' && !e.metaKey && !e.ctrlKey) { e.preventDefault(); fetchInvestors(); }
     };
     window.addEventListener('keydown', handleKb);
@@ -315,11 +330,35 @@ export default function PipelinePage() {
       <div className="flex items-center justify-between flex-shrink-0">
         <div>
           <h1 className="page-title" style={{ fontSize: 'var(--font-size-xl)' }}>Investor Pipeline</h1>
-          <p className="page-subtitle" style={{ ...textSmMuted, marginTop: 'var(--space-1)' }}>Drag to move through the pipeline{loadedAt ? ` · Updated ${relativeTime(loadedAt)}` : ''}</p>
+          <p className="page-subtitle" style={{ ...textSmMuted, marginTop: 'var(--space-1)' }}>Drag to move · <kbd style={{ fontSize: 'var(--font-size-xs)', padding: '0 3px', background: 'var(--surface-2)', borderRadius: '3px', border: '1px solid var(--border-subtle)' }}>/</kbd> search · <kbd style={{ fontSize: 'var(--font-size-xs)', padding: '0 3px', background: 'var(--surface-2)', borderRadius: '3px', border: '1px solid var(--border-subtle)' }}>r</kbd> refresh{loadedAt ? ` · ${relativeTime(loadedAt)}` : ''}</p>
         </div>
         <div className="flex items-center gap-2">
+          <div className="relative">
+            <span style={{ position: 'absolute', left: 'var(--space-2)', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)', pointerEvents: 'none' }}><Search className="w-3.5 h-3.5" /></span>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              placeholder="Search investors..."
+              className="input"
+              style={{ fontSize: 'var(--font-size-xs)', paddingLeft: 'var(--space-7)', paddingRight: searchQuery ? 'var(--space-7)' : 'var(--space-2)', width: '180px', height: '32px' }} />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                style={{ position: 'absolute', right: 'var(--space-1)', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: 'var(--space-1)' }}>
+                <X className="w-3 h-3" /></button>
+            )}
+          </div>
+          {staleCount > 0 && (
+            <button
+              onClick={() => setShowStaleOnly(!showStaleOnly)}
+              className="flex items-center gap-1.5"
+              style={showStaleOnly ? { ...filterBtnActive, background: 'var(--warning-muted)', color: 'var(--warning)', boxShadow: 'inset 0 0 0 1px var(--warning)' } : filterBtnInactive}>
+              <AlertTriangle className="w-3.5 h-3.5" />
+              Stale ({staleCount})</button>
+          )}
           <FilterButton
-            active={hasActiveFilters}
+            active={filters.tiers.size > 0 || filters.types.size > 0}
             count={filters.tiers.size + filters.types.size}
             onClick={() => setShowFilters(!showFilters)} />
           <a

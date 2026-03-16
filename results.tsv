@@ -671,3 +671,64 @@ db4500e	100	100	0	pass	Workflow+Automation	perf: extract 6 style constants from 
 682	2026-03-16T12:38:56Z	copy	copy: clearer model + skills empty states	100	-	Copywriting
 683	2026-03-16T12:40:33Z	ops	ops: validate due_date in tasks POST to prevent invalid dates	100	-	Reliability+Ops
 684	2026-03-16T12:41:58Z	feature	feature: contact decay warning on deal heat cards (14d+ yellow, 21d+ red)	100	-	Competitive
+686	2026-03-16T12:46:14Z	Design & UX	fix(term-compare): fontWeight 500→400 for cell colors, restore 100/100	100	67b4271
+687	2026-03-16T12:48:05Z	Product Manager	feat(backlog): empty state action button for first commitment	100	ee5fac9
+688	2026-03-16T12:49:46Z	Design & UX	style(globals): row-actions opacity 0.4→0.7 for accessibility	100	26026ac
+689	2026-03-16T12:53:44Z	Engineering	perf(strategic): extract repeated numPrimaryStyle constant	100	aa28661
+690	2026-03-16T12:56:59Z	AI & Intelligence	feat(scoring): score mentioned_competitors engagement signal	100	38070a6
+691	2026-03-16T12:58:36Z	Data Enrichment	fix(enrichment): unique index prevents duplicate records	100	259b7b7
+692	2026-03-16T13:01:46Z	Workflow & Automation	feat(meetings): auto-task on competitive mentions	100	a5db0b9
+693	2026-03-16T13:03:20Z	Copywriting	copy(acceleration): personal empty state description	100	d53e6b6
+694	2026-03-16T13:05:50Z	Reliability & Ops	security(auth): no-store Cache-Control on auth response	100	e504ae7
+695	2026-03-16T13:07:29Z	Competitive Edge	feat(pipeline): show Passed count in metrics bar	100	c16e040
+696	2026-03-16T13:10:09Z	CEO & Strategy	feat(dashboard): deal heat replaces data quality in pulse strip	100	7fe09e9
+697	2026-03-16T13:14:58Z	product-manager	timeline: show all 7 phases in quick stats (was sliced to 4)	100	ef1efd2
+698	2026-03-16T13:16:34Z	design-ux	meetings: scale hover feedback on star rating buttons	100	3b935ae
+699	2026-03-16T13:18:02Z	engineering	tasks API: validate phase against allowed RaisePhase values	100	2d97669
+700	2026-03-16T13:20:28Z	ai-intelligence	scoring: integrate pricing_reception signal into engagement score	100	4a60303
+701	2026-03-16T13:22:40Z	data-enrichment	db: batch enrichment inserts instead of sequential awaits	100	aa016c9
+702	2026-03-16T13:25:34Z	workflow-automation	data-room: auto-infer category from paste filename	100	02e0b66
+703	2026-03-16T13:27:22Z	copywriting	health: actionable intel verification fallback copy	100	45a44ee
+704	2026-03-16T13:29:00Z	reliability-ops	api: wrap data-room intelligence POST in try/catch	100	ebdac22
+705	2026-03-16T13:30:55Z	competitive-edge	dealflow: add enthusiasm + days-since-meeting to TSV export	100	8f4ab90
+706	2026-03-16T13:32:52Z	ceo-strategy	dashboard: quantified gap metric replaces binary status	100	a177ace
+707	2026-03-16T13:34:57Z	product-manager	backlog: fix export button label from CSV to Export	100	e3afe00
+708	2026-03-16T13:37:12Z	design-ux	stress-test: hover styling on show-all toggle	100	d7bfa9d
+709	2026-03-16T13:38:28Z	engineering	health API: guard against NaN from invalid dates	100	de60321
+710	2026-03-16T13:40:16Z	ai-intelligence	scoring: penalize negative pricing signals (-3 each)	100	8b857ab
+711	2026-03-16T13:42:06Z	data-enrichment	db: clamp enrichment confidence values to 0-1	100	01329a4
+712	2026-03-16T13:43:32Z	workflow-automation	backlog: add N keyboard shortcut to open add form	100	52d80a1
+713	2026-03-16T13:47:46Z	Copywriting	followups/page.tsx	Tighten subtitle: 3 sentences → 1 data-driven line	100
+714	2026-03-16T13:51:39Z	Reliability & Ops	api/followups/route.ts	NaN guard on invalid due_at date parsing	100
+715	2026-03-16T13:54:41Z	Competitive Edge	meetings/page.tsx	This-week meeting count in stats bar	100
+716	2026-03-16T13:56:22Z	CEO & Strategy	page.tsx	Close-at-risk alert in quick actions when probability < 50%	100
+717	2026-03-16T13:58:57Z	Product Manager	investors/page.tsx	Sort-by-status column with pipeline stage ordering	100
+718	2026-03-16T14:01:06Z	Design & UX	velocity/page.tsx	Color-code raise timeline bar: warning at 80%, danger when overdue	100
+719	2026-03-16T14:02:50Z	Engineering	lib/db.ts	Parameterize LIMIT in genericGetByField query	100
+720	2026-03-16T14:04:53Z	AI & Intelligence	lib/scoring.ts	Factor slide engagement signals into scoring	100
+721	2026-03-16T14:06:43Z	Data Enrichment	api/enrichment/route.ts	Avg confidence from fresh records only (excludes stale)	100
+722	2026-03-16T14:08:09Z	Workflow & Automation	api/meetings/route.ts	Auto-create review task on poor meeting outcome (≤2 rating)	100
+723	2026-03-16T14:09:58Z	Copywriting	deal-heat/page.tsx	Data-driven subtitle: N investors, M warm/hot	100
+724	2026-03-16T14:11:30Z	Reliability & Ops	api/meetings/route.ts	Add Cache-Control no-store to meetings POST	100
+725	2026-03-16T14:13:03Z	Competitive Edge	pipeline/page.tsx	Type icon in compact pipeline cards	100
+726	2026-03-16T14:20:49Z	CEO & Strategy	Sidebar 23→11 items: removed 12 redundant nav items (Focus, Acceleration, Velocity, Momentum, Deal Heat, Forecast, Competitive, Objections, Intelligence, Data Room, Reports, Health)	100	0cd34d0
+b4a0052	100	100	0	keep	product	Dashboard strategic overhaul: AI narrative brief + remove 4 duplicate sections (-208 lines, 15→10 sections)
+728	CEO & Strategy	Investor readiness scoring — cross-page intelligence	/api/readiness + /dealflow + /today	100	976bd8c
+729	Competitive Edge	Competitive threat matrix heatmap — investor × competitor	/competitive	100	0a7068a
+730	2026-03-16T15:06:12Z	CEO & Strategy	Pipeline bottleneck detection — stuck investor analysis with AI actions	/api/bottlenecks + dashboard	100	b7c3866
+731	2026-03-16T15:10:06Z	AI & Intelligence	Behavioral investor segmentation — 5 engagement pattern clusters	/analytics + /api/analytics	100	8e2205c
+732	2026-03-16T15:18:24Z	Product Manager	AI outreach composer — stage-aware message drafting with 5 types	/api/compose + investor detail	100	c41b493
+733	2026-03-16T15:27:52Z	Workflow & Automation	Fundraise calendar — month/week view with meetings, follow-ups, tasks	/calendar + /api/calendar + sidebar	100	1a1e5ec
+734	2026-03-16T15:32:43Z	AI & Intelligence	Predictive close timeline — probability-weighted deal outcome forecasting	/api/investors/[id]/predict + investor detail	100	f583079
+735	2026-03-16T15:36:31Z	Data Enrichment	Stale data auto-refresh — one-click enrichment refresh for outdated provider fields	/api/enrichment + investor detail	100	5157801
+736	2026-03-16T15:39:52Z	Workflow & Automation	Weekly digest — automated fundraise status report with WoW metrics	/digest + /api/digest + sidebar	100	ba186de
+737	2026-03-16T15:44:45Z	Copywriting	fix: improve copy in terms empty state and focus page null handling	src/app/terms/page.tsx, src/app/focus/page.tsx	05487a0
+738	2026-03-16T15:49:57Z	Competitive Edge	feat: fundraise benchmarking dashboard with sector percentile rankings	src/app/benchmarking/page.tsx, src/app/api/benchmarking/route.ts, src/components/sidebar.tsx	ea5f7ce
+739	2026-03-16T15:53:13Z	Reliability & Ops	fix: prevent interval leak on visibility toggle across 6 pages	src/app/page.tsx, src/app/dealflow/page.tsx, src/app/momentum/page.tsx, src/app/pipeline/page.tsx, src/app/today/page.tsx, src/app/data-room/page.tsx	8241c35
+740	2026-03-16T15:57:25Z	CEO & Strategy	feat: investor targeting board with closing sequence + FOMO playbook	src/app/targeting/page.tsx, src/app/api/targeting/route.ts, src/components/sidebar.tsx	c4728ea
+741	2026-03-16T16:00:40Z	Product Manager	feat: inline investor status editor on meetings page	src/app/meetings/page.tsx	3a804e0
+742	2026-03-16T16:02:54Z	Design & UX	fix: improve table visual hierarchy and investor list scanability	src/app/globals.css, src/app/investors/page.tsx	4a0414d
+743	2026-03-16T16:07:30Z	Engineering	refactor: extract useRefreshInterval hook, eliminating 7 duplicated patterns	src/lib/hooks/useRefreshInterval.ts + 7 pages	dbb1e27
+744	2026-03-16T16:15:50Z	AI & Intelligence	Focus: Why Now intelligence explanations + top driver indicators for each investor	feat	src/app/api/focus/route.ts, src/app/focus/page.tsx
+745	2026-03-16T16:21:39Z	Data Enrichment	Meeting prep: enrichment data integration into both prep APIs + AI brief context	feat	src/app/api/meetings/prep/route.ts, src/app/api/meeting-brief/route.ts
+746	2026-03-16T16:30:45Z	Workflow & Automation	Pipeline search + stale filter	src/app/pipeline/page.tsx	Added investor search bar with / shortcut, stale deal filter toggle with count badge, Escape to clear, search across name/partner/thesis
