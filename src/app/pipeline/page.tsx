@@ -758,6 +758,11 @@ const skelHeader: React.CSSProperties = { height: '2.5rem', borderRadius: 'var(-
 const skelCard: React.CSSProperties = { height: '7rem', borderRadius: 'var(--radius-lg)' };
 
 function computeUrgency(lastMeetingDate: string | null | undefined, tier: number, status: string): { label: string; color: string; bg: string } {
+  // Never-contacted investors in early stages aren't "urgent" — they need outreach, not follow-up
+  if (!lastMeetingDate && ['identified', 'contacted', 'nda_signed'].includes(status)) {
+    if (tier <= 2) return { label: 'Ready', color: 'var(--accent)', bg: 'var(--accent-muted)' };
+    return { label: 'New', color: 'var(--text-muted)', bg: 'var(--white-8)' };
+  }
   const days = lastMeetingDate ? Math.floor((Date.now() - new Date(lastMeetingDate).getTime()) / 864e5) : 999;
   const isUrgent = (days >= 14 && tier <= 2) || (days >= 10 && ['engaged', 'in_dd', 'term_sheet'].includes(status));
   const isNormal = days >= 7 || tier <= 2;
