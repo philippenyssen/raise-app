@@ -6,6 +6,7 @@ import { Bell, Clock, AlertTriangle, Activity, Search } from 'lucide-react';
 import { MS_PER_MINUTE, MS_PER_DAY } from '@/lib/time';
 import { fmtDateShort } from '@/lib/format';
 import { cachedFetch } from '@/lib/cache';
+import { labelMuted } from '@/lib/styles';
 
 interface UpcomingTask {
   id: string;
@@ -166,7 +167,7 @@ export function TopBar() {
                         <span className="shrink-0 ml-2" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)' }}>{days}d overdue</span>
                       </div>
                       {t.investor_name && (
-                        <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '2px' }}>{t.investor_name}</div>
+                        <div style={{ ...labelMuted, marginTop: '2px' }}>{t.investor_name}</div>
                       )}
                     </Link>);
                 })}</div>
@@ -178,7 +179,7 @@ export function TopBar() {
                 <Clock style={{ width: '13px', height: '13px' }} />
                 Upcoming</div>
               {upcoming.length === 0 ? (
-                <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', padding: 'var(--space-1) 0' }}>No upcoming tasks</p>
+                <p style={{ ...labelMuted, padding: 'var(--space-1) 0' }}>No upcoming tasks</p>
               ) : (
                 upcoming.map(t => (
                   <Link
@@ -190,7 +191,7 @@ export function TopBar() {
                     <div className="flex items-center justify-between">
                       <span className="truncate" style={{ color: 'var(--text-secondary)' }}>{t.title}</span>
                       {t.due_date && (
-                        <span className="shrink-0 ml-2" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                        <span className="shrink-0 ml-2" style={labelMuted}>
                           {timeAgo(t.due_date)}</span>
                       )}</div></Link>
                 ))
@@ -202,7 +203,7 @@ export function TopBar() {
                 <Activity style={{ width: '13px', height: '13px' }} />
                 Recent</div>
               {activity.length === 0 ? (
-                <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', padding: 'var(--space-1) 0' }}>No recent activity</p>
+                <p style={{ ...labelMuted, padding: 'var(--space-1) 0' }}>No recent activity</p>
               ) : (
                 activity.map(a => (
                   <div

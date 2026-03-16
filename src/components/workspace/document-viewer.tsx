@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { FileText, Eye, Edit3, Save, Clock, Download } from 'lucide-react';
-import { textSmSecondary } from '@/lib/styles';
+import { labelMuted, textSmSecondary } from '@/lib/styles';
 
 interface DocumentViewerProps {
   document: {
@@ -126,13 +126,13 @@ export function DocumentViewer({ document, onContentChange, onSave, saving, dirt
               color: statusStyle.color,}}>
             {document.status}</span>
           <h2 className="truncate" style={{ fontWeight: 400, color: 'var(--text-primary)' }}>{document.title}</h2>
-          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{TYPE_LABELS[document.type] || document.type}</span>
+          <span style={labelMuted}>{TYPE_LABELS[document.type] || document.type}</span>
         </div>
         <div className="flex items-center shrink-0" style={{ gap: 'var(--space-2)' }}>
-          <span className="flex items-center" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', gap: 'var(--space-1)' }}>
+          <span className="flex items-center" style={{ ...labelMuted, gap: 'var(--space-1)' }}>
             <Clock style={{ width: '12px', height: '12px' }} />
             {new Date(document.updated_at).toLocaleString()}</span>
-          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+          <span style={labelMuted}>
             {document.content.length.toLocaleString()} chars</span>
           <div style={{ width: '1px', height: '16px', background: 'var(--border-subtle)' }} />
           <button

@@ -210,7 +210,7 @@ export default function StressTestPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="page-title">Process Stress Test</h1>
-          <p className="text-sm mt-1" style={stTextMuted}>
+          <p className="page-subtitle">
             Probabilistic close forecast — {data.companyName} Series C
             {loadedAt && <> &middot; <span>{relativeTime(loadedAt)}</span></>}</p></div>
         <button

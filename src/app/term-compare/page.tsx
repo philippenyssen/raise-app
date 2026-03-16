@@ -220,7 +220,7 @@ export default function TermComparePage() {
           <div>
             <h1 className="page-title">
               Term Sheet Economics Engine</h1>
-            <p className="text-sm mt-1" style={stTextMuted}>
+            <p className="page-subtitle">
               Compare offers, model dilution, and identify the best deal structure.</p></div></div></div>
 
       {/* Scenario Input Forms */}

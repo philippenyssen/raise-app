@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { cachedFetch } from '@/lib/cache';
-import { textSmSecondary } from '@/lib/styles';
+import { labelMuted, textSmSecondary } from '@/lib/styles';
 import { createPortal } from 'react-dom';
 import {
   Sun, LayoutDashboard, Columns3, Users, Calendar,
@@ -247,7 +247,7 @@ export default function CommandPalette() {
               <kbd style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', background: 'var(--surface-2)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-xs)', padding: '2px 6px' }}>{key}</kbd>
             </div>
           ))}
-          <div style={{ marginTop: '12px', fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Type <code style={{ background: 'var(--surface-2)', padding: '1px 4px', borderRadius: 'var(--radius-xs)' }}>investor:</code> or <code style={{ background: 'var(--surface-2)', padding: '1px 4px', borderRadius: 'var(--radius-xs)' }}>action:</code> in palette to filter</div>
+          <div style={{ marginTop: '12px', ...labelMuted }}>Type <code style={{ background: 'var(--surface-2)', padding: '1px 4px', borderRadius: 'var(--radius-xs)' }}>investor:</code> or <code style={{ background: 'var(--surface-2)', padding: '1px 4px', borderRadius: 'var(--radius-xs)' }}>action:</code> in palette to filter</div>
         </div>
       </div>, document.body);
   }
