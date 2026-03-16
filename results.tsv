@@ -788,3 +788,4 @@ b4a0052	100	100	0	keep	product	Dashboard strategic overhaul: AI narrative brief 
 800	2026-03-16T19:16:10Z	CEO & Strategy	decide: add inline context reason under each focus investor name (warning/stale/conviction/action)	src/app/decide/page.tsx	pass
 801	2026-03-16T19:20:12Z	Product Manager	calendar: add 'Log' meeting capture button on event cards with investor+date context	src/app/calendar/page.tsx	pass
 802	2026-03-16T19:21:43Z	Design & UX	global: add zebra striping to all .table-row tables + replace cryptic delta symbol with 'Change' label on momentum heatmap	src/app/globals.css,src/app/momentum/page.tsx	pass
+803	2026-03-16T19:23:29Z	Engineering	meetings API: eliminate 3 redundant DB queries by caching investor+meetings fetches at handler top	src/app/api/meetings/route.ts	pass

@@ -50,23 +50,30 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'date must be a valid YYYY-MM-DD format' }, { status: 400 });
   }
 
+  // Pre-fetch investor context once — reused for AI analysis, dedup, and post-meeting pipeline
+  let cachedInvestor: Awaited<ReturnType<typeof getInvestor>> | null = null;
+  let cachedMeetings: Awaited<ReturnType<typeof getMeetings>> = [];
+  try {
+    const [inv, meetings] = await Promise.all([
+      getInvestor(investor_id as string),
+      getMeetings(investor_id as string, 5),
+    ]);
+    cachedInvestor = inv;
+    cachedMeetings = meetings;
+  } catch { /* non-fatal — continue without cached data */ }
+
   let aiData: Record<string, unknown> = {};
   if (analyze && raw_notes) {
     try {
-      // Build investor context for better enthusiasm calibration
       let investorContext: { currentStage: string; priorEnthusiasm: number[]; daysSinceLastMeeting: number | null; openObjections: string[] } | undefined;
       try {
-        const [inv, priorMeetings, objections] = await Promise.all([
-          getInvestor(investor_id as string),
-          getMeetings(investor_id as string, 5),
-          getObjectionsByInvestor(investor_id as string),
-        ]);
-        if (inv) {
-          const sorted = [...priorMeetings].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        const objections = await getObjectionsByInvestor(investor_id as string);
+        if (cachedInvestor) {
+          const sorted = [...cachedMeetings].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
           const priorEnthusiasm = sorted.slice(0, 3).map(m => m.enthusiasm_score).filter((s): s is number => s != null).reverse();
           const lastDate = sorted[0]?.date;
           investorContext = {
-            currentStage: inv.status,
+            currentStage: cachedInvestor.status,
             priorEnthusiasm,
             daysSinceLastMeeting: lastDate ? Math.floor((Date.now() - new Date(lastDate).getTime()) / 864e5) : null,
             openObjections: objections.filter(o => o.effectiveness !== 'effective').map(o => o.objection_text).slice(0, 5),
@@ -79,9 +86,8 @@ export async function POST(req: NextRequest) {
     }}
 
   try {
-  // Deduplication: check for identical meeting created in last 60 seconds
-  const recentMeetings = await getMeetings(investor_id as string, 5);
-  const duplicate = recentMeetings.find(m =>
+  // Deduplication: check against already-fetched recent meetings
+  const duplicate = cachedMeetings.find(m =>
     m.date === dateStr &&
     m.type === ((type as string) || 'intro') &&
     m.created_at && (Date.now() - new Date(m.created_at).getTime()) < 60_000
@@ -107,10 +113,8 @@ export async function POST(req: NextRequest) {
     status_after: (aiData.suggested_status as string) || 'met',
     ai_analysis: (aiData.ai_analysis as string) || '',});
 
-  // Fetch investor once for post-meeting pipeline
-  let investorData: Awaited<ReturnType<typeof getInvestor>> | null = null;
-  try { investorData = await getInvestor(investor_id); } catch (e) { console.error('[INVESTOR_FETCH]', e instanceof Error ? e.message : e); }
-  const investorTier = investorData?.tier ?? 2;
+  // Reuse pre-fetched investor for post-meeting pipeline
+  const investorTier = cachedInvestor?.tier ?? 2;
 
   // Run post-meeting intelligence pipeline
   let postMeetingActions = null;
@@ -142,10 +146,8 @@ export async function POST(req: NextRequest) {
   try {
     const objections = (aiData.objections || []) as { text: string; severity: string; topic: string }[];
     if (objections.length > 0) {
-      // Check for enthusiasm delta from previous meetings with this investor
-      const previousMeetings = await getMeetings(investor_id);
-      // previousMeetings is sorted DESC — the first one after the current is the previous
-      const prevMeeting = previousMeetings.find(m => m.id !== meeting.id);
+      // Check for enthusiasm delta from cached prior meetings
+      const prevMeeting = cachedMeetings.find(m => m.id !== meeting.id);
       if (prevMeeting) {
         const delta = (meeting.enthusiasm_score || 3) - (prevMeeting.enthusiasm_score || 3);
         if (delta !== 0) {
