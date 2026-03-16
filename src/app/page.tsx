@@ -13,8 +13,8 @@ import {
   Activity, Download, Columns3, Target, Timer,
   RefreshCw, Zap, TrendingUp, TrendingDown, Minus, AlertTriangle,
   ChevronRight, Clock, ArrowUpRight, ArrowDownRight, ShieldAlert,
-  UserMinus, CalendarClock, Flame, Gauge, CheckCircle2, Mail,
-  Calendar, MessageSquare, ClipboardList, ShieldCheck,
+  UserMinus, CalendarClock, Flame, Gauge, CheckCircle2, Mail, Check,
+  Calendar, MessageSquare, ClipboardList, ShieldCheck, SendHorizonal,
 } from 'lucide-react';
 import { DealHeatInvestor } from '@/lib/types';
 import { STATUS_LABELS } from '@/lib/constants';
@@ -296,6 +296,8 @@ export default function Dashboard() {
   const [sectionErrors, setSectionErrors] = useState<Record<string, boolean>>({});
   const [focusMode, setFocusMode] = useState(true);
   const [narrativeBrief, setNarrativeBrief] = useState<string | null>(null);
+  const [completedFocus, setCompletedFocus] = useState<Set<string>>(new Set());
+  const [composingFocus, setComposingFocus] = useState<string | null>(null);
 
   const safeFetch = useCallback(async <T,>(
     key: string, url: string, setter: (v: T) => void,
@@ -378,6 +380,45 @@ export default function Dashboard() {
     }
     await fetchData();
     setSeeding(false);
+  }
+
+  async function markFocusDone(investorId: string, investorName: string, action: string) {
+    setCompletedFocus(prev => new Set(prev).add(investorId));
+    try {
+      await fetch('/api/tasks', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'log_activity',
+          data: { event_type: 'action_completed', subject: action, detail: `Completed: ${action}`, investor_id: investorId, investor_name: investorName },
+        }),
+      });
+      toast('Done — logged');
+    } catch (e) {
+      console.warn('[FOCUS_DONE]', e instanceof Error ? e.message : e);
+      setCompletedFocus(prev => { const next = new Set(prev); next.delete(investorId); return next; });
+    }
+  }
+
+  async function composeFocusAction(investorId: string) {
+    setComposingFocus(investorId);
+    try {
+      const res = await fetch('/api/compose', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ investorId, messageType: 'follow_up' }),
+      });
+      if (!res.ok) throw new Error(`${res.status}`);
+      const d = await res.json();
+      if (d.draft) {
+        await navigator.clipboard.writeText(d.draft);
+        toast('Draft copied to clipboard');
+      }
+    } catch (e) {
+      console.warn('[FOCUS_COMPOSE]', e instanceof Error ? e.message : e);
+      toast('Failed to compose — try from investor page', 'error');
+    }
+    setComposingFocus(null);
   }
 
   async function executeAcceleration(id: string) {
@@ -907,11 +948,12 @@ export default function Dashboard() {
                   style={labelAccent}>
                   Full priority queue <ArrowRight className="w-3 h-3" /></Link></div>
               <div className="space-y-2">
-                {cp.topFocus.map((item, i) => {
+                {cp.topFocus.filter(item => !completedFocus.has(item.investorId)).map((item, i) => {
                   const MomentumIcon = item.momentum === 'accelerating' ? TrendingUp
                     : item.momentum === 'decelerating' ? TrendingDown
                     : item.momentum === 'stalled' ? ArrowDownRight
                     : Minus;
+                  const isComposing = composingFocus === item.investorId;
                   return (
                     <div
                       key={item.investorId}
@@ -934,10 +976,22 @@ export default function Dashboard() {
                           <span style={labelTertiary}>T{item.tier}</span>
                           <MomentumIcon className="w-3.5 h-3.5" style={textTertiary} /></div>
                         <p className="truncate mt-0.5" style={labelSecondary}>{item.recommendedAction}</p></div>
-                      <div className="flex items-center gap-2 shrink-0">
+                      <div className="flex items-center gap-1.5 shrink-0">
                         <span className="flex items-center gap-1" style={labelTertiary}>
                           <Timer className="w-3 h-3" /> {item.timeEstimate}</span>
-                        <span className="tabular-nums" style={textSmPrimary}>{item.focusScore}</span>
+                        <button
+                          onClick={() => composeFocusAction(item.investorId)}
+                          disabled={isComposing}
+                          className="px-1.5 py-0.5 rounded transition-colors btn-surface flex items-center gap-1"
+                          style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}
+                          title="AI compose follow-up">
+                          <SendHorizonal className="w-3 h-3" /> {isComposing ? '...' : 'Draft'}</button>
+                        <button
+                          onClick={() => markFocusDone(item.investorId, item.investorName, item.recommendedAction)}
+                          className="px-1.5 py-0.5 rounded transition-colors btn-surface flex items-center gap-1"
+                          style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)' }}
+                          title="Mark action as done">
+                          <Check className="w-3 h-3" /> Done</button>
                       </div>
                     </div>);
                 })}</div></div>
