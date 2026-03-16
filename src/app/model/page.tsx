@@ -23,6 +23,12 @@ interface ModelSheet {
   updated_at: string;
 }
 
+const sheetTabBase: React.CSSProperties = { borderRight: '1px solid var(--border-subtle)' };
+const sheetTabActive: React.CSSProperties = { ...sheetTabBase, backgroundColor: 'var(--surface-2)', color: 'var(--text-primary)', fontWeight: 400, borderBottom: '2px solid var(--accent)' };
+const sheetTabInactive: React.CSSProperties = { ...sheetTabBase, color: 'var(--text-muted)' };
+const saveBtnDirty: React.CSSProperties = { backgroundColor: 'var(--accent)', color: 'var(--text-primary)' };
+const saveBtnClean: React.CSSProperties = { backgroundColor: 'var(--surface-2)', color: 'var(--text-muted)' };
+
 // Default sheets for a Series C financial model
 // Blue font = input assumptions, formulas flow through automatically
 const DEFAULT_SHEETS = [
@@ -294,7 +300,7 @@ export default function ModelPage() {
   const allSheetsData: SheetData[] = useMemo(() => {
     return sheets.map(s => {
       let sheetCells: Record<string, CellData> = {};
-      try { sheetCells = JSON.parse(s.data); } catch { /* empty */ }
+      try { sheetCells = JSON.parse(s.data); } catch (e) { console.warn('[MODEL_PARSE]', s.sheet_name, e instanceof Error ? e.message : e); }
       return { name: s.sheet_name, cells: sheetCells };});
   }, [sheets]);
 
@@ -342,17 +348,7 @@ export default function ModelPage() {
               <div
                 key={sheet.id}
                 className="group flex items-center gap-1 px-4 py-2 text-sm cursor-pointer transition-colors"
-                style={{
-                  borderRight: '1px solid var(--border-subtle)',
-                  ...(isActive
-                    ? {
-                        backgroundColor: 'var(--surface-2)',
-                        color: 'var(--text-primary)',
-                        fontWeight: 400,
-                        borderBottom: '2px solid var(--accent)',}
-                    : {
-                        color: 'var(--text-muted)',
-                      }), }}
+                style={isActive ? sheetTabActive : sheetTabInactive}
                 onMouseEnter={e => {
                   if (!isActive) {
                     (e.currentTarget as HTMLDivElement).style.color = 'var(--text-secondary)';
@@ -404,11 +400,7 @@ export default function ModelPage() {
             onClick={handleSave}
             disabled={!dirty || saving}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-normal transition-colors"
-            style={
-              dirty
-                ? { backgroundColor: 'var(--accent)', color: 'var(--text-primary)' }
-                : { backgroundColor: 'var(--surface-2)', color: 'var(--text-muted)' }
-            }
+            style={dirty ? saveBtnDirty : saveBtnClean}
             onMouseEnter={e => {
               if (dirty) {
                 (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--accent-muted)';
