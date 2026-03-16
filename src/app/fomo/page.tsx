@@ -209,11 +209,9 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
           <div className="flex items-center gap-2 flex-wrap">
             <Link
               href={`/investors/${inv.investorId}`}
-              className="transition-colors"
-              style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}
-              onClick={e => e.stopPropagation()}
-              onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
-              onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-primary)')}>
+              className="investor-link"
+              style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400 }}
+              onClick={e => e.stopPropagation()}>
               {inv.investorName}</Link>
             <TierBadge tier={inv.tier} />
             <span style={inlineBadgeStyle(TYPE_STYLES[inv.type] ?? TYPE_STYLES.vc)}>
@@ -468,7 +466,7 @@ export default function FomoPage() {
                 {filterTabs.map(tab => (
                   <button
                     key={tab.key}
-                    className="transition-colors"
+                    className={filterIntensity !== tab.key ? 'hover-filter-tab' : ''}
                     onClick={() => setFilterIntensity(tab.key)}
                     style={{
                       padding: '4px 10px',
@@ -477,20 +475,9 @@ export default function FomoPage() {
                       fontWeight: 400,
                       border: 'none',
                       cursor: 'pointer',
-                      transition: 'all 150ms ease',
                       background: filterIntensity === tab.key ? 'var(--surface-3)' : 'transparent',
                       color: filterIntensity === tab.key ? 'var(--text-primary)' : 'var(--text-muted)',
-                    }}
-                    onMouseEnter={e => {
-                      if (filterIntensity !== tab.key) {
-                        (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)';
-                        (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)';
-                      } }}
-                    onMouseLeave={e => {
-                      if (filterIntensity !== tab.key) {
-                        (e.currentTarget as HTMLElement).style.background = 'transparent';
-                        (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)';
-                      } }}>
+                    }}>
                     {tab.label} ({tab.count})</button>
                 ))}</div></div>
 

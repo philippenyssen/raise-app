@@ -447,10 +447,8 @@ export default function DealflowPage() {
                         /objection|concern|pushback/i.test(inv.bottleneck) ? `/objections` :
                         `/investors/${inv.id}`
                       }
-                      className="inline-flex items-center gap-1 transition-colors"
-                      style={{ color: 'var(--text-tertiary)', textDecoration: 'none' }}
-                      onMouseEnter={e => { e.currentTarget.style.color = 'var(--warning)'; }}
-                      onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-tertiary)'; }}>
+                      className="inline-flex items-center gap-1 transition-colors hover-text-warning"
+                      style={{ color: 'var(--text-tertiary)', textDecoration: 'none' }}>
                       <span className="truncate">{inv.bottleneck}</span>
                       <ArrowRight className="w-3 h-3 shrink-0" style={{ opacity: 0.7 }} /></Link>
                   ) : (

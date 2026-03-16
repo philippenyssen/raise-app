@@ -298,16 +298,14 @@ export default function ForecastPage() {
                       <Link
                         href={`/meetings/new?investor=${inv.investorId}`}
                         title="Schedule meeting"
-                        className="flex items-center justify-center shrink-0 transition-colors"
+                        className="flex items-center justify-center shrink-0 hover-bg-fg5"
                         style={{
                           width: '24px',
                           height: '24px',
                           borderRadius: 'var(--radius-sm)',
                           background: 'var(--warning-muted)',
                           color: 'var(--text-tertiary)',
-                          textDecoration: 'none', }}
-                        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--fg-5)'; }}
-                        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--warning-muted)'; }}>
+                          textDecoration: 'none', }}>
                         <Calendar className="w-3 h-3" /></Link>
                     )}
                   </div>);
@@ -338,7 +336,7 @@ export default function ForecastPage() {
                   <Link
                     key={i}
                     href={riskLink}
-                    className="transition-colors"
+                    className="hover-bg-fg6"
                     style={{
                       display: 'flex',
                       alignItems: 'flex-start',
@@ -346,10 +344,7 @@ export default function ForecastPage() {
                       padding: 'var(--space-2) var(--space-3)',
                       background: 'var(--danger-muted)',
                       borderRadius: 'var(--radius-sm)',
-                      textDecoration: 'none',
-                      transition: 'background 150ms ease', }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--fg-6)'; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--danger-muted)'; }}>
+                      textDecoration: 'none', }}>
                     <span style={{ color: 'var(--text-primary)', marginTop: '2px', flexShrink: 0 }}>
                       <AlertTriangle className="w-3 h-3" /></span>
                     <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', lineHeight: 1.5, flex: 1 }}>
@@ -372,10 +367,8 @@ export default function ForecastPage() {
               {hasExclusions ? (
                 <button
                   onClick={() => setExcludedIds(new Set())}
-                  className="flex items-center gap-1 transition-opacity"
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--accent)', fontWeight: 400, fontSize: 'var(--font-size-xs)' }}
-                  onMouseEnter={e => { e.currentTarget.style.opacity = '0.7'; }}
-                  onMouseLeave={e => { e.currentTarget.style.opacity = '1'; }}>
+                  className="flex items-center gap-1 hover-opacity-70"
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--accent)', fontWeight: 400, fontSize: 'var(--font-size-xs)' }}>
                   <RotateCcw className="w-3 h-3" /> Reset what-if</button>
               ) : (
                 'Click the toggle icons to exclude investors and see the impact'
@@ -539,7 +532,7 @@ export default function ForecastPage() {
                   <Link
                     key={inv.investorId}
                     href={`/investors/${inv.investorId}`}
-                    className="transition-colors"
+                    className="hover-brighten"
                     style={{
                       display: 'flex',
                       alignItems: 'center',
@@ -547,10 +540,7 @@ export default function ForecastPage() {
                       padding: 'var(--space-1) var(--space-2)',
                       borderRadius: 'var(--radius-sm)',
                       background: bg,
-                      textDecoration: 'none',
-                      transition: 'filter 150ms ease', }}
-                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.filter = 'brightness(1.1)'; }}
-                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.filter = 'none'; }}>
+                      textDecoration: 'none', }}>
                     <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '60%' }}>
                       {inv.investorName}</span>
                     <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontVariantNumeric: 'tabular-nums', flexShrink: 0 }}>

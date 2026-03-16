@@ -646,6 +646,51 @@ body {
   opacity: 0.7;
 }
 
+.hover-accent-fill {
+  transition: background 150ms ease, color 150ms ease;
+}
+.hover-accent-fill:hover {
+  background: var(--accent) !important;
+  color: white !important;
+}
+
+.hover-accent-subtle {
+  transition: background 150ms ease, color 150ms ease;
+}
+.hover-accent-subtle:hover {
+  background: var(--accent-muted) !important;
+  color: var(--accent) !important;
+}
+
+.hover-filter-tab {
+  transition: background 150ms ease, color 150ms ease;
+}
+.hover-filter-tab:hover {
+  background: var(--surface-2) !important;
+  color: var(--text-secondary) !important;
+}
+
+.hover-bg-fg5 {
+  transition: background 150ms ease;
+}
+.hover-bg-fg5:hover {
+  background: var(--fg-5) !important;
+}
+
+.hover-bg-fg6 {
+  transition: background 150ms ease;
+}
+.hover-bg-fg6:hover {
+  background: var(--fg-6) !important;
+}
+
+.hover-brighten {
+  transition: filter 150ms ease;
+}
+.hover-brighten:hover {
+  filter: brightness(1.1);
+}
+
 .task-row-hover {
   transition: border-color 150ms ease;
 }
@@ -684,6 +729,60 @@ body {
 }
 .hover-border:hover .hover-show-actions {
   opacity: 1;
+}
+
+.hover-underline {
+  transition: text-decoration 150ms ease;
+}
+.hover-underline:hover {
+  text-decoration: underline;
+}
+
+.hover-text-secondary {
+  transition: color 150ms ease;
+}
+.hover-text-secondary:hover {
+  color: var(--text-secondary) !important;
+}
+
+.hover-accent-bg-fill {
+  transition: background 150ms ease;
+}
+.hover-accent-bg-fill:hover {
+  background: var(--accent-hover) !important;
+}
+
+.icon-complete {
+  color: var(--text-muted);
+  transition: all 150ms ease;
+}
+.icon-complete:hover {
+  color: var(--success);
+  background: var(--success-muted);
+}
+
+.icon-skip {
+  color: var(--text-muted);
+  transition: all 150ms ease;
+}
+.icon-skip:hover {
+  color: var(--danger);
+  background: var(--danger-muted);
+}
+
+.hover-text-warning {
+  transition: color 150ms ease;
+}
+.hover-text-warning:hover {
+  color: var(--warning) !important;
+}
+
+.hover-accent-invert {
+  transition: all 150ms ease;
+}
+.hover-accent-invert:hover {
+  background: var(--accent) !important;
+  color: var(--surface-0) !important;
 }
 
 /* Pipeline card hover — eliminates useState from 50+ kanban cards */

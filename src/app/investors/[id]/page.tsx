@@ -738,18 +738,12 @@ export default function InvestorDetailPage() {
                     <div className="flex gap-1 shrink-0">
                       <button
                         onClick={() => quickComplete(f.id)}
-                        className="p-1 rounded transition-colors"
-                        style={{ color: 'var(--text-muted)', transition: 'all 150ms ease' }}
-                        onMouseEnter={e => { e.currentTarget.style.color = 'var(--success)'; e.currentTarget.style.background = 'var(--success-muted)'; }}
-                        onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.background = 'transparent'; }}
+                        className="p-1 rounded icon-complete"
                         title="Mark done">
                         <CheckCircle2 className="w-3.5 h-3.5" /></button>
                       <button
                         onClick={() => quickSkip(f.id)}
-                        className="p-1 rounded transition-colors"
-                        style={{ color: 'var(--text-muted)', transition: 'all 150ms ease' }}
-                        onMouseEnter={e => { e.currentTarget.style.color = 'var(--danger)'; e.currentTarget.style.background = 'var(--danger-muted)'; }}
-                        onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.background = 'transparent'; }}
+                        className="p-1 rounded icon-skip"
                         title="Skip">
                         <XCircle className="w-3.5 h-3.5" /></button></div>
                   </div>);

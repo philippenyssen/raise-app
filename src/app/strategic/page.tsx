@@ -552,9 +552,7 @@ function RecommendationRow({ rec, isLast }: { rec: StrategicRecommendation; isLa
               {rec.deadline}</span>
             <Link
               href={actionLink.route}
-              onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent)'; e.currentTarget.style.color = 'var(--surface-0)'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'var(--accent-muted)'; e.currentTarget.style.color = 'var(--accent)'; }}
-              className="ml-auto flex items-center gap-1 transition-colors"
+              className="ml-auto flex items-center gap-1 transition-colors hover-accent-invert"
               style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, padding: '3px 10px', borderRadius: 'var(--radius-sm)', background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid var(--accent-muted)', transition: 'all 150ms ease', textDecoration: 'none' }}>
               {actionLink.label}
               <ExternalLink className="w-3 h-3" /></Link></div></div></div>

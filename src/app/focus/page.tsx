@@ -385,18 +385,14 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                 <Link
                   href={`/meetings/new?investor=${item.investorId}`}
                   title="Schedule meeting"
-                  className="flex items-center justify-center transition-colors"
-                  style={{ width: '28px', height: '28px', borderRadius: 'var(--radius-md)', background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid var(--accent-8)', transition: 'all 150ms ease' }}
-                  onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent)'; e.currentTarget.style.color = 'white'; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = 'var(--accent-muted)'; e.currentTarget.style.color = 'var(--accent)'; }}>
+                  className="flex items-center justify-center hover-accent-fill"
+                  style={{ width: '28px', height: '28px', borderRadius: 'var(--radius-md)', background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid var(--accent-8)' }}>
                   <Calendar className="w-3.5 h-3.5" /></Link>
                 <Link
                   href={`/meetings/prep?investor=${item.investorId}`}
                   title="Prep meeting"
-                  className="flex items-center justify-center transition-colors"
-                  style={{ width: '28px', height: '28px', borderRadius: 'var(--radius-md)', background: 'var(--surface-2)', color: 'var(--text-secondary)', transition: 'all 150ms ease' }}
-                  onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-muted)'; e.currentTarget.style.color = 'var(--accent)'; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = 'var(--surface-2)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}>
+                  className="flex items-center justify-center hover-accent-subtle"
+                  style={{ width: '28px', height: '28px', borderRadius: 'var(--radius-md)', background: 'var(--surface-2)', color: 'var(--text-secondary)' }}>
                   <Zap className="w-3.5 h-3.5" /></Link></div></div></div>
 
         {/* Impact + Risk row */}

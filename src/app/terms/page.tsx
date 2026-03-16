@@ -225,9 +225,7 @@ export default function TermsPage() {
                     <div className="flex items-center justify-between gap-2">
                       {ts.investor}
                       <div className="flex gap-1 shrink-0">
-                        <button onClick={() => startEdit(ts)} className="text-xs transition-colors" style={stTextMuted} aria-label={`Edit ${ts.investor} term sheet`}
-                          onMouseEnter={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
-                          onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-muted)')}>Edit</button>
+                        <button onClick={() => startEdit(ts)} className="text-xs tab-hover" style={stTextMuted} aria-label={`Edit ${ts.investor} term sheet`}>Edit</button>
                         <button onClick={() => setDeleteTarget({ id: ts.id, investor: ts.investor })} className="text-xs transition-colors icon-delete" aria-label={`Delete ${ts.investor} term sheet`}>Del</button></div></div></th>
                 ))}
                 <th className="text-left px-4 py-3 text-xs font-normal" style={stTextMuted}>Market Standard</th></tr></thead>

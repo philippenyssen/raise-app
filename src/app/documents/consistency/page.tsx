@@ -88,10 +88,8 @@ export default function ConsistencyPage() {
           <p className="font-normal" style={stTextPrimary}>{error}</p>
           <button
             onClick={fetchConsistency}
-            className="mt-3 text-sm underline transition-colors"
-            style={{ color: 'var(--text-tertiary)' }}
-            onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-secondary)'; }}
-            onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-tertiary)'; }}>
+            className="mt-3 text-sm underline tab-hover"
+            style={{ color: 'var(--text-tertiary)' }}>
             Try again</button></div>
       )}
 

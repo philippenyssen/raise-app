@@ -311,15 +311,13 @@ function QuickCaptureInner() {
             {investorId && (
               <Link
                 href={`/investors/${investorId}`}
-                className="btn btn-md transition-colors"
+                className="btn btn-md transition-colors hover-accent-bg-fill"
                 style={{
                   background: 'var(--accent)',
                   color: 'var(--text-primary)',
                   border: '1px solid transparent',
                   textDecoration: 'none',
-                  gap: 'var(--space-2)', }}
-                onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-hover)'; }}
-                onMouseLeave={e => { e.currentTarget.style.background = 'var(--accent)'; }}>
+                  gap: 'var(--space-2)', }}>
                 <ExternalLink className="w-3.5 h-3.5" /> View {selectedInvestor?.name || 'Investor'}</Link>
             )}
             <button
@@ -483,10 +481,8 @@ function QuickCaptureInner() {
         <button
           type="submit"
           disabled={loading || !investorId || !rawNotes.trim()}
-          className="btn btn-lg transition-colors"
-          style={{ background: loading ? 'var(--surface-3)' : 'var(--accent)', color: loading ? 'var(--text-tertiary)' : 'white', border: '1px solid transparent', padding: 'var(--space-4) var(--space-6)', fontSize: 'var(--font-size-md)', fontWeight: 400, width: '100%', opacity: (!investorId || !rawNotes.trim()) && !loading ? 0.5 : 1, cursor: loading || !investorId || !rawNotes.trim() ? 'not-allowed' : 'pointer' }}
-          onMouseEnter={e => { if (!loading) e.currentTarget.style.background = 'var(--accent-hover)'; }}
-          onMouseLeave={e => { if (!loading) e.currentTarget.style.background = 'var(--accent)'; }}>
+          className={`btn btn-lg transition-colors${loading ? '' : ' hover-accent-bg-fill'}`}
+          style={{ background: loading ? 'var(--surface-3)' : 'var(--accent)', color: loading ? 'var(--text-tertiary)' : 'white', border: '1px solid transparent', padding: 'var(--space-4) var(--space-6)', fontSize: 'var(--font-size-md)', fontWeight: 400, width: '100%', opacity: (!investorId || !rawNotes.trim()) && !loading ? 0.5 : 1, cursor: loading || !investorId || !rawNotes.trim() ? 'not-allowed' : 'pointer' }}>
           {loading ? (
             <span style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', justifyContent: 'center' }}>
               <Loader2 className="w-5 h-5" style={{ animation: 'spin 1s linear infinite' }} />

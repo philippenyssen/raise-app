@@ -241,10 +241,8 @@ export default function DocumentsPage() {
                     {flag.document_id && (
                       <Link
                         href={`/documents/${flag.document_id}`}
-                        className="text-xs underline transition-colors"
-                        style={stAccent}
-                        onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.8'; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}>
+                        className="text-xs underline hover-opacity-link"
+                        style={stAccent}>
                         Open document</Link>
                     )}</div></div>
                 <div className="flex gap-1 shrink-0">
@@ -269,10 +267,8 @@ export default function DocumentsPage() {
           <p style={stTextMuted}>No documents yet. Create your first investment memo, presentation deck, or one-pager to get started.</p>
           <Link
             href="/documents/new"
-            className="text-sm transition-colors"
-            style={stAccent}
-            onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.8'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}>
+            className="text-sm hover-opacity-link"
+            style={stAccent}>
             Create your first document</Link></div>
       ) : (
         <div className="space-y-8">

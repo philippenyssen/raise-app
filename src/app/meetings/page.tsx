@@ -152,9 +152,8 @@ function MeetingOutcomeSection({
             Outcome Recorded</div>
           <button
             onClick={() => setEditing(true)}
-            style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)', background: 'none', border: 'none', cursor: 'pointer' }}
-            onMouseEnter={e => (e.currentTarget.style.textDecoration = 'underline')}
-            onMouseLeave={e => (e.currentTarget.style.textDecoration = 'none')}>
+            className="hover-underline"
+            style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)', background: 'none', border: 'none', cursor: 'pointer' }}>
             Edit</button></div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3" style={stFontXs}>
@@ -580,12 +579,10 @@ export default function MeetingsPage() {
                 <div className="mt-3" style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-3)' }}>
                   <button
                     onClick={() => setExpandedOutcome(isOutcomeExpanded ? null : m.id)}
-                    className="flex items-center gap-2 w-full"
+                    className={`flex items-center gap-2 w-full${hasOutcome ? '' : ' hover-text-secondary'}`}
                     aria-expanded={isOutcomeExpanded}
                     aria-label={hasOutcome ? 'Meeting Outcome' : 'Record Outcome'}
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontSize: 'var(--font-size-sm)', fontWeight: 400, color: hasOutcome ? 'var(--success)' : 'var(--text-tertiary)' }}
-                    onMouseEnter={e => (e.currentTarget.style.color = hasOutcome ? 'var(--success)' : 'var(--text-secondary)')}
-                    onMouseLeave={e => (e.currentTarget.style.color = hasOutcome ? 'var(--success)' : 'var(--text-tertiary)')}>
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontSize: 'var(--font-size-sm)', fontWeight: 400, color: hasOutcome ? 'var(--success)' : 'var(--text-tertiary)' }}>
                     {isOutcomeExpanded
                       ? <ChevronDown className="w-3.5 h-3.5" />
                       : <ChevronRight className="w-3.5 h-3.5" />
