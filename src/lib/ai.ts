@@ -3,6 +3,7 @@ import { logSkillExecution } from './db';
 
 export const AI_MODEL = 'claude-sonnet-4-6';
 const SYS_JSON = 'You are a fundraise intelligence AI. Return only valid JSON. No markdown code blocks, no explanations outside the JSON structure.';
+const SYS_ADVISOR = 'You are a Series C fundraise advisor. Be concise, specific, and actionable. Focus on what matters for closing the deal.';
 
 let _client: Anthropic | null = null;
 export function getAIClient(): Anthropic {
@@ -192,10 +193,8 @@ export async function analyzePatterns(meetings: { raw_notes: string; objections:
   convergence_signals: string[];
 }> {
   const meetingSummaries = meetings.map(m => {
-    let objs: { text: string }[] = [];
-    try { objs = JSON.parse(m.objections || '[]'); } catch { /* use default */ }
-    let signals: unknown = {};
-    try { signals = JSON.parse(m.engagement_signals || '{}'); } catch { /* use default */ }
+    const { parsed: objs } = safeParseJSON<{ text: string }[]>(m.objections || '[]', []);
+    const { parsed: signals } = safeParseJSON<unknown>(m.engagement_signals || '{}', {});
     return `
 DATE: ${m.date} | INVESTOR: ${m.investor_name} | ENTHUSIASM: ${m.enthusiasm_score}/5
 OBJECTIONS: ${objs.map((o) => o.text).join('; ') || 'None recorded'}
@@ -284,7 +283,7 @@ export async function improveSection(section: string, instruction: string, conte
       model: AI_MODEL,
       max_tokens: 4096,
       temperature: 0.3,
-      system: 'You are a Series C fundraise advisor. Be concise, specific, and actionable. Focus on what matters for closing the deal.',
+      system: SYS_ADVISOR,
       messages: [{
         role: 'user',
         content: `Improve the following section of a Series C fundraise document in expert investment banking memo style.
@@ -561,10 +560,8 @@ export async function generateInvestorBrief(
   suggested_meeting_arc: string;
 }> {
   const meetingSummaries = meetingHistory.map(m => {
-    let objs: { text: string; severity: string }[] = [];
-    try { objs = JSON.parse(m.objections || '[]'); } catch { /* use default */ }
-    let signals: Record<string, unknown> = {};
-    try { signals = JSON.parse(m.engagement_signals || '{}'); } catch { /* use default */ }
+    const { parsed: objs } = safeParseJSON<{ text: string; severity: string }[]>(m.objections || '[]', []);
+    const { parsed: signals } = safeParseJSON<Record<string, unknown>>(m.engagement_signals || '{}', {});
     return `DATE: ${m.date} | TYPE: ${m.type} | ENTHUSIASM: ${m.enthusiasm_score}/5
 NOTES: ${m.raw_notes.substring(0, 600)}
 OBJECTIONS: ${objs.map(o => `[${o.severity}] ${o.text}`).join('; ') || 'None'}
@@ -640,7 +637,7 @@ export async function polishGoldmanStyle(content: string): Promise<string> {
       model: AI_MODEL,
       max_tokens: 4096,
       temperature: 0.3,
-      system: 'You are a Series C fundraise advisor. Be concise, specific, and actionable. Focus on what matters for closing the deal.',
+      system: SYS_ADVISOR,
       messages: [{
         role: 'user',
         content: `Rewrite this content in Goldman Sachs ECM Managing Director style — concise, authoritative investment banking memo:

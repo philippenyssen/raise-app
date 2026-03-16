@@ -376,17 +376,7 @@ function computeMeetingQualityScore(
   let deepDiveCount = 0;
 
   for (const m of meetings) {
-    // Meeting type quality
-    const typeScores: Record<string, number> = {
-      intro: 2,
-      management_presentation: 4,
-      deep_dive: 6,
-      site_visit: 7,
-      dd_session: 8,
-      negotiation: 9,
-      social: 3,
-    };
-    totalScore += typeScores[m.type] || 2;
+    totalScore += MEETING_TYPE_SCORES[m.type] || 2;
 
     if (m.type === 'deep_dive' || m.type === 'dd_session' || m.type === 'site_visit') {
       deepDiveCount++;
@@ -438,17 +428,13 @@ function computeMeetingQualityScore(
   return { name: 'Meeting Quality', score, signal: signal(score), evidence: parts.join(', ') };
 }
 
+const MEETING_TYPE_SCORES: Record<string, number> = {
+  intro: 2, management_presentation: 4, deep_dive: 6,
+  site_visit: 7, dd_session: 8, negotiation: 9, social: 3,
+};
+
 function typeScores(type: string): number {
-  const scores: Record<string, number> = {
-    intro: 2,
-    management_presentation: 4,
-    deep_dive: 6,
-    site_visit: 7,
-    dd_session: 8,
-    negotiation: 9,
-    social: 3,
-  };
-  return scores[type] || 2;
+  return MEETING_TYPE_SCORES[type] || 2;
 }
 
 export function computeMomentumScore(
