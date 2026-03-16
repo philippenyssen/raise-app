@@ -401,6 +401,32 @@ export default function Dashboard() {
 
   const meetingStreak = useMemo(() => { const days = new Set(activity.filter(a => a.event_type === 'meeting').map(a => a.created_at?.split('T')[0])); if (days.size === 0) return 0; let s = 0; for (const d = new Date(); s < 365; d.setDate(d.getDate() - 1)) { if (days.has(d.toISOString().split('T')[0])) s++; else if (s > 0) break; else if (s === 0 && d.getTime() < Date.now() - 366 * 864e5) break; } return s; }, [activity]);
   const identifiedCount = data ? data.totalInvestors - data.funnel.contacted - (data.funnel.passed ?? 0) : 0;
+
+  // Phase detection: adapt the dashboard to where the user is in the fundraise
+  const fundraisePhase = useMemo(() => {
+    if (!data || data.totalInvestors === 0) return 'empty' as const;
+    const hasContacted = data.funnel.contacted > 0;
+    const hasMeetings = data.totalMeetings > 0;
+    const hasDD = data.funnel.in_dd > 0;
+    const hasTermSheets = data.funnel.term_sheets > 0;
+    if (hasTermSheets) return 'closing' as const;
+    if (hasDD) return 'diligence' as const;
+    if (hasMeetings) return 'active' as const;
+    if (hasContacted) return 'outreach' as const;
+    return 'setup' as const;
+  }, [data]);
+
+  const setupChecklist = useMemo(() => {
+    if (!data) return [];
+    const dqDone = (dataQuality?.overallCompleteness ?? 0) >= 50;
+    return [
+      { label: 'Add target investors', done: data.totalInvestors > 0, link: '/investors', detail: `${data.totalInvestors} investor${data.totalInvestors !== 1 ? 's' : ''} added` },
+      { label: 'Enrich investor profiles', done: dqDone, link: '/investors', detail: dqDone ? `${Math.round(dataQuality?.overallCompleteness ?? 0)}% complete` : 'Add partner names, check sizes, thesis fit' },
+      { label: 'Prepare data room', done: false, link: '/data-room', detail: 'Upload deck, financials, and key documents' },
+      { label: 'Begin outreach', done: data.funnel.contacted > 0, link: '/pipeline', detail: data.funnel.contacted > 0 ? `${data.funnel.contacted} contacted` : 'Move investors to "Contacted" in the pipeline' },
+      { label: 'Schedule first meeting', done: data.totalMeetings > 0, link: '/calendar', detail: data.totalMeetings > 0 ? `${data.totalMeetings} meeting${data.totalMeetings !== 1 ? 's' : ''} logged` : 'Log your first investor meeting' },
+    ];
+  }, [data, dataQuality]);
   const funnelStages = data ? [
     { label: 'Identified', value: identifiedCount > 0 ? identifiedCount : 0 },
     { label: 'Contacted', value: data.funnel.contacted },
@@ -531,8 +557,53 @@ export default function Dashboard() {
 
       {(!data || data.totalInvestors > 0) && (
         <>
-          {/* Fundraise Health Score */}
-          {(() => {
+          {/* Setup Phase Guide — shows when fundraise hasn't started active outreach yet */}
+          {(fundraisePhase === 'setup' || fundraisePhase === 'outreach') && (
+            <div style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-6)' }}>
+              <div className="flex items-center gap-3" style={{ marginBottom: 'var(--space-4)' }}>
+                <span style={{ color: 'var(--accent)' }}><ClipboardList className="w-5 h-5" /></span>
+                <div>
+                  <div style={textSmPrimary}>Getting Started</div>
+                  <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginTop: 1 }}>
+                    {fundraisePhase === 'setup' ? 'Set up your pipeline, then start outreach' : 'Great — outreach started. Next: schedule meetings.'}
+                  </div>
+                </div>
+                <div className="ml-auto" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                  {setupChecklist.filter(s => s.done).length}/{setupChecklist.length} complete
+                </div>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+                {setupChecklist.map((step, i) => (
+                  <Link
+                    key={i}
+                    href={step.link}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 'var(--space-3)',
+                      padding: 'var(--space-3) var(--space-4)',
+                      borderRadius: 'var(--radius-md)',
+                      background: step.done ? 'var(--surface-0)' : 'var(--surface-2)',
+                      border: step.done ? '1px solid var(--border-subtle)' : '1px solid var(--border-default)',
+                      textDecoration: 'none',
+                      opacity: step.done ? 0.7 : 1,
+                    }}>
+                    <span style={{ width: 20, height: 20, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: step.done ? 'var(--accent)' : 'var(--surface-3)', color: step.done ? 'var(--surface-0)' : 'var(--text-muted)', fontSize: 'var(--font-size-xs)', fontWeight: 400, flexShrink: 0 }}>
+                      {step.done ? <CheckCircle2 className="w-3 h-3" /> : <span>{i + 1}</span>}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: step.done ? 300 : 400, color: step.done ? 'var(--text-tertiary)' : 'var(--text-primary)', textDecoration: step.done ? 'line-through' : 'none' }}>{step.label}</div>
+                      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 1 }}>{step.detail}</div>
+                    </div>
+                    {!step.done && <ChevronRight className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)', flexShrink: 0 }} />}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Fundraise Health Score — only shown once active outreach begins */}
+          {fundraisePhase !== 'setup' && fundraisePhase !== 'outreach' && (() => {
             const { healthScore, scoreClr, velScore, convRate, heatScore, fuRate, dqScore } = healthScoreMemo;
             return (
               <div className="flex items-center gap-5" style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-4) var(--space-6)' }}>

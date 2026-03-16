@@ -131,10 +131,12 @@ async function genericCreate(
   data: Record<string, unknown>,
   opts?: { timestamps?: string[] },
 ): Promise<string> {
+  assertIdentifier(tableName);
   await ensureInitialized();
   const id = crypto.randomUUID();
   const now = new Date().toISOString();
   const entries = Object.entries(data).filter(([, v]) => v !== undefined);
+  entries.forEach(([k]) => assertIdentifier(k));
   const tsCols = opts?.timestamps ?? ['created_at', 'updated_at'];
   const cols = ['id', ...entries.map(([k]) => k), ...tsCols];
   const vals: InValue[] = [id, ...entries.map(([, v]) => v as InValue), ...tsCols.map(() => now)];

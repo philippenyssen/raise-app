@@ -100,10 +100,10 @@ export function Sidebar() {
   }, {});
 
   const sectionLabels: Record<string, string> = {
-    CORE: '',
-    EXECUTE: 'Execute',
-    ANALYZE: 'Analyze',
-    WORKSPACE: 'Workspace',};
+    DAILY: '',
+    PIPELINE: 'Pipeline',
+    INTEL: 'Intelligence',
+    TOOLS: 'Materials',};
 
   return (
     <>
