@@ -199,16 +199,16 @@ export default function BacklogPage() {
         <div className="rounded-xl p-4 space-y-3" style={stSurface1}>
           <h3 className="text-sm font-normal" style={stTextPrimary}>Add Revenue Commitment</h3>
           <div className="grid grid-cols-3 gap-3">
-            <input placeholder="e.g., ESA, Belgian MoD" value={form.customer} onChange={e => setForm(f => ({ ...f, customer: e.target.value }))} className="input" autoFocus maxLength={200}
+            <input aria-label="Customer name" placeholder="e.g., ESA, Belgian MoD" value={form.customer} onChange={e => setForm(f => ({ ...f, customer: e.target.value }))} className="input" autoFocus maxLength={200}
               />
-            <input placeholder="e.g., IRIS2 Phase 2" value={form.program} onChange={e => setForm(f => ({ ...f, program: e.target.value }))} className="input" maxLength={200}
+            <input aria-label="Program name" placeholder="e.g., IRIS2 Phase 2" value={form.program} onChange={e => setForm(f => ({ ...f, program: e.target.value }))} className="input" maxLength={200}
               />
-            <select value={form.contract_type} onChange={e => setForm(f => ({ ...f, contract_type: e.target.value }))} className="input">
+            <select aria-label="Contract type" value={form.contract_type} onChange={e => setForm(f => ({ ...f, contract_type: e.target.value }))} className="input">
               <option value="" disabled>Select type...</option>
               {Object.entries(TYPE_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select>
-            <input type="number" min="0" step="0.1" placeholder="Total Amount (€M)" value={form.amount_eur} onChange={e => setForm(f => ({ ...f, amount_eur: e.target.value }))} className="input"
+            <input aria-label="Total amount in millions" type="number" min="0" step="0.1" placeholder="Total Amount (€M)" value={form.amount_eur} onChange={e => setForm(f => ({ ...f, amount_eur: e.target.value }))} className="input"
               />
-            <input type="number" min="0" step="0.1" placeholder="Annual Amount (€M)" value={form.annual_amount} onChange={e => setForm(f => ({ ...f, annual_amount: e.target.value }))} className="input"
+            <input aria-label="Annual amount in millions" type="number" min="0" step="0.1" placeholder="Annual Amount (€M)" value={form.annual_amount} onChange={e => setForm(f => ({ ...f, annual_amount: e.target.value }))} className="input"
               />
             <input type="number" step="0.05" min="0" max="1" placeholder="Confidence: 1.0=signed, 0.7=LOI, 0.3=pipeline" value={form.confidence} onChange={e => setForm(f => ({ ...f, confidence: e.target.value }))} className="input" title="1.0 = signed contract, 0.7 = LOI/MOU, 0.5 = verbal, 0.3 = pipeline"
               />

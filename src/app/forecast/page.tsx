@@ -19,7 +19,7 @@ const mbSpace6 = { marginBottom: 'var(--space-6)' } as const;
 const padSpace5 = { padding: 'var(--space-5)' } as const;
 const fontSmPrimary = { ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' } as const;
 const cellPad34 = cellPad;
-const progressTrack = { flex: 1, height: '6px', background: 'var(--surface-3)', borderRadius: '3px', overflow: 'hidden' } as const;
+const progressTrack = { flex: 1, height: '6px', background: 'var(--surface-3)', borderRadius: 'var(--radius-sm)', overflow: 'hidden' } as const;
 const critPathItem = { display: 'flex', alignItems: 'center', gap: 'var(--space-2)', padding: 'var(--space-2) var(--space-3)', background: 'var(--surface-1)', borderRadius: 'var(--radius-sm)' } as const;
 const critPathBadge = { width: '18px', height: '18px', borderRadius: '50%', background: 'var(--warning-muted)', color: 'var(--text-tertiary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'var(--font-size-xs)', fontWeight: 300, flexShrink: 0 } as const;
 const critPathLink = { fontSize: 'var(--font-size-xs)', fontWeight: 400, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textDecoration: 'none', display: 'block' } as const;
@@ -36,8 +36,8 @@ const distBarFillBase: React.CSSProperties = { height: '100%', borderRadius: 'va
 const mbSpace1: React.CSSProperties = { marginBottom: 'var(--space-1)' };
 const progressBarTrack: React.CSSProperties = { width: '100%', height: '28px', background: 'var(--surface-2)', borderRadius: 'var(--radius-md)', overflow: 'hidden', position: 'relative' };
 const progressBarLabel: React.CSSProperties = { position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: 'var(--font-size-sm)', fontWeight: 300, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' };
-const legendDotCommitted: React.CSSProperties = { width: '12px', height: '12px', borderRadius: '3px', background: 'var(--accent)' };
-const legendDotExpected: React.CSSProperties = { width: '12px', height: '12px', borderRadius: '3px', background: 'var(--accent-muted)' };
+const legendDotCommitted: React.CSSProperties = { width: '12px', height: '12px', borderRadius: 'var(--radius-sm)', background: 'var(--accent)' };
+const legendDotExpected: React.CSSProperties = { width: '12px', height: '12px', borderRadius: 'var(--radius-sm)', background: 'var(--accent-muted)' };
 
 const DIST_CONFIG = [
   { label: 'High', key: 'high' as const, color: 'var(--text-secondary)', bg: 'var(--success-muted)' },
