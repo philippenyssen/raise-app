@@ -113,11 +113,13 @@ export default function PipelinePage() {
   const [quickAddName, setQuickAddName] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [showStaleOnly, setShowStaleOnly] = useState(false);
+  const [followupMap, setFollowupMap] = useState<Map<string, number>>(new Map());
 
   useEffect(() => { document.title = 'Raise | Investor Pipeline'; }, []);
   const loadPipeline = useCallback(() => {
     fetchInvestors();
     cachedFetch('/api/at-risk').then(r => r.ok ? r.json() : null).then(d => { if (d?.scoreReversals) { const m = new Map<string, number>(); d.scoreReversals.forEach((r: { investorId: string; delta: number }) => m.set(r.investorId, r.delta)); setScoreDeltaMap(m); } }).catch(e => console.error('[PIPELINE_ATRISK]', e instanceof Error ? e.message : e));
+    cachedFetch('/api/followups?status=pending').then(r => r.ok ? r.json() : []).then((data: { investor_id: string }[]) => { if (Array.isArray(data)) { const m = new Map<string, number>(); data.forEach(f => m.set(f.investor_id, (m.get(f.investor_id) || 0) + 1)); setFollowupMap(m); } }).catch(e => console.error('[PIPELINE_FOLLOWUPS]', e instanceof Error ? e.message : e));
   }, []);
   useRefreshInterval(loadPipeline, 5 * MS_PER_MINUTE);
 
@@ -517,6 +519,7 @@ export default function PipelinePage() {
                       key={inv.id}
                       investor={inv}
                       convictionDelta={scoreDeltaMap.get(inv.id) ?? null}
+                      followupCount={followupMap.get(inv.id) ?? 0}
                       isDragging={dragId === inv.id}
                       isKbSelected={selectedId === inv.id}
                       isCompareSelected={compareIds.has(inv.id)}
@@ -592,6 +595,7 @@ export default function PipelinePage() {
                             investor={inv}
                             compact
                             convictionDelta={scoreDeltaMap.get(inv.id) ?? null}
+                            followupCount={followupMap.get(inv.id) ?? 0}
                             isDragging={dragId === inv.id}
                             isCompareSelected={compareIds.has(inv.id)}
                             onToggleCompare={toggleCompare}
@@ -783,6 +787,7 @@ function InvestorCard({
   investor,
   compact = false,
   convictionDelta = null,
+  followupCount = 0,
   isDragging,
   isKbSelected = false,
   isCompareSelected = false,
@@ -793,6 +798,7 @@ function InvestorCard({
   investor: Investor;
   compact?: boolean;
   convictionDelta?: number | null;
+  followupCount?: number;
   isDragging: boolean;
   isKbSelected?: boolean;
   isCompareSelected?: boolean;
@@ -865,6 +871,7 @@ function InvestorCard({
           <span className="inline-flex items-center gap-1" style={{ ...badgeSmall, ...TYPE_STYLES[investor.type as InvestorType] }}>
             <TypeIcon className="w-2.5 h-2.5" />{TYPE_LABELS[investor.type as InvestorType] ?? investor.type}</span>
           <span style={{ ...badgeSmall, ...TIER_STYLES[investor.tier] }}>T{investor.tier}</span>
+          {followupCount > 0 && <span title={`${followupCount} pending follow-up${followupCount > 1 ? 's' : ''}`} style={{ ...badgeSmall, background: 'var(--accent-muted)', color: 'var(--accent)' }}>{followupCount} due</span>}
           {isStale && <span style={{ ...badgeSmall, background: 'var(--warning-muted)', color: 'var(--warning)' }}>Stale</span>}
           {convictionDelta !== null && convictionDelta !== 0 && <span style={{ ...badgeSmall, background: convictionDelta > 0 ? 'var(--success-muted)' : 'var(--warning-muted)', color: convictionDelta > 0 ? 'var(--success)' : 'var(--danger)' }}>{convictionDelta > 0 ? '+' : ''}{convictionDelta}</span>}
           {(() => { const d = Math.floor((Date.now() - new Date(investor.updated_at).getTime()) / 864e5); return d > 0 ? <span title="Time in current stage" style={{ ...badgeSmall, color: d >= 14 ? 'var(--warning)' : 'var(--text-muted)', background: 'var(--white-8)' }}>{d}d</span> : null; })()}

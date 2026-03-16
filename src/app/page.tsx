@@ -293,7 +293,7 @@ export default function Dashboard() {
   const [refreshing, setRefreshing] = useState(false);
   const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
   const [sectionErrors, setSectionErrors] = useState<Record<string, boolean>>({});
-  const [focusMode, setFocusMode] = useState(false);
+  const [focusMode, setFocusMode] = useState(true);
   const [narrativeBrief, setNarrativeBrief] = useState<string | null>(null);
 
   const safeFetch = useCallback(async <T,>(
@@ -483,8 +483,8 @@ export default function Dashboard() {
                 Updated {relativeTime(lastRefresh)}</span>
             )}</p></div>
         <div className="flex items-center" style={{ gap: 'var(--space-2)' }}>
-          <button onClick={() => setFocusMode(f => !f)} className="btn btn-secondary btn-sm" title="Show only essential sections">
-            <Target className="w-3.5 h-3.5" /> {focusMode ? 'Full' : 'Focus'}</button>
+          <button onClick={() => setFocusMode(f => !f)} className="btn btn-secondary btn-sm" title={focusMode ? 'Show all sections' : 'Show essential sections only'}>
+            <Target className="w-3.5 h-3.5" /> {focusMode ? 'Show All' : 'Compact'}</button>
           <button
             onClick={() => fetchData(true)}
             disabled={refreshing}
@@ -894,7 +894,7 @@ export default function Dashboard() {
                 <h2 className="section-title flex items-center gap-2">
                   <Target className="w-4 h-4" /> Top focus today</h2>
                 <Link
-                  href="/focus"
+                  href="/decide"
                   className="flex items-center gap-1"
                   style={labelAccent}>
                   Full priority queue <ArrowRight className="w-3 h-3" /></Link></div>
@@ -1019,7 +1019,7 @@ export default function Dashboard() {
               <div className="flex items-center justify-between mb-3">
                 <h2 className="section-title flex items-center gap-2">
                   <Zap className="w-4 h-4" /> Acceleration alerts</h2>
-                <Link href="/focus" className="flex items-center gap-1" style={labelAccent}>
+                <Link href="/decide" className="flex items-center gap-1" style={labelAccent}>
                   All actions <ArrowRight className="w-3 h-3" /></Link></div>
               <div className="space-y-2">
                 {cp.topAccelerations.map((accel) => {
@@ -1049,8 +1049,32 @@ export default function Dashboard() {
                 })}</div></div>
           )}
 
-          {/* Hot Deals + Follow-ups */}
-          {!focusMode && <><div className="section-divider" /><div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Upcoming follow-ups — always visible (critical actions) */}
+          {pendingFollowups.length > 0 && (
+            <div style={cardPadding}>
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="section-title flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4" /> Upcoming follow-ups</h2>
+                <Link href="/followups" className="flex items-center gap-1" style={labelAccent}>
+                  All follow-ups <ArrowRight className="w-3 h-3" /></Link></div>
+              <div className="space-y-1.5">
+                {pendingFollowups.slice(0, 5).map((fu) => (
+                  <FollowupRow key={fu.id} followup={fu} onComplete={async (id) => {
+                    const prev = pendingFollowups;
+                    setPendingFollowups(p => p.filter(f => f.id !== id));
+                    try {
+                      const res = await fetch('/api/followups', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status: 'completed' }) });
+                      if (!res.ok) throw new Error(`${res.status}`);
+                    } catch (e) { console.error('[FOLLOWUP_COMPLETE]', e instanceof Error ? e.message : e); setPendingFollowups(prev); }
+                  }} />
+                ))}</div></div>
+          )}
+          {sectionErrors.followups && pendingFollowups.length === 0 && (
+            <SectionError label="Follow-ups" onRetry={() => fetchSection('followups')} />
+          )}
+
+          {/* Hot Deals — detail section */}
+          {!focusMode && <><div className="section-divider" />
             <div style={cardPadding}>
               <div className="flex items-center justify-between mb-3">
                 <h2 className="section-title flex items-center gap-2">
@@ -1069,34 +1093,7 @@ export default function Dashboard() {
                   <p style={labelSmMuted}>No active deals scored yet</p>
                   <p style={{ ...labelMuted, marginTop: 'var(--space-1)', opacity: 0.7 }}>Log meetings to generate deal heat scores</p>
                 </div>
-              )}</div>
-
-            <div style={cardPadding}>
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="section-title flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4" /> Upcoming follow-ups</h2>
-                <Link href="/followups" className="flex items-center gap-1" style={labelAccent}>
-                  All follow-ups <ArrowRight className="w-3 h-3" /></Link></div>
-              {sectionErrors.followups && pendingFollowups.length === 0 ? (
-                <SectionError label="Follow-ups" onRetry={() => fetchSection('followups')} />
-              ) : pendingFollowups.length > 0 ? (
-                <div className="space-y-1.5">
-                  {pendingFollowups.slice(0, 5).map((fu) => (
-                    <FollowupRow key={fu.id} followup={fu} onComplete={async (id) => {
-                      const prev = pendingFollowups;
-                      setPendingFollowups(p => p.filter(f => f.id !== id));
-                      try {
-                        const res = await fetch('/api/followups', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status: 'completed' }) });
-                        if (!res.ok) throw new Error(`${res.status}`);
-                      } catch (e) { console.error('[FOLLOWUP_COMPLETE]', e instanceof Error ? e.message : e); setPendingFollowups(prev); }
-                    }} />
-                  ))}</div>
-              ) : (
-                <div style={{ padding: 'var(--space-2) 0' }}>
-                  <p style={labelSmMuted}>No pending follow-ups</p>
-                  <p style={{ ...labelMuted, marginTop: 'var(--space-1)', opacity: 0.7 }}>Follow-ups are created after meeting debriefs</p>
-                </div>
-              )}</div></div></>}
+              )}</div></>}
 
           {/* Pipeline */}
           {!focusMode && <div style={cardPadding}>
@@ -1172,7 +1169,7 @@ export default function Dashboard() {
               <div className="flex items-center justify-between mb-3">
                 <h2 className="section-title flex items-center gap-2">
                   <ClipboardList className="w-4 h-4" /> Upcoming tasks</h2>
-                <Link href="/focus" className="flex items-center gap-1" style={labelAccent}>
+                <Link href="/decide" className="flex items-center gap-1" style={labelAccent}>
                   All tasks <ArrowRight className="w-3 h-3" /></Link></div>
               {sectionErrors.tasks && tasks.length === 0 ? (
                 <SectionError label="Tasks" onRetry={() => fetchSection('tasks')} />
