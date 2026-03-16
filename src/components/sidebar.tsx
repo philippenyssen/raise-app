@@ -14,6 +14,7 @@ import {
   Compass, Target, Swords, MessageCircleWarning, Zap,
   Sparkles, FolderOpen, FileBarChart, Globe, Newspaper, BarChart3, Crosshair,
   Calculator, CircleDot, RotateCcw, Scale,
+  TrendingUp, Gauge, FlaskConical, GitCompareArrows, Rocket,
 } from 'lucide-react';
 
 interface NavItem {
@@ -46,13 +47,18 @@ const nav: NavItem[] = [
   { href: '/network', label: 'Network', icon: Globe, section: 'ANALYZE' },
   { href: '/benchmarking', label: 'Benchmarks', icon: BarChart3, section: 'ANALYZE' },
   { href: '/win-loss', label: 'Win/Loss', icon: Scale, section: 'ANALYZE' },
-  { href: '/win-back', label: 'Win-Back', icon: RotateCcw, section: 'ANALYZE', badge: 'new' },
+  { href: '/momentum', label: 'Momentum', icon: TrendingUp, section: 'ANALYZE' },
+  { href: '/velocity', label: 'Velocity', icon: Gauge, section: 'ANALYZE' },
+  { href: '/acceleration', label: 'Acceleration', icon: Rocket, section: 'ANALYZE' },
+  { href: '/win-back', label: 'Win-Back', icon: RotateCcw, section: 'ANALYZE' },
   // Workspace — materials and tools
   { href: '/workspace', label: 'Workspace', icon: Sparkles, section: 'WORKSPACE' },
   { href: '/documents', label: 'Documents', icon: BookOpen, section: 'WORKSPACE' },
   { href: '/data-room', label: 'Data Room', icon: FolderOpen, section: 'WORKSPACE' },
   { href: '/terms', label: 'Terms', icon: FileText, section: 'WORKSPACE' },
-  { href: '/deal-mechanics', label: 'Deal Mechanics', icon: Calculator, section: 'WORKSPACE', badge: 'new' },
+  { href: '/deal-mechanics', label: 'Deal Mechanics', icon: Calculator, section: 'WORKSPACE' },
+  { href: '/term-compare', label: 'Term Compare', icon: GitCompareArrows, section: 'WORKSPACE' },
+  { href: '/stress-test', label: 'Stress Test', icon: FlaskConical, section: 'WORKSPACE' },
   { href: '/digest', label: 'Digest', icon: Newspaper, section: 'WORKSPACE' },
   { href: '/reports', label: 'Reports', icon: FileBarChart, section: 'WORKSPACE' },
   { href: '/settings', label: 'Settings', icon: Settings, section: 'WORKSPACE' },];
