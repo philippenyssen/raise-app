@@ -21,6 +21,11 @@ const heatCounterStyle = { ...labelMuted, marginTop: 'var(--space-0)' } as const
 
 const cellPad34 = cellPad;
 const meetingTypeBadge = { fontSize: 'var(--font-size-xs)', background: 'var(--surface-2)', color: 'var(--text-muted)', padding: 'var(--space-0) var(--space-1)', borderRadius: 'var(--radius-sm)' } as const;
+const tierBadgeT1 = { fontSize: 'var(--font-size-xs)', background: 'var(--accent-muted)', color: 'var(--accent)' } as const;
+const tierBadgeT2 = { fontSize: 'var(--font-size-xs)', background: 'var(--cat-12)', color: 'var(--chart-4)' } as const;
+const tierBadgeOther = { fontSize: 'var(--font-size-xs)', background: 'var(--surface-2)', color: 'var(--text-muted)' } as const;
+const winnerBadgeBg = { background: 'var(--warning-muted)', border: '1px solid var(--warn-30)' } as const;
+const normalBadgeBg = { background: 'var(--surface-2)' } as const;
 
 // ---------------------------------------------------------------------------
 // API response types
@@ -400,9 +405,7 @@ export default function ComparePage() {
                           style={{
                             padding: 'var(--space-1) var(--space-3)',
                             borderRadius: 'var(--radius-lg)',
-                            ...(p.investor.id === winnerId
-                              ? { background: 'var(--warning-muted)', border: '1px solid var(--warn-30)' }
-                              : { background: 'var(--surface-2)' }), }}>
+                            ...(p.investor.id === winnerId ? winnerBadgeBg : normalBadgeBg), }}>
                           <span style={{ fontSize: 'var(--font-size-lg)', fontWeight: 300, ...scoreStyle(p.score.overall) }}>
                             {p.score.overall}</span>
                           <span style={labelMuted10}>/100</span>
@@ -654,13 +657,7 @@ function DropdownItem({
       <span className="flex-1">{investor.name}</span>
       <span
         className="badge"
-        style={{
-          fontSize: 'var(--font-size-xs)',
-          ...(investor.tier === 1
-            ? { background: 'var(--accent-muted)', color: 'var(--accent)' }
-            : investor.tier === 2
-            ? { background: 'var(--cat-12)', color: 'var(--chart-4)' }
-            : { background: 'var(--surface-2)', color: 'var(--text-muted)' }), }}>
+        style={investor.tier === 1 ? tierBadgeT1 : investor.tier === 2 ? tierBadgeT2 : tierBadgeOther}>
         T{investor.tier}</span>
     </button>);
 }

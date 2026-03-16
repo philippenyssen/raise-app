@@ -27,6 +27,8 @@ const skeletonSm = { height: '80px', borderRadius: 'var(--radius-xl)' } as const
 const skeletonMd = skelCardMd;
 const actionCardDone: React.CSSProperties = { borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)', background: 'var(--fg-30)', opacity: 0.6, transition: 'all 200ms ease' };
 const actionCardActive: React.CSSProperties = { borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)', background: 'var(--surface-1)', transition: 'all 200ms ease' };
+const urgencyFallback = { color: 'var(--text-tertiary)' } as const;
+const liftStyle = { fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', opacity: 0.8 } as const;
 
 type FilterTab = 'all' | 'pending' | 'executed' | 'skipped';
 
@@ -86,9 +88,9 @@ function ActionCard({
             <span className="flex items-center gap-1" style={labelMuted10}>
               <Timer className="w-3 h-3" />
               {item.timeEstimate}</span>
-            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', opacity: 0.8 }}>
+            <span style={liftStyle}>
               +{item.expectedLift} pts expected</span>
-            <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, ...(URGENCY_STYLE[item.urgency] ?? { color: 'var(--text-tertiary)' }) }}>
+            <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, ...(URGENCY_STYLE[item.urgency] ?? urgencyFallback) }}>
               {item.urgency === 'immediate' ? 'Act now' : item.urgency === '48h' ? 'Within 48h' : item.urgency === 'this_week' ? 'This week' : 'Next week'}
             </span>
             <span style={labelMuted10}>
