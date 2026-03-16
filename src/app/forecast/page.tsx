@@ -25,7 +25,7 @@ const critPathBadge = { width: '18px', height: '18px', borderRadius: '50%', back
 const critPathLink = { fontSize: 'var(--font-size-xs)', fontWeight: 400, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textDecoration: 'none', display: 'block' } as const;
 const critPathAction = { width: '24px', height: '24px', borderRadius: 'var(--radius-sm)', background: 'var(--warning-muted)', color: 'var(--text-tertiary)', textDecoration: 'none' } as const;
 const confGroupName = { fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '60%' } as const;
-const confGroupStage = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontVariantNumeric: 'tabular-nums', flexShrink: 0 } as const;
+const confGroupStage = { ...labelMuted, fontVariantNumeric: 'tabular-nums', flexShrink: 0 } as const;
 
 interface InvestorForecast { investorId: string; investorName: string; currentStage: string; tier: number; daysInStage: number; predictedDaysToClose: number; predictedCloseDate: string; confidence: 'high' | 'medium' | 'low'; reasoning: string }
 
@@ -234,7 +234,7 @@ export default function ForecastPage() {
                   fontVariantNumeric: 'tabular-nums',
                   marginBottom: 'var(--space-1)', }}>
                 {formatAmount(s.amount, currency)}</div>
-              <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-2)' }}>
+              <div style={{ ...labelMuted, marginBottom: 'var(--space-2)' }}>
                 {s.description}</div>
               <div
                 style={{
@@ -285,7 +285,7 @@ export default function ForecastPage() {
             <span style={stTextTertiary}><Zap className="w-4 h-4" /></span>
             <span style={fontSmPrimary}>
               Critical Path</span></div>
-          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-3)' }}>
+          <p style={{ ...labelMuted, marginBottom: 'var(--space-3)' }}>
             Investors whose delay would delay the raise</p>
           {forecast.criticalPathInvestors.length === 0 ? (
             <span style={labelMuted}>No bottlenecks — all investors progressing on schedule</span>
@@ -372,7 +372,7 @@ export default function ForecastPage() {
             <span style={stTextTertiary}><Clock className="w-4 h-4" /></span>
             <span style={fontSmPrimary}>
               Investor Timeline</span>
-            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginLeft: 'auto' }}>
+            <span style={{ ...labelMuted, marginLeft: 'auto' }}>
               {hasExclusions ? (
                 <button
                   onClick={() => setExcludedIds(new Set())}
@@ -505,7 +505,7 @@ export default function ForecastPage() {
                           <div style={progressTrack}>
                             <div style={{ width: maxDaysToClose > 0 ? `${Math.max(4, (inv.predictedDaysToClose / maxDaysToClose) * 100)}%` : '0%', height: '100%', background: confidenceColor(inv.confidence), borderRadius: '3px', transition: 'width 400ms ease', opacity: 0.7 }} />
                           </div>
-                          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', minWidth: '32px', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
+                          <span style={{ ...labelMuted, minWidth: '32px', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
                             {inv.predictedDaysToClose}d</span></div></td>
                     </tr>);
                 })}</tbody></table></div>

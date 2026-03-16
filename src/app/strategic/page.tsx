@@ -402,7 +402,7 @@ export default function StrategicPage() {
               <div style={{ borderRadius: 'var(--radius-md)', padding: 'var(--space-3)', background: 'var(--accent-muted)' }}>
                 <div className="metric-label" style={mbSpace1}>Nearest Close</div>
                 <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 300, color: 'var(--accent)', fontVariantNumeric: 'tabular-nums' }}>~{data.raiseForecast.nearestClose.days}d</div>
-                <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '2px' }}>{data.raiseForecast.nearestClose.name} ({data.raiseForecast.nearestClose.stage})</div>
+                <div style={{ ...labelMuted, marginTop: '2px' }}>{data.raiseForecast.nearestClose.name} ({data.raiseForecast.nearestClose.stage})</div>
               </div>
             )}
             {/* Critical path */}
@@ -473,7 +473,7 @@ export default function StrategicPage() {
         )}</div>
 
       {/* Footer */}
-      <div className="text-center" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', padding: 'var(--space-2) 0' }}>
+      <div className="text-center" style={{ ...labelMuted, padding: 'var(--space-2) 0' }}>
         Updated {relativeTime(data.generatedAt)} — Press R to refresh</div>
     </div>);
 }
@@ -537,7 +537,7 @@ function RecommendationRow({ rec, isLast }: { rec: StrategicRecommendation; isLa
               {catCfg.label}</span></div>
 
           {/* Rationale */}
-          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-2)' }}>{rec.rationale}</p>
+          <p style={{ ...labelMuted, marginBottom: 'var(--space-2)' }}>{rec.rationale}</p>
 
           {/* Action */}
           <div className="flex items-start gap-1.5 mb-2">
@@ -576,7 +576,7 @@ function GaugeCard({ label, value, suffix, description, barPct, barColor, valueC
       <div style={{ fontSize: 'var(--font-size-3xl)', fontWeight: 300, fontVariantNumeric: 'tabular-nums', color: valueColor }}>
         {value}<span style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-muted)' }}>{suffix}</span>
       </div>
-      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 'var(--space-1)', marginBottom: 'var(--space-3)' }}>{description}</div>
+      <div style={{ ...labelMuted, marginTop: 'var(--space-1)', marginBottom: 'var(--space-3)' }}>{description}</div>
       <div
         className="mt-auto w-full"
         style={{

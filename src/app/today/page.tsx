@@ -167,7 +167,7 @@ function MeetingCard({ meeting }: { meeting: BriefingMeeting }) {
             <span style={{ ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' }}>{meeting.investorName}</span>
             <span style={{ ...stFontXs, padding: '2px 6px', borderRadius: 'var(--radius-sm)', fontWeight: 400, background: 'var(--surface-2)', color: 'var(--text-tertiary)' }}>{meeting.type.replace(/_/g, ' ')}</span>
             {(meeting.meetingCount ?? 0) > 1 && (
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontWeight: 400 }}>Meeting #{meeting.meetingCount}</span>
+              <span style={{ ...labelMuted, fontWeight: 400 }}>Meeting #{meeting.meetingCount}</span>
             )}
             {(meeting.enthusiasm ?? 0) > 0 && (
               <span
@@ -630,7 +630,7 @@ export default function TodayPage() {
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-3)' }}>
             <span style={{ color: 'var(--danger)', ...flexIcon }}><AlertTriangle className="w-4 h-4" /></span>
             <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--danger)', letterSpacing: '0.01em' }}>Critical Overdue</span>
-            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginLeft: 'auto' }}>{overdueFollowups.length} action{overdueFollowups.length > 1 ? 's' : ''}</span>
+            <span style={{ ...labelMuted, marginLeft: 'auto' }}>{overdueFollowups.length} action{overdueFollowups.length > 1 ? 's' : ''}</span>
           </div>
           <div style={flexColGap2}>
             {overdueFollowups.map(fu => {
@@ -704,7 +704,7 @@ export default function TodayPage() {
         <div>
           <div className="flex items-center justify-between">
             <div className="section-title">Follow-ups Due</div>
-            <Link href="/followups" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', textDecoration: 'underline' }}>
+            <Link href="/followups" style={{ ...labelMuted, textDecoration: 'underline' }}>
               View all</Link></div>
           <div style={flexColGap2}>
             {dueTodayFollowups.map(fu => {

@@ -16,7 +16,7 @@ import { labelMuted, labelMuted10, stAccent, stFontSm, stFontXs, stSurface1, stT
 const compareCellBase: React.CSSProperties = { padding: 'var(--space-3) var(--space-4)', fontSize: 'var(--font-size-sm)', ...stTextSecondary };
 const compareThBase = { padding: 'var(--space-3) var(--space-4)', minWidth: 200 } as const;
 const stickyLabelStyle: React.CSSProperties = { padding: 'var(--space-3) var(--space-4)', ...labelMuted, fontWeight: 400, background: 'var(--surface-0)', borderRight: '1px solid var(--border-subtle)' };
-const heatCounterStyle = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '2px' } as const;
+const heatCounterStyle = { ...labelMuted, marginTop: '2px' } as const;
 
 const cellPad34 = { padding: 'var(--space-3) var(--space-4)' } as const;
 const meetingTypeBadge = { fontSize: 'var(--font-size-xs)', background: 'var(--surface-2)', color: 'var(--text-muted)', padding: '1px 6px', borderRadius: 'var(--radius-sm)' } as const;
@@ -521,7 +521,7 @@ export default function ComparePage() {
                             <span style={stTextMuted}>No follow-ups</span>
                           )}</div>
                         {p.followupStatus.avgConvictionDelta !== 0 && (
-                          <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 2 }}>
+                          <div style={{ ...labelMuted, marginTop: 2 }}>
                             Avg impact: {p.followupStatus.avgConvictionDelta > 0 ? '+' : ''}{p.followupStatus.avgConvictionDelta} pts
                           </div>
                         )}</td>
@@ -815,7 +815,7 @@ function EnthusiasmTrendDots({ trend }: { trend: number[] }) {
                 ? 'var(--danger)'
                 : 'var(--border-strong)',
             }} />
-          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{score}</span></div>
+          <span style={labelMuted}>{score}</span></div>
       ))}
       {dots.length >= 2 && (
         <div className="ml-1">
@@ -984,11 +984,11 @@ function VerdictCard({
         background: c.bg, }}>
       <div className="flex items-center gap-2 mb-2">
         <span style={{ color: c.iconColor }}>{icon}</span>
-        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', letterSpacing: '0.08em', fontWeight: 400 }}>
+        <span style={{ ...labelMuted, letterSpacing: '0.08em', fontWeight: 400 }}>
           {title}</span></div>
       <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', marginBottom: 'var(--space-1)' }}>
         {verdict.name}</div>
-      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', lineHeight: 1.6 }}>
+      <div style={{ ...labelMuted, lineHeight: 1.6 }}>
         {verdict.reason}</div>
     </div>);
 }

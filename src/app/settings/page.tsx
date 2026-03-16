@@ -7,12 +7,12 @@ import {
   DollarSign, Target, Calendar, Users, ChevronDown,
 } from 'lucide-react';
 import { useToast } from '@/components/toast';
-import { stFontSm, stFontXs, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { labelMuted, stFontSm, stFontXs, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 import { cachedFetch } from '@/lib/cache';
 
 const rangeAccent = { accentColor: 'var(--accent)' } as const;
 const weightInputStyle = { width: '3.5rem', padding: '0.25rem 0.5rem', fontSize: 'var(--font-size-xs)', textAlign: 'right' as const } as const;
-const pctLabel = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '1rem' } as const;
+const pctLabel = { ...labelMuted, width: '1rem' } as const;
 
 // ---------------------------------------------------------------------------
 // Types
@@ -37,7 +37,7 @@ const sectionCardPad = { padding: 'var(--space-6)' } as const;
 const sectionHeaderMb = { marginBottom: 'var(--space-6)' } as const;
 const h2Style = { fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-primary)' } as const;
 const unsavedBadge = { fontSize: 'var(--font-size-xs)', color: 'var(--danger)', fontWeight: 400 } as const;
-const unitLabelWide = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '3rem' } as const;
+const unitLabelWide = { ...labelMuted, width: '3rem' } as const;
 const cadenceSummaryBox = { background: 'var(--surface-2)', borderRadius: 'var(--radius-md)', padding: '0.5rem 0.75rem' } as const;
 
 const ROUND_TYPES = ['Series A', 'Series B', 'Series C', 'Series D', 'Pre-IPO', 'Bridge'];
@@ -429,15 +429,15 @@ export default function SettingsPage() {
           <div style={{ marginTop: 'var(--space-5)', paddingTop: 'var(--space-4)', borderTop: '1px solid var(--border-subtle)' }}>
             <div className="grid grid-cols-3 gap-4" style={{ textAlign: 'center' }}>
               <div>
-                <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '0.125rem' }}>Total Raise</div>
+                <div style={{ ...labelMuted, marginBottom: '0.125rem' }}>Total Raise</div>
                 <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
                   {formatCompact(raise.data.equity_amount + raise.data.debt_amount, raise.data.currency)}</div></div>
               <div>
-                <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '0.125rem' }}>Dilution</div>
+                <div style={{ ...labelMuted, marginBottom: '0.125rem' }}>Dilution</div>
                 <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
                   {((raise.data.equity_amount / (raise.data.pre_money + raise.data.equity_amount)) * 100).toFixed(1)}%</div></div>
               <div>
-                <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '0.125rem' }}>Post-money EV</div>
+                <div style={{ ...labelMuted, marginBottom: '0.125rem' }}>Post-money EV</div>
                 <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
                   {formatCompact(raise.data.pre_money + raise.data.equity_amount, raise.data.currency)}</div></div></div></div>
         )}</div>
@@ -620,7 +620,7 @@ export default function SettingsPage() {
 
         {/* Cadence summary */}
         <div style={{ marginTop: 'var(--space-5)', paddingTop: 'var(--space-4)', borderTop: '1px solid var(--border-subtle)' }}>
-          <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-2)' }}>Effective Tier 1 cadence:</p>
+          <p style={{ ...labelMuted, marginBottom: 'var(--space-2)' }}>Effective Tier 1 cadence:</p>
           <div className="grid grid-cols-3 gap-3" style={{ textAlign: 'center' }}>
             <div style={cadenceSummaryBox}>
               <div style={{ ...stFontXs, ...stTextMuted }}>Thank you</div>
@@ -661,7 +661,7 @@ export default function SettingsPage() {
               <div>
                 <div style={{ fontWeight: 400, color: 'var(--text-primary)' }}>{keyTest.message}</div>
                 {keyTest.key && (
-                  <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: 'var(--space-1)', fontFamily: 'var(--font-mono)' }}>{keyTest.key}</div>
+                  <div style={{ ...labelMuted, marginTop: 'var(--space-1)', fontFamily: 'var(--font-mono)' }}>{keyTest.key}</div>
                 )}</div></div>
 
             {keyTest.error && (
