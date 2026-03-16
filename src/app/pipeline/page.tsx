@@ -150,7 +150,8 @@ export default function PipelinePage() {
       if (filters.types.size > 0 && !filters.types.has(inv.type)) return false;
       if (q && !inv.name.toLowerCase().includes(q) && !(inv.partner || '').toLowerCase().includes(q) && !(inv.sector_thesis || '').toLowerCase().includes(q)) return false;
       if (showStaleOnly) {
-        const days = inv.last_meeting_date ? Math.floor((Date.now() - new Date(inv.last_meeting_date).getTime()) / 864e5) : 999;
+        if (!inv.last_meeting_date || ['identified', 'passed', 'dropped', 'closed'].includes(inv.status)) return false;
+        const days = Math.floor((Date.now() - new Date(inv.last_meeting_date).getTime()) / 864e5);
         if (days < 14) return false;
       }
       return true;
@@ -158,7 +159,7 @@ export default function PipelinePage() {
   }, [investors, filters, searchQuery, showStaleOnly]);
 
   const hasActiveFilters = filters.tiers.size > 0 || filters.types.size > 0 || searchQuery.length > 0 || showStaleOnly;
-  const staleCount = useMemo(() => investors.filter(i => { const d = i.last_meeting_date ? Math.floor((Date.now() - new Date(i.last_meeting_date).getTime()) / 864e5) : 999; return d >= 14 && !['passed', 'dropped', 'closed'].includes(i.status); }).length, [investors]);
+  const staleCount = useMemo(() => investors.filter(i => { if (!i.last_meeting_date || ['identified', 'passed', 'dropped', 'closed'].includes(i.status)) return false; const d = Math.floor((Date.now() - new Date(i.last_meeting_date).getTime()) / 864e5); return d >= 14; }).length, [investors]);
 
   const toggleTier = useCallback((tier: number) => {
     setFilters(f => {
