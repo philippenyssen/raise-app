@@ -342,8 +342,18 @@ export async function POST(req: NextRequest) {
     // Bulk enrich multiple investors
     if (action === 'bulk_enrich' && investor_ids && Array.isArray(investor_ids)) {
       const results: { investor_id: string; investor_name: string; status: string; fields: number }[] = [];
+      let delayMs = 500;
+      let consecutiveRateLimits = 0;
 
       for (const id of investor_ids.slice(0, 50)) {
+        // Circuit breaker: if too many consecutive rate limits, pause
+        if (consecutiveRateLimits >= 3) {
+          console.warn(`[ENRICH_BULK] Circuit breaker: ${consecutiveRateLimits} consecutive rate limits, pausing 30s`);
+          await new Promise(resolve => setTimeout(resolve, 30_000));
+          consecutiveRateLimits = 0;
+          delayMs = 2000;
+        }
+
         const investor = await getInvestor(id);
         if (!investor) continue;
 
@@ -355,6 +365,17 @@ export async function POST(req: NextRequest) {
 
         const result = await enrichInvestor(investor.name, existingData, {
           sources: (sources?.length ?? 0) > 0 ? sources : undefined,});
+
+        // Check for rate-limited providers and apply exponential backoff
+        const rateLimited = result.results.filter(r => r.rate_limited);
+        if (rateLimited.length > 0) {
+          consecutiveRateLimits++;
+          delayMs = Math.min(delayMs * 2, 10_000);
+          console.warn(`[ENRICH_BULK] Rate limited by ${rateLimited.map(r => r.source_id).join(', ')} for ${investor.name}, backoff ${delayMs}ms`);
+        } else {
+          consecutiveRateLimits = 0;
+          delayMs = Math.max(500, delayMs * 0.75);
+        }
 
         const allFields = result.results.flatMap(r =>
           r.fields.map(f => ({
@@ -386,8 +407,8 @@ export async function POST(req: NextRequest) {
           status: result.status,
           fields: result.total_fields,});
 
-        // Small delay between investors to respect rate limits
-        await new Promise(resolve => setTimeout(resolve, 500));
+        // Dynamic delay between investors based on rate-limit backoff
+        await new Promise(resolve => setTimeout(resolve, delayMs));
       }
 
       return NextResponse.json({ results, total: results.length });
