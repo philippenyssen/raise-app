@@ -484,7 +484,7 @@ export default function ObjectionsPage() {
                                     value={editEffectiveness}
                                     onChange={e => setEditEffectiveness(e.target.value)}
                                     className="input"
-                                    style={{ width: 'auto', ...stFontXs, padding: '0.375rem 0.5rem' }}>
+                                    style={{ width: 'auto', ...stFontXs, padding: 'var(--space-1) var(--space-2)' }}>
                                     <option value="unknown">Unknown</option>
                                     <option value="effective">Effective</option>
                                     <option value="partially_effective">Partially Effective</option>
@@ -594,7 +594,7 @@ export default function ObjectionsPage() {
                   setSelectedInvestor(e.target.value);
                   loadInvestorObjections(e.target.value); }}
                 className="input"
-                style={{ ...stFontXs, padding: '0.375rem 0.5rem' }}>
+                style={{ ...stFontXs, padding: 'var(--space-1) var(--space-2)' }}>
                 <option value="">Select investor...</option>
                 {investors.map(inv => (
                   <option key={inv.id} value={inv.id}>{inv.name}</option>

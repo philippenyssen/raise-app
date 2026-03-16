@@ -402,7 +402,7 @@ export default function StrategicPage() {
               <div style={{ borderRadius: 'var(--radius-md)', padding: 'var(--space-3)', background: 'var(--accent-muted)' }}>
                 <div className="metric-label" style={mbSpace1}>Nearest Close</div>
                 <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 300, color: 'var(--accent)', fontVariantNumeric: 'tabular-nums' }}>~{data.raiseForecast.nearestClose.days}d</div>
-                <div style={{ ...labelMuted, marginTop: '2px' }}>{data.raiseForecast.nearestClose.name} ({data.raiseForecast.nearestClose.stage})</div>
+                <div style={{ ...labelMuted, marginTop: 'var(--space-0)' }}>{data.raiseForecast.nearestClose.name} ({data.raiseForecast.nearestClose.stage})</div>
               </div>
             )}
             {/* Critical path */}

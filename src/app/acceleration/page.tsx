@@ -242,7 +242,7 @@ function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
               <span style={{ ...labelMuted, maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const }}>{inv.reason}</span>
             </div>
           ))}
-          <p style={{ ...labelMuted, marginTop: '8px', paddingTop: '8px', borderTop: '1px solid var(--border-subtle)' }}>
+          <p style={{ ...labelMuted, marginTop: 'var(--space-2)', paddingTop: 'var(--space-2)', borderTop: '1px solid var(--border-subtle)' }}>
             Stop allocating active time to these investors. Move effort to higher-conviction targets.</p></div>
       )}
     </div>);
@@ -399,7 +399,7 @@ export default function AccelerationPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="page-title">Acceleration</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginTop: '4px' }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)', marginTop: 'var(--space-1)' }}>
             {data.summary.total} action{data.summary.total !== 1 ? 's' : ''} detected
             {data.summary.immediate > 0 && (
               <> &middot; <span style={{ color: 'var(--text-primary)', fontWeight: 400 }}>{data.summary.immediate} immediate</span></>

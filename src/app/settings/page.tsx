@@ -11,7 +11,7 @@ import { labelMuted, stFontSm, stFontXs, stTextMuted, stTextPrimary, stTextSecon
 import { cachedFetch } from '@/lib/cache';
 
 const rangeAccent = { accentColor: 'var(--accent)' } as const;
-const weightInputStyle = { width: '3.5rem', padding: '0.25rem 0.5rem', fontSize: 'var(--font-size-xs)', textAlign: 'right' as const } as const;
+const weightInputStyle = { width: '3.5rem', padding: 'var(--space-1) var(--space-2)', fontSize: 'var(--font-size-xs)', textAlign: 'right' as const } as const;
 const pctLabel = { ...labelMuted, width: '1rem' } as const;
 
 // ---------------------------------------------------------------------------
@@ -38,7 +38,7 @@ const sectionHeaderMb = { marginBottom: 'var(--space-6)' } as const;
 const h2Style = { fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-primary)' } as const;
 const unsavedBadge = { fontSize: 'var(--font-size-xs)', color: 'var(--danger)', fontWeight: 400 } as const;
 const unitLabelWide = { ...labelMuted, width: '3rem' } as const;
-const cadenceSummaryBox = { background: 'var(--surface-2)', borderRadius: 'var(--radius-md)', padding: '0.5rem 0.75rem' } as const;
+const cadenceSummaryBox = { background: 'var(--surface-2)', borderRadius: 'var(--radius-md)', padding: 'var(--space-2) var(--space-3)' } as const;
 
 const ROUND_TYPES = ['Series A', 'Series B', 'Series C', 'Series D', 'Pre-IPO', 'Bridge'];
 const CURRENCIES = ['EUR', 'USD', 'GBP'];
@@ -378,7 +378,7 @@ export default function SettingsPage() {
           <div>
             <label className="block" style={labelStyle}>
               Post-money Valuation</label>
-            <div style={{ padding: '0.5rem 0.75rem', background: 'var(--surface-1)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}>
+            <div style={{ padding: 'var(--space-2) var(--space-3)', background: 'var(--surface-1)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}>
               {raise.data.pre_money && raise.data.equity_amount
                 ? formatCompact(raise.data.pre_money + raise.data.equity_amount, raise.data.currency)
                 : '—'}</div></div>

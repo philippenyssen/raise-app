@@ -195,7 +195,7 @@ export default function IntelligencePage() {
             value={researchType}
             onChange={e => setResearchType(e.target.value as 'investor' | 'competitor' | 'market')}
             className="input"
-            style={{ width: 'auto', padding: '0.5rem 0.75rem' }}>
+            style={{ width: 'auto', padding: 'var(--space-2) var(--space-3)' }}>
             <option value="investor">Research Investor</option>
             <option value="competitor">Research Competitor</option>
             <option value="market">Research Market Deals</option></select>
@@ -568,7 +568,7 @@ function StatCard({ icon: Icon, label, value }: { icon: React.ComponentType<{ cl
       <div className="flex items-center gap-2 mb-1">
         <Icon className="w-3.5 h-3.5" style={stTextMuted} />
         <span className="metric-label">{label}</span></div>
-      <div className="metric-value" style={{ marginTop: '2px' }}>{value}</div>
+      <div className="metric-value" style={{ marginTop: 'var(--space-0)' }}>{value}</div>
     </div>);
 }
 

@@ -691,7 +691,7 @@ export default function TodayPage() {
           <div className="card" style={emptyStatePad}>
             <span style={emptyStateIcon}><CheckCircle className="w-8 h-8" style={stTextSecondary} /></span>
             <p style={emptyStateText}>No urgent actions right now</p>
-            <p style={{ ...labelTertiary, marginTop: '4px', lineHeight: 1.5 }}>Good time to advance stalled conversations or prepare materials for upcoming deep dives. Check the{' '}<Link href="/focus" style={{ color: 'var(--accent)', textDecoration: 'none' }}>focus queue</Link>{' '}for investors who need a push.</p>
+            <p style={{ ...labelTertiary, marginTop: 'var(--space-1)', lineHeight: 1.5 }}>Good time to advance stalled conversations or prepare materials for upcoming deep dives. Check the{' '}<Link href="/focus" style={{ color: 'var(--accent)', textDecoration: 'none' }}>focus queue</Link>{' '}for investors who need a push.</p>
             <div className="flex items-center justify-center gap-2" style={{ marginTop: 'var(--space-3)' }}>
               <Link href="/pipeline?sort=momentum" className="btn btn-secondary btn-sm">
                 Review stalled investors</Link>
@@ -775,7 +775,7 @@ export default function TodayPage() {
             <div className="flex items-center gap-1.5">
               <div className={forecastDotClass} style={{ width: '6px', height: '6px' }} />
               <div className="metric-label">Forecast</div></div>
-            <p style={{ ...stFontXs, color: forecastColor, marginTop: '6px', lineHeight: 1.4 }}>{data.pipelineSnapshot.forecast}</p>
+            <p style={{ ...stFontXs, color: forecastColor, marginTop: 'var(--space-1)', lineHeight: 1.4 }}>{data.pipelineSnapshot.forecast}</p>
           </div></div></div>
 
       {/* ----------------------------------------------------------------- */}

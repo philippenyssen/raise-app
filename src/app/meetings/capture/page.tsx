@@ -179,7 +179,7 @@ function QuickCaptureInner() {
             <span style={stTextSecondary}><CheckCircle2 className="w-5 h-5" /></span></div>
           <div>
             <h1 className="page-title" style={{ fontSize: 'var(--font-size-xl)' }}>Captured & Processed</h1>
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)', marginTop: '2px' }}>
+            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)', marginTop: 'var(--space-0)' }}>
               Meeting with {selectedInvestor?.name || 'investor'} analyzed</p></div></div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-5)' }}>
@@ -187,7 +187,7 @@ function QuickCaptureInner() {
           {!!result.ai_analysis && (
             <div className="card" style={{ background: 'var(--accent-muted)', borderColor: 'var(--accent)' }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--space-3)' }}>
-                <span style={{ color: 'var(--accent)', marginTop: '2px' }}><Sparkles className="w-4 h-4" /></span>
+                <span style={{ color: 'var(--accent)', marginTop: 'var(--space-0)' }}><Sparkles className="w-4 h-4" /></span>
                 <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', lineHeight: 1.6 }}>
                   {String(result.ai_analysis)}</p></div></div>
           )}
@@ -221,7 +221,7 @@ function QuickCaptureInner() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
                 {questions.map((q: { text: string; topic: string }, i: number) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--space-2)' }}>
-                    <span className="badge badge-zinc" style={{ flexShrink: 0, marginTop: '2px' }}>{q.topic}</span>
+                    <span className="badge badge-zinc" style={{ flexShrink: 0, marginTop: 'var(--space-0)' }}>{q.topic}</span>
                     <span style={fontSmSec}>{q.text}</span></div>
                 ))}</div></div>
           )}
@@ -236,7 +236,7 @@ function QuickCaptureInner() {
                 {objections.map((o: { text: string; severity: string }, i: number) => (
                   <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--space-2)' }}>
                     <span className={`badge ${o.severity === 'showstopper' ? 'badge-red' : o.severity === 'significant' ? 'badge-amber' : 'badge-zinc'}`}
-                      style={{ flexShrink: 0, marginTop: '2px' }}>
+                      style={{ flexShrink: 0, marginTop: 'var(--space-0)' }}>
                       {o.severity}</span>
                     <span style={fontSmSec}>{o.text}</span></div>
                 ))}</div></div>

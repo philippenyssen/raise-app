@@ -6,7 +6,7 @@ import { AlertTriangle } from 'lucide-react';
 export default function ForecastError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   return (
     <div className="flex-1 p-6 flex flex-col items-center justify-center" style={{ maxWidth: '1400px', margin: '0 auto', minHeight: '60vh' }}>
-      <span style={{ color: 'var(--danger)', marginBottom: '16px' }}>
+      <span style={{ color: 'var(--danger)', marginBottom: 'var(--space-4)' }}>
         <AlertTriangle className="w-10 h-10" />
       </span>
       <h2 className="text-lg font-normal mb-2" style={{ color: 'var(--text-primary)' }}>

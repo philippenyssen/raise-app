@@ -24,7 +24,7 @@ const actionBtnBase: React.CSSProperties = { fontSize: 'var(--font-size-xs)', pa
 const rescueBtnStyle: React.CSSProperties = { ...actionBtnBase, background: 'var(--danger-muted)', color: 'var(--text-primary)', border: '1px solid var(--fg-6)' };
 const nudgeBtnStyle: React.CSSProperties = { ...actionBtnBase, background: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid var(--fg-5)' };
 const projDateStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', fontVariantNumeric: 'tabular-nums' };
-const iconMr4: React.CSSProperties = { marginRight: '4px' };
+const iconMr4: React.CSSProperties = { marginRight: 'var(--space-1)' };
 const invNameStyle = { fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' } as const;
 
 interface VelocityInvestor { investor_id: string; investor_name: string; investor_type: string; investor_tier: number; status: string; enthusiasm: number; days_in_process: number; days_in_current_stage: number; projected_close_date: string; days_to_target: number; on_track: boolean; tracking_status: 'on_track' | 'behind' | 'at_risk'; bottleneck: string; velocity_score: number; meeting_count: number; meetings_per_week: number; days_since_last_meeting: number }

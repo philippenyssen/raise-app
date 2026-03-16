@@ -348,7 +348,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
 
             {/* Top objection — the #1 blocker for this deal */}
             {item.topObjectionTopic && (
-              <div className="flex items-center gap-1.5" style={{ marginTop: '6px' }}>
+              <div className="flex items-center gap-1.5" style={{ marginTop: 'var(--space-1)' }}>
                 <span style={stTextTertiary}><MessageSquare className="w-3 h-3" /></span>
                 <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', fontWeight: 400, fontStyle: 'italic' }}>
                   Blocker: {item.topObjectionTopic}</span></div>
@@ -409,7 +409,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
               ].map(comp => (
                 <div key={comp.label} className="text-center">
                   <div className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 300, color: focusScoreColor(comp.value) }}>{comp.value}</div>
-                  <div style={{ ...labelMuted, marginTop: '2px' }}>{comp.label}</div>
+                  <div style={{ ...labelMuted, marginTop: 'var(--space-0)' }}>{comp.label}</div>
                   <div style={labelMuted}>{comp.weight}</div></div>
               ))}</div></div>
 
