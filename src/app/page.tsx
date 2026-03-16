@@ -1141,6 +1141,9 @@ export default function Dashboard() {
             if (overdueTasks.length > 0) {
               actions.push({ href: '/focus', label: 'Blocked tasks', sub: `${overdueTasks.length} overdue`, count: overdueTasks.length });
             }
+            if (stressTest && stressTest.closeProbability < 50) {
+              actions.push({ href: '/stress-test', label: 'Close at risk', sub: `${stressTest.closeProbability}% probability` });
+            }
             if (completeness < 70) {
               actions.push({ href: '/investors', label: 'Data gaps', sub: `CRM ${completeness}% complete` });
             }
