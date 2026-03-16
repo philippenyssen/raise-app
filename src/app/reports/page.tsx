@@ -5,6 +5,11 @@ import { Printer, Loader2, ClipboardList, Users2, BarChart3 } from 'lucide-react
 import { stAccent, stTextMuted, stTextPrimary, stTextSecondary } from '@/lib/styles';
 import { cachedFetch } from '@/lib/cache';
 
+const reportCardBg = { backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%, transparent)' } as const;
+const selectStyle = { backgroundColor: 'var(--surface-2)', border: '1px solid var(--border-default)', color: 'var(--text-secondary)' } as const;
+const errorBoxStyle: React.CSSProperties = { border: '1px solid var(--danger)', backgroundColor: 'var(--danger-muted)', color: 'var(--text-primary)' };
+const printBtnStyle = { backgroundColor: 'var(--surface-2)', color: 'var(--text-secondary)' } as const;
+
 interface InvestorOption { id: string; name: string; tier: number; status: string; }
 
 export default function ReportsPage() {
@@ -97,7 +102,7 @@ export default function ReportsPage() {
       {/* Report Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Board Update */}
-        <div className="rounded-xl p-5" style={{ backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%, transparent)' }}>
+        <div className="rounded-xl p-5" style={reportCardBg}>
           <div className="flex items-center gap-3 mb-3">
             <span className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'var(--success-muted)' }}>
               <BarChart3 className="w-4 h-4" style={stTextSecondary} /></span>
@@ -116,7 +121,7 @@ export default function ReportsPage() {
             {loading === 'board' ? 'Generating...' : 'Generate'}</button></div>
 
         {/* Weekly Agenda */}
-        <div className="rounded-xl p-5" style={{ backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%, transparent)' }}>
+        <div className="rounded-xl p-5" style={reportCardBg}>
           <div className="flex items-center gap-3 mb-3">
             <span className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'color-mix(in srgb, var(--accent) 20%, transparent)' }}>
               <ClipboardList className="w-4 h-4" style={stAccent} /></span>
@@ -135,7 +140,7 @@ export default function ReportsPage() {
             {loading === 'team' ? 'Generating...' : 'Generate'}</button></div>
 
         {/* Investor Brief */}
-        <div className="rounded-xl p-5" style={{ backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%, transparent)' }}>
+        <div className="rounded-xl p-5" style={reportCardBg}>
           <div className="flex items-center gap-3 mb-3">
             <span className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'color-mix(in srgb, var(--accent-muted) 20%, transparent)' }}>
               <Users2 className="w-4 h-4" style={{ color: 'var(--accent-muted)' }} /></span>
@@ -146,7 +151,7 @@ export default function ReportsPage() {
             value={selectedInvestor}
             onChange={e => setSelectedInvestor(e.target.value)}
             className="w-full px-3 py-2 rounded-lg text-sm mb-3 focus:outline-none"
-            style={{ backgroundColor: 'var(--surface-2)', border: '1px solid var(--border-default)', color: 'var(--text-secondary)' }}>
+            style={selectStyle}>
             <option value="">Choose an investor to brief...</option>
             {investors.map(inv => (
               <option key={inv.id} value={inv.id}>
@@ -164,13 +169,13 @@ export default function ReportsPage() {
 
       {/* Error */}
       {error && (
-        <div className="rounded-lg p-4 text-sm" style={{ border: '1px solid var(--danger)', backgroundColor: 'var(--danger-muted)', color: 'var(--text-primary)' }}>
+        <div className="rounded-lg p-4 text-sm" style={errorBoxStyle}>
           {error}</div>
       )}
 
       {/* Report Display */}
       {reportHtml && (
-        <div className="rounded-xl overflow-hidden" style={{ backgroundColor: 'color-mix(in srgb, var(--surface-1) 50%, transparent)' }}>
+        <div className="rounded-xl overflow-hidden" style={reportCardBg}>
           {/* Report toolbar */}
           <div className="flex items-center justify-between px-5 py-3" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
             <div className="flex items-center gap-3">
@@ -183,7 +188,7 @@ export default function ReportsPage() {
             <button
               onClick={handlePrint}
               className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-normal btn-surface"
-              style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text-secondary)' }}>
+              style={printBtnStyle}>
               <Printer className="w-3.5 h-3.5" />
               Print / Save as PDF</button></div>
 

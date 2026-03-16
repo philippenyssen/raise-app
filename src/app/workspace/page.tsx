@@ -26,6 +26,7 @@ const TYPE_LABELS: Record<string, string> = {
 
 const docBtnBase: React.CSSProperties = { padding: 'var(--space-1) var(--space-2)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)', border: 'none', cursor: 'pointer', display: 'block', width: '100%' };
 const genBtnBase: React.CSSProperties = { padding: 'var(--space-1) var(--space-2)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', border: 'none' };
+const typeGroupLabel = { fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-muted)', padding: '0 var(--space-2)', marginBottom: 'var(--space-1)' } as const;
 
 export default function WorkspacePage() {
   const { toast } = useToast();
@@ -241,14 +242,7 @@ export default function WorkspacePage() {
             style={{ padding: 'var(--space-2)' }}>
             {Object.entries(grouped).map(([type, typeDocs]) => (
               <div key={type}>
-                <div
-                  className=""
-                  style={{
-                    fontSize: 'var(--font-size-xs)',
-                    fontWeight: 400,
-                    color: 'var(--text-muted)',
-                    padding: '0 var(--space-2)',
-                    marginBottom: 'var(--space-1)', }}>
+                <div style={typeGroupLabel}>
                   {TYPE_LABELS[type] || type}</div>
                 {typeDocs.map(doc => {
                   const isSelected = selectedDoc?.id === doc.id;
@@ -274,14 +268,7 @@ export default function WorkspacePage() {
           <div
             className="space-y-1"
             style={{ padding: 'var(--space-2)', borderTop: '1px solid var(--border-default)' }}>
-            <div
-              className=""
-              style={{
-                fontSize: 'var(--font-size-xs)',
-                fontWeight: 400,
-                color: 'var(--text-muted)',
-                padding: '0 var(--space-2)',
-                marginBottom: 'var(--space-1)', }}>
+            <div style={typeGroupLabel}>
               Generate from Data Room</div>
             {['teaser', 'exec_summary', 'memo', 'deck', 'dd_memo'].map(type => {
               const exists = docs.some(d => d.type === type);
