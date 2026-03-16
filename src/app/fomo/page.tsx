@@ -228,7 +228,7 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
           <div className="flex items-center gap-3 mt-1">
             <EnthusiasmDots value={inv.enthusiasm} />
             {inv.triggerInvestors.length > 0 && (
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+              <span style={labelMuted}>
                 {inv.triggerInvestors.length} trigger{inv.triggerInvestors.length !== 1 ? 's' : ''}</span>
             )}</div></div>
 
@@ -236,7 +236,7 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
         <div className="shrink-0 text-right">
           <div style={{ fontSize: 'var(--font-size-lg)', fontWeight: 300, color, lineHeight: 1 }}>
             {inv.intensity}</div>
-          <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '2px' }}>
+          <div style={{ ...labelMuted, marginTop: '2px' }}>
             {getIntensityLabel(inv.intensity)}</div></div></div>
 
       {/* Intensity breakdown bar */}
@@ -302,7 +302,7 @@ function TriggerEventCard({ event }: { event: TriggerEvent }) {
             <span style={inlineBadgeStyle(IMPACT_STYLES[event.impactLevel] ?? IMPACT_STYLES.low)}>
               {event.impactLevel}</span></div>
           <p style={{ ...stFontXs, color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>{event.detail}</p></div>
-        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', whiteSpace: 'nowrap' as const, flexShrink: 0 }}>
+        <span style={{ ...labelMuted, whiteSpace: 'nowrap' as const, flexShrink: 0 }}>
           {formatDate(event.date)}</span></div>
     </div>);
 }
@@ -336,7 +336,7 @@ function StrategyCardComponent({ card }: { card: StrategyCard }) {
 
       {card.targetInvestors.length > 0 && (
         <div>
-          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', letterSpacing: '0.01em' }}>Target</span>
+          <span style={{ ...labelMuted, letterSpacing: '0.01em' }}>Target</span>
           <div className="flex flex-wrap gap-1 mt-1">
             {card.targetInvestors.map(name => (
               <span key={name} style={targetBadge}>{name}</span>
@@ -543,7 +543,7 @@ export default function FomoPage() {
               <div className="flex items-end gap-2 mb-2">
                 <span style={textXlLight}>
                   {data.meetingDensity.densityScore}</span>
-                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', paddingBottom: '3px' }}>
+                <span style={{ ...labelMuted, paddingBottom: '3px' }}>
                   / 100 density</span></div>
               <div
                 style={{

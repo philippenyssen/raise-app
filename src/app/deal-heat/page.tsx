@@ -27,11 +27,10 @@ type HeatLevel = 'all' | 'hot' | 'warm' | 'cool' | 'cold' | 'frozen';
 
 const invNameStyle: React.CSSProperties = { fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' };
 const typeBadgeStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', fontWeight: 400, letterSpacing: '0.01em', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-secondary)' };
-const tierLabel: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' };
 const driverStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' };
 const filterBtnBase: React.CSSProperties = { padding: 'var(--space-1) var(--space-3)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)', fontWeight: 400, cursor: 'pointer', transition: 'all 150ms ease' };
 const countHidden: React.CSSProperties = { fontSize: 'var(--font-size-xs)', opacity: 0 };
-const heatCountLabel = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '2px' } as const;
+const heatCountLabel = { ...labelMuted, marginTop: '2px' } as const;
 
 const HEAT_CONFIG: Record<string, { bg: string; border: string; text: string; glow: string; label: string }> = {
   hot:    { bg: 'var(--accent-8)', border: 'var(--accent-15)',  text: 'var(--text-primary)', glow: 'none', label: 'Hot' },
@@ -223,7 +222,7 @@ export default function DealHeatPage() {
                       <div className="flex items-center gap-2" style={{ marginTop: '4px' }}>
                         <span style={typeBadgeStyle}>
                           {TYPE_LABELS[inv.type] || inv.type}</span>
-                        <span style={tierLabel}>
+                        <span style={labelMuted}>
                           T{inv.tier}</span></div></div>
                     {/* Heat score circle */}
                     <div style={{

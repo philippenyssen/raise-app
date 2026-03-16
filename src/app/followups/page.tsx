@@ -21,7 +21,6 @@ const convictionBtnBase: React.CSSProperties = { ...filterBtnBase, padding: '0.2
 const filterTabBase: React.CSSProperties = { ...filterBtnBase, padding: '0.375rem 0.75rem' };
 import { MS_PER_HOUR, MS_PER_DAY } from '@/lib/time';
 
-const textMutedXs = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' } as const;
 const textSecSm = { fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' } as const;
 const completedOutcomeBox = { background: 'var(--surface-2)', borderRadius: 'var(--radius-sm)', padding: '0.375rem 0.5rem', fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' } as const;
 const completingFormBox = { background: 'var(--surface-2)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-3)' } as const;
@@ -386,7 +385,7 @@ function FollowupsContent() {
 
               {/* Draft preview */}
               {item.status === 'pending' && draftingId !== item.id && (
-                <div className="mt-1.5 flex items-center gap-1.5" style={textMutedXs}>
+                <div className="mt-1.5 flex items-center gap-1.5" style={labelMuted}>
                   <Mail className="w-3 h-3" style={{ flexShrink: 0 }} />
                   <span className="truncate">{generateDraft(item).subject}</span></div>
               )}

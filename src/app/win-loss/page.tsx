@@ -191,7 +191,7 @@ export default function WinLossPage() {
             <div className="metric-label">{s.label}</div>
             <div className="metric-value" style={{ marginTop: '2px' }}>{s.value}</div>
             {s.sub && (
-              <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '2px' }}>{s.sub}</div>
+              <div style={{ ...labelMuted, marginTop: '2px' }}>{s.sub}</div>
             )}</div>
         ))}</div>
 
@@ -255,7 +255,7 @@ export default function WinLossPage() {
             <span style={stTextSecondary}><CheckCircle className="w-4 h-4" /></span>
             <h2 style={textBaseNormal}>
               Winner Profile</h2>
-            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginLeft: 'auto' }}>
+            <span style={{ ...labelMuted, marginLeft: 'auto' }}>
               {summary.closed} investors</span></div>
           {patterns.winnerProfile ? (
             <div className="space-y-2">
@@ -285,7 +285,7 @@ export default function WinLossPage() {
             <span style={stTextPrimary}><XCircle className="w-4 h-4" /></span>
             <h2 style={textBaseNormal}>
               Passer Profile</h2>
-            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginLeft: 'auto' }}>
+            <span style={{ ...labelMuted, marginLeft: 'auto' }}>
               {summary.passed} investors</span></div>
           {patterns.loserProfile ? (
             <div className="space-y-2">
@@ -381,7 +381,7 @@ export default function WinLossPage() {
             <span style={stAccent}><TrendingUp className="w-4 h-4" /></span>
             <h2 style={textBaseNormal}>
               Distinguishing Factors</h2>
-            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginLeft: 'auto' }}>
+            <span style={{ ...labelMuted, marginLeft: 'auto' }}>
               Winners vs Passers</span></div>
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -434,14 +434,14 @@ export default function WinLossPage() {
           <div className="space-y-3">
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-3)' }}>
               <div style={{ padding: 'var(--space-3)', borderRadius: 'var(--radius-md)', background: 'var(--surface-1)', textAlign: 'center' }}>
-                <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                <div style={{ ...labelMuted, marginBottom: '4px' }}>
                   Avg Days to Close</div>
                 <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-secondary)' }}>
                   {timing.avgDaysToClose}</div>
                 <div style={labelMuted}>
                   Median: {timing.medianDaysToClose}d</div></div>
               <div style={{ padding: 'var(--space-3)', borderRadius: 'var(--radius-md)', background: 'var(--surface-1)', textAlign: 'center' }}>
-                <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>
+                <div style={{ ...labelMuted, marginBottom: '4px' }}>
                   Avg Days to Pass</div>
                 <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
                   {timing.avgDaysToPass}</div>
@@ -543,7 +543,7 @@ export default function WinLossPage() {
           )}</div></div>
 
       {/* Footer */}
-      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', textAlign: 'right', paddingTop: 'var(--space-2)' }}>
+      <div style={{ ...labelMuted, textAlign: 'right', paddingTop: 'var(--space-2)' }}>
         Generated {data.generatedAt ? fmtDateTime(data.generatedAt) : '-'}</div>
     </div>);
 }

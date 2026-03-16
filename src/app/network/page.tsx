@@ -21,7 +21,7 @@ const tabNumSm: React.CSSProperties = { fontSize: 'var(--font-size-sm)', fontWei
 const keystoneBadgeMuted: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-muted)', fontWeight: 400 };
 const keystoneBadgeSecondary: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-secondary)' };
 const probDot: React.CSSProperties = { width: '8px', height: '8px', borderRadius: '50%', flexShrink: 0 };
-const checkSizeLabel = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '2px', display: 'block' as const } as const;
+const checkSizeLabel = { ...labelMuted, marginTop: '2px', display: 'block' as const } as const;
 const investorLinkStyle = { fontWeight: 400, fontSize: 'var(--font-size-sm)', textDecoration: 'none' } as const;
 const arrowConnector = { color: 'var(--text-muted)', marginLeft: '-10px' } as const;
 
