@@ -20,9 +20,7 @@ export default function PostMeetingActions({ data, meetingId, onActionTaken }: {
   const [dismissedFlags, setDismissedFlags] = useState<Set<string>>(new Set());
   const [acceptedTasks, setAcceptedTasks] = useState<Set<string>>(new Set());
   const [acceptedFlags, setAcceptedFlags] = useState<Set<string>>(new Set());
-  const [hovered, setHovered] = useState<Record<string, boolean>>({});
   const [busyActions, setBusyActions] = useState<Set<string>>(new Set());
-  const setH = (key: string, val: boolean) => setHovered(p => ({ ...p, [key]: val }));
 
   const hasActions = data.tasks.length > 0 || data.document_flags.length > 0;
 
@@ -60,12 +58,11 @@ export default function PostMeetingActions({ data, meetingId, onActionTaken }: {
 
   function ActionButtons({ id, type, isAccepted, onAccept, onDismiss }: { id: string; type: string; isAccepted: boolean; onAccept: () => void; onDismiss: () => void }) {
     if (isAccepted) return <span className="text-xs flex items-center gap-1 shrink-0" style={{ color: 'var(--success)' }}><CheckCircle2 className="w-3.5 h-3.5" /> {type === 'flag' ? 'Noted' : 'Accepted'}</span>;
-    const aKey = `${type}-accept-${id}`, dKey = `${type}-dismiss-${id}`;
     const isBusy = busyActions.has(id);
     return (
       <div className="flex gap-1 shrink-0">
-        <button onClick={onAccept} disabled={isBusy} onMouseEnter={() => setH(aKey, true)} onMouseLeave={() => setH(aKey, false)} className="p-1.5 rounded-md transition-colors" style={{ color: hovered[aKey] ? 'var(--success)' : 'var(--text-muted)', backgroundColor: hovered[aKey] ? 'var(--success-muted)' : 'transparent', opacity: isBusy ? 0.5 : 1 }} title={type === 'flag' ? 'Acknowledge flag' : 'Accept task'}><CheckCircle2 className="w-4 h-4" /></button>
-        <button onClick={onDismiss} disabled={isBusy} onMouseEnter={() => setH(dKey, true)} onMouseLeave={() => setH(dKey, false)} className="p-1.5 rounded-md transition-colors" style={{ color: hovered[dKey] ? 'var(--danger)' : 'var(--text-muted)', backgroundColor: hovered[dKey] ? 'var(--danger-muted)' : 'transparent', opacity: isBusy ? 0.5 : 1 }} title={type === 'flag' ? 'Dismiss flag' : 'Dismiss task'}><XCircle className="w-4 h-4" /></button>
+        <button onClick={onAccept} disabled={isBusy} className="accept-btn p-1.5 rounded-md transition-colors" style={{ opacity: isBusy ? 0.5 : 1 }} title={type === 'flag' ? 'Acknowledge flag' : 'Accept task'}><CheckCircle2 className="w-4 h-4" /></button>
+        <button onClick={onDismiss} disabled={isBusy} className="remove-btn p-1.5 rounded-md transition-colors" style={{ opacity: isBusy ? 0.5 : 1 }} title={type === 'flag' ? 'Dismiss flag' : 'Dismiss task'}><XCircle className="w-4 h-4" /></button>
       </div>);
   }
 
@@ -160,8 +157,8 @@ export default function PostMeetingActions({ data, meetingId, onActionTaken }: {
         <div className="px-5 py-3 flex items-center justify-between" style={{ backgroundColor: 'var(--surface-1)' }}>
           <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Tasks and flags are saved automatically. View all in Timeline &amp; Tasks.</span>
           <div className="flex gap-2">
-            <Link href="/timeline" className="text-xs transition-colors" style={{ color: hovered.viewTasks ? 'color-mix(in srgb, var(--accent) 80%, var(--text-primary))' : 'var(--accent)' }} onMouseEnter={() => setH('viewTasks', true)} onMouseLeave={() => setH('viewTasks', false)}>View Tasks</Link>
-            <Link href="/documents" className="text-xs transition-colors" style={{ color: hovered.viewDocs ? 'color-mix(in srgb, var(--accent) 80%, var(--text-primary))' : 'var(--accent)' }} onMouseEnter={() => setH('viewDocs', true)} onMouseLeave={() => setH('viewDocs', false)}>View Documents</Link>
+            <Link href="/timeline" className="investor-link text-xs transition-colors" style={{ color: 'var(--accent)' }}>View Tasks</Link>
+            <Link href="/documents" className="investor-link text-xs transition-colors" style={{ color: 'var(--accent)' }}>View Documents</Link>
           </div></div></div>
     </div>);
 }

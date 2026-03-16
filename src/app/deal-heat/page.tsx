@@ -36,8 +36,6 @@ export default function DealHeatPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<HeatLevel>('all');
-  const [hoveredCard, setHoveredCard] = useState<string | null>(null);
-  const [hoveredFilter, setHoveredFilter] = useState<HeatLevel | null>(null);
 
   function fetchDealHeat() {
     setLoading(true);
@@ -133,17 +131,13 @@ export default function DealHeatPage() {
           return (
             <div
               key={level}
-              className="card transition-colors"
+              className="card card-heat-hover"
               style={{
                 padding: 'var(--space-4)',
                 background: cfg.bg,
                 cursor: 'pointer',
-                boxShadow: cfg.glow,
-                transition: 'transform 150ms ease',
-                transform: hoveredFilter === level ? 'translateY(-2px)' : 'none', }}
-              onClick={() => setFilter(filter === level ? 'all' : level)}
-              onMouseEnter={() => setHoveredFilter(level)}
-              onMouseLeave={() => setHoveredFilter(null)}>
+                boxShadow: cfg.glow, }}
+              onClick={() => setFilter(filter === level ? 'all' : level)}>
               <div style={{ fontSize: 'var(--font-size-xs)', color: cfg.text, fontWeight: 400, letterSpacing: '0.01em' }}>
                 {cfg.label}</div>
               <div style={{ fontSize: 'var(--font-size-2xl)', fontWeight: 300, color: cfg.text, marginTop: 'var(--space-1)' }}>
@@ -190,7 +184,6 @@ export default function DealHeatPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {filtered.map(inv => {
             const cfg = HEAT_CONFIG[inv.dealHeat.label];
-            const isHovered = hoveredCard === inv.id;
             const topDriver = inv.dealHeat.drivers.length > 0 ? inv.dealHeat.drivers[0] : null;
             return (
               <Link
@@ -199,19 +192,15 @@ export default function DealHeatPage() {
                 className="block"
                 style={{ textDecoration: 'none' }}>
                 <div
-                  className="card transition-colors"
+                  className="card deal-card-hover"
                   style={{
                     padding: 'var(--space-4)',
-                    border: `1px solid ${isHovered ? cfg.text : cfg.border}`,
-                    background: isHovered ? cfg.bg : 'var(--surface-0)',
-                    boxShadow: isHovered ? cfg.glow : 'var(--shadow-sm)',
-                    transition: 'all 200ms ease',
-                    transform: isHovered ? 'translateY(-3px)' : 'none',
+                    border: `1px solid ${cfg.border}`,
+                    background: 'var(--surface-0)',
+                    boxShadow: 'var(--shadow-sm)',
                     cursor: 'pointer',
                     position: 'relative',
-                    overflow: 'hidden', }}
-                  onMouseEnter={() => setHoveredCard(inv.id)}
-                  onMouseLeave={() => setHoveredCard(null)}>
+                    overflow: 'hidden', }}>
                   {/* Heat bar at top */}
                   <div style={{
                     position: 'absolute',

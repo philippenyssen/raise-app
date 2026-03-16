@@ -158,8 +158,6 @@ export default function NewDocumentPage() {
   const [customTitle, setCustomTitle] = useState('');
   const [importContent, setImportContent] = useState('');
   const [showImport, setShowImport] = useState(false);
-  const [hoveredCreate, setHoveredCreate] = useState<string | null>(null);
-
   async function createFromTemplate(template: typeof TEMPLATES[0]) {
     setCreating(true);
     const title = template.type === 'custom' ? (customTitle || 'Untitled Document') : template.title;
@@ -242,12 +240,10 @@ export default function NewDocumentPage() {
               <button
                 onClick={() => createFromTemplate(template)}
                 disabled={creating}
-                className="px-3 py-1.5 rounded-lg text-sm transition-colors disabled:opacity-50 shrink-0"
+                className="btn-surface px-3 py-1.5 rounded-lg text-sm transition-colors disabled:opacity-50 shrink-0"
                 style={{
-                  background: hoveredCreate === template.type ? 'var(--surface-3)' : 'var(--surface-2)',
-                  color: 'var(--text-primary)', }}
-                onMouseEnter={() => setHoveredCreate(template.type)}
-                onMouseLeave={() => setHoveredCreate(null)}>
+                  background: 'var(--surface-2)',
+                  color: 'var(--text-primary)', }}>
                 {creating ? 'Creating...' : 'Create'}</button></div></div>
         ))}</div>
     </div>);

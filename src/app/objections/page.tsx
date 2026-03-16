@@ -173,7 +173,6 @@ export default function ObjectionsPage() {
   const [investorObjections, setInvestorObjections] = useState<ObjectionRecord[]>([]);
   const [loadingInvestor, setLoadingInvestor] = useState(false);
   const [expandedLeaderboard, setExpandedLeaderboard] = useState<Set<number>>(new Set());
-  const [hoveredRow, setHoveredRow] = useState<string | null>(null);
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -700,8 +699,6 @@ export default function ObjectionsPage() {
           loading={loadingEffectiveness}
           expandedLeaderboard={expandedLeaderboard}
           setExpandedLeaderboard={setExpandedLeaderboard}
-          hoveredRow={hoveredRow}
-          setHoveredRow={setHoveredRow}
           ScoreBar={ScoreBar}
           TrendBadge={TrendBadge}
           getTopicColor={getTopicColor}/>
@@ -718,8 +715,6 @@ function EffectivenessTab({
   loading,
   expandedLeaderboard,
   setExpandedLeaderboard,
-  hoveredRow,
-  setHoveredRow,
   ScoreBar,
   TrendBadge,
   getTopicColor: getColor,
@@ -728,8 +723,6 @@ function EffectivenessTab({
   loading: boolean;
   expandedLeaderboard: Set<number>;
   setExpandedLeaderboard: React.Dispatch<React.SetStateAction<Set<number>>>;
-  hoveredRow: string | null;
-  setHoveredRow: React.Dispatch<React.SetStateAction<string | null>>;
   ScoreBar: React.ComponentType<{ score: number; size?: 'sm' | 'md' }>;
   TrendBadge: React.ComponentType<{ trend: 'improving' | 'declining' | 'stable' }>;
   getTopicColor: typeof getTopicColorFn;
@@ -817,13 +810,9 @@ function EffectivenessTab({
                   return (
                     <div
                       key={te.topic}
-                      className="p-4 space-y-3 transition-colors"
+                      className="p-4 space-y-3 hover-row"
                       style={{
-                        background: hoveredRow === `topic-${te.topic}` ? 'var(--surface-1)' : 'transparent',
-                        borderBottom: '1px solid var(--border-subtle)',
-                        transition: 'background 100ms ease', }}
-                      onMouseEnter={() => setHoveredRow(`topic-${te.topic}`)}
-                      onMouseLeave={() => setHoveredRow(null)}>
+                        borderBottom: '1px solid var(--border-subtle)', }}>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <span
@@ -900,12 +889,7 @@ function EffectivenessTab({
                       className="border-b last:border-b-0" style={stBorderSubtle}>
                       <button
                         onClick={() => toggleLeaderboardItem(idx)}
-                        className="w-full p-3 flex items-center gap-3 text-left transition-colors"
-                        style={{
-                          background: hoveredRow === `leader-${idx}` ? 'var(--surface-1)' : 'transparent',
-                          transition: 'background 100ms ease', }}
-                        onMouseEnter={() => setHoveredRow(`leader-${idx}`)}
-                        onMouseLeave={() => setHoveredRow(null)}>
+                        className="w-full p-3 flex items-center gap-3 text-left hover-row">
                         <span className="text-xs font-normal w-6 text-center" style={stTextMuted}>
                           #{idx + 1}</span>
                         <div className="flex-1 min-w-0">
@@ -973,13 +957,9 @@ function EffectivenessTab({
                   return (
                     <div
                       key={idx}
-                      className="p-3 space-y-2 transition-colors"
+                      className="p-3 space-y-2 hover-row"
                       style={{
-                        borderBottom: '1px solid var(--border-subtle)',
-                        background: hoveredRow === `worst-${idx}` ? 'var(--surface-1)' : 'transparent',
-                        transition: 'background 100ms ease', }}
-                      onMouseEnter={() => setHoveredRow(`worst-${idx}`)}
-                      onMouseLeave={() => setHoveredRow(null)}>
+                        borderBottom: '1px solid var(--border-subtle)', }}>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <span className="px-1 py-0.5 rounded" style={{ fontSize: 'var(--font-size-xs)', ...color.bg, ...color.text }}>

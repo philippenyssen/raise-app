@@ -16,9 +16,6 @@ export default function ReportsPage() {
   const [generatedAt, setGeneratedAt] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const [hoverStates, setHoverStates] = useState<Record<string, boolean>>({});
-
-  const setHover = (key: string, val: boolean) => setHoverStates(prev => ({ ...prev, [key]: val }));
 
   useEffect(() => { document.title = 'Raise | Reports'; }, []);
   const fetchInvestors = useCallback(() => {
@@ -109,13 +106,10 @@ export default function ReportsPage() {
           <button
             onClick={() => generateReport('board')}
             disabled={loading !== null}
-            className="w-full px-4 py-2 rounded-lg text-sm font-normal transition-colors flex items-center justify-center gap-2"
+            className="w-full px-4 py-2 rounded-lg text-sm font-normal flex items-center justify-center gap-2 btn-accent-hover"
             style={{
-              backgroundColor: loading !== null ? 'var(--surface-2)' : (hoverStates['boardBtn'] ? 'var(--success)' : 'var(--success)'),
-              color: loading !== null ? 'var(--text-muted)' : 'var(--surface-0)',
-              opacity: hoverStates['boardBtn'] && loading === null ? 0.85 : 1, }}
-            onMouseEnter={() => setHover('boardBtn', true)}
-            onMouseLeave={() => setHover('boardBtn', false)}>
+              backgroundColor: loading !== null ? 'var(--surface-2)' : 'var(--success)',
+              color: loading !== null ? 'var(--text-muted)' : 'var(--surface-0)', }}>
             {loading === 'board' ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
             {loading === 'board' ? 'Generating...' : 'Generate'}</button></div>
 
@@ -131,13 +125,10 @@ export default function ReportsPage() {
           <button
             onClick={() => generateReport('team')}
             disabled={loading !== null}
-            className="w-full px-4 py-2 rounded-lg text-sm font-normal transition-colors flex items-center justify-center gap-2"
+            className="w-full px-4 py-2 rounded-lg text-sm font-normal flex items-center justify-center gap-2 btn-accent-hover"
             style={{
               backgroundColor: loading !== null ? 'var(--surface-2)' : 'var(--accent)',
-              color: loading !== null ? 'var(--text-muted)' : 'var(--surface-0)',
-              opacity: hoverStates['teamBtn'] && loading === null ? 0.85 : 1, }}
-            onMouseEnter={() => setHover('teamBtn', true)}
-            onMouseLeave={() => setHover('teamBtn', false)}>
+              color: loading !== null ? 'var(--text-muted)' : 'var(--surface-0)', }}>
             {loading === 'team' ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
             {loading === 'team' ? 'Generating...' : 'Generate'}</button></div>
 
@@ -162,13 +153,10 @@ export default function ReportsPage() {
           <button
             onClick={() => generateReport('investor_brief')}
             disabled={loading !== null || !selectedInvestor}
-            className="w-full px-4 py-2 rounded-lg text-sm font-normal transition-colors flex items-center justify-center gap-2"
+            className="w-full px-4 py-2 rounded-lg text-sm font-normal flex items-center justify-center gap-2 btn-accent-hover"
             style={{
               backgroundColor: (loading !== null || !selectedInvestor) ? 'var(--surface-2)' : 'var(--accent-muted)',
-              color: (loading !== null || !selectedInvestor) ? 'var(--text-muted)' : 'var(--surface-0)',
-              opacity: hoverStates['invBtn'] && loading === null && selectedInvestor ? 0.85 : 1, }}
-            onMouseEnter={() => setHover('invBtn', true)}
-            onMouseLeave={() => setHover('invBtn', false)}>
+              color: (loading !== null || !selectedInvestor) ? 'var(--text-muted)' : 'var(--surface-0)', }}>
             {loading === 'investor_brief' ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
             {loading === 'investor_brief' ? 'Generating...' : selectedInvestor ? `Brief ${investors.find(i => i.id === selectedInvestor)?.name || 'investor'}` : 'Select an investor'}</button></div></div>
 
@@ -192,10 +180,8 @@ export default function ReportsPage() {
               )}</div>
             <button
               onClick={handlePrint}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-normal transition-colors"
-              style={{ backgroundColor: hoverStates['printBtn'] ? 'var(--surface-3)' : 'var(--surface-2)', color: 'var(--text-secondary)' }}
-              onMouseEnter={() => setHover('printBtn', true)}
-              onMouseLeave={() => setHover('printBtn', false)}>
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-normal btn-surface"
+              style={{ backgroundColor: 'var(--surface-2)', color: 'var(--text-secondary)' }}>
               <Printer className="w-3.5 h-3.5" />
               Print / Save as PDF</button></div>
 

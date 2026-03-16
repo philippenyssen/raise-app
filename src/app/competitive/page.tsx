@@ -30,7 +30,6 @@ export default function CompetitivePage() {
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
-  const [hoveredRow, setHoveredRow] = useState<string | null>(null);
   const [loadedAt, setLoadedAt] = useState<string | null>(null);
 
   const fetchData = () => {
@@ -150,22 +149,17 @@ export default function CompetitivePage() {
           {/* Table Rows */}
           {data.competitors.map((c) => {
             const isExpanded = expandedRow === c.name;
-            const isHovered = hoveredRow === c.name;
 
             return (
               <div key={c.name}>
                 <div
-                  className="grid items-center transition-colors"
+                  className="grid items-center hover-row"
                   style={{
                     gridTemplateColumns: '32px 1fr 80px 1fr 120px',
                     padding: 'var(--space-3) var(--space-4)',
                     borderBottom: '1px solid var(--border-subtle)',
-                    cursor: 'pointer',
-                    background: isHovered ? 'var(--surface-1)' : 'transparent',
-                    transition: 'background 150ms ease', }}
+                    cursor: 'pointer', }}
                   onClick={() => setExpandedRow(isExpanded ? null : c.name)}
-                  onMouseEnter={() => setHoveredRow(c.name)}
-                  onMouseLeave={() => setHoveredRow(null)}
                   role="button"
                   aria-expanded={isExpanded}
                   aria-label={`${isExpanded ? 'Collapse' : 'Expand'} ${c.name} details`}>

@@ -97,8 +97,6 @@ export default function WinLossPage() {
   const [data, setData] = useState<WinLossData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [hoveredCard, setHoveredCard] = useState<string | null>(null);
-  const [hoveredRow, setHoveredRow] = useState<string | null>(null);
 
   const fetchData = () => {
     setLoading(true);
@@ -173,12 +171,9 @@ export default function WinLossPage() {
         ].map(s => (
           <div
             key={s.label}
-            className={`card-metric transition-colors ${s.variant}`.trim()}
+            className={`card-metric hover-border ${s.variant}`.trim()}
             style={{
-              padding: 'var(--space-3)',
-              borderColor: hoveredCard === s.label ? 'var(--border-default)' : undefined, }}
-            onMouseEnter={() => setHoveredCard(s.label)}
-            onMouseLeave={() => setHoveredCard(null)}>
+              padding: 'var(--space-3)', }}>
             <div className="metric-label">{s.label}</div>
             <div className="metric-value" style={{ marginTop: '2px' }}>{s.value}</div>
             {s.sub && (
@@ -320,14 +315,10 @@ export default function WinLossPage() {
                 return (
                   <div
                     key={pr.reason}
-                    className="transition-colors"
+                    className="hover-surface-2"
                     style={{
                       padding: 'var(--space-2)',
-                      borderRadius: 'var(--radius-sm)',
-                      background: hoveredRow === `pr-${i}` ? 'var(--surface-2)' : 'transparent',
-                      transition: 'background 0.15s', }}
-                    onMouseEnter={() => setHoveredRow(`pr-${i}`)}
-                    onMouseLeave={() => setHoveredRow(null)}>
+                      borderRadius: 'var(--radius-sm)', }}>
                     <div className="flex items-center justify-between" style={{ marginBottom: '4px' }}>
                       <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' }}>
                         {pr.reason}</span>
@@ -357,14 +348,11 @@ export default function WinLossPage() {
             {predictors.map((p, i) => (
               <div
                 key={p.signal}
-                className="transition-colors"
+                className="hover-surface-2"
                 style={{
                   padding: 'var(--space-2) var(--space-3)',
                   borderRadius: 'var(--radius-sm)',
-                  background: hoveredRow === `pred-${i}` ? 'var(--surface-2)' : 'var(--surface-1)',
-                  transition: 'background 0.15s', }}
-                onMouseEnter={() => setHoveredRow(`pred-${i}`)}
-                onMouseLeave={() => setHoveredRow(null)}>
+                  background: 'var(--surface-1)', }}>
                 <div className="flex items-center justify-between" style={{ marginBottom: '2px' }}>
                   <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400 }}>
                     {p.signal}</span>
@@ -408,12 +396,7 @@ export default function WinLossPage() {
                 {patterns.distinguishingFactors.map((f, i) => (
                   <tr
                     key={f.factor}
-                    className="transition-colors"
-                    style={{
-                      background: hoveredRow === `df-${i}` ? 'var(--surface-1)' : 'transparent',
-                      transition: 'background 0.15s', }}
-                    onMouseEnter={() => setHoveredRow(`df-${i}`)}
-                    onMouseLeave={() => setHoveredRow(null)}>
+                    className="hover-row">
                     <td style={{ padding: 'var(--space-2) var(--space-3)', fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, borderBottom: '1px solid var(--border-subtle)' }}>
                       {f.factor}</td>
                     <td style={{ padding: 'var(--space-2) var(--space-3)', fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', textAlign: 'right', fontVariantNumeric: 'tabular-nums', borderBottom: '1px solid var(--border-subtle)' }}>
@@ -489,14 +472,11 @@ export default function WinLossPage() {
               {typePerformance.map((tp, i) => (
                 <div
                   key={tp.type}
-                  className="transition-colors"
+                  className="hover-surface-2"
                   style={{
                     padding: 'var(--space-2) var(--space-3)',
                     borderRadius: 'var(--radius-sm)',
-                    background: hoveredRow === `tp-${i}` ? 'var(--surface-2)' : 'var(--surface-1)',
-                    transition: 'background 0.15s', }}
-                  onMouseEnter={() => setHoveredRow(`tp-${i}`)}
-                  onMouseLeave={() => setHoveredRow(null)}>
+                    background: 'var(--surface-1)', }}>
                   <div className="flex items-center justify-between" style={{ marginBottom: '4px' }}>
                     <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400 }}>
                       {TYPE_LABELS[tp.type] || tp.type}</span>
@@ -553,16 +533,13 @@ export default function WinLossPage() {
               {recommendations.map((rec, i) => (
                 <div
                   key={i}
-                  className="transition-colors"
+                  className="hover-surface-2"
                   style={{
                     padding: 'var(--space-2) var(--space-3)',
                     borderRadius: 'var(--radius-sm)',
-                    background: hoveredRow === `rec-${i}` ? 'var(--surface-2)' : 'var(--surface-1)',
+                    background: 'var(--surface-1)',
                     fontSize: 'var(--font-size-sm)',
-                    color: 'var(--text-secondary)',
-                    transition: 'background 0.15s', }}
-                  onMouseEnter={() => setHoveredRow(`rec-${i}`)}
-                  onMouseLeave={() => setHoveredRow(null)}>
+                    color: 'var(--text-secondary)', }}>
                   {rec}</div>
               ))}</div>
           ) : (

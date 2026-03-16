@@ -16,7 +16,6 @@ interface VoiceInputProps {
 export function VoiceInput({ onTranscript, disabled }: VoiceInputProps) {
   const [listening, setListening] = useState(false);
   const [supported, setSupported] = useState(true);
-  const [hovered, setHovered] = useState(false);
   const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
 
   useEffect(() => {
@@ -79,16 +78,14 @@ export function VoiceInput({ onTranscript, disabled }: VoiceInputProps) {
     borderColor: 'color-mix(in srgb, var(--danger) 30%, transparent)',};
 
   const idleStyle: React.CSSProperties = {
-    color: hovered ? 'var(--text-secondary)' : 'var(--text-muted)',
-    backgroundColor: hovered ? 'var(--surface-2)' : 'transparent',};
+    color: 'var(--text-muted)',
+    backgroundColor: 'transparent',};
 
   return (
     <button
       onClick={toggleListening}
       disabled={disabled}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      className={`p-2 rounded-lg transition-all ${listening ? 'animate-pulse' : ''} disabled:opacity-50`}
+      className={`btn-surface p-2 rounded-lg transition-all ${listening ? 'animate-pulse' : ''} disabled:opacity-50`}
       style={listening ? listeningStyle : idleStyle}
       title={listening ? 'Stop listening' : 'Voice input'}>
       {listening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}

@@ -960,17 +960,14 @@ function MeetingPrepContent() {
 // ---------- small components ----------
 
 function GenerateBriefButton({ generating, onClick }: { generating: boolean; onClick: () => void }) {
-  const [hovered, setHovered] = useState(false);
   return (
     <button
       onClick={onClick}
       disabled={generating}
       className="no-print px-4 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2 disabled:opacity-50"
       style={{
-        background: hovered ? 'var(--accent)' : 'var(--accent)',
-        color: 'var(--surface-0)', }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}>
+        background: 'var(--accent)',
+        color: 'var(--surface-0)', }}>
       {generating ? (
         <Loader2 className="w-4 h-4 animate-spin" />
       ) : (
@@ -981,45 +978,36 @@ function GenerateBriefButton({ generating, onClick }: { generating: boolean; onC
 }
 
 function PrintButton({ onClick }: { onClick: () => void }) {
-  const [hovered, setHovered] = useState(false);
   return (
     <button
       onClick={onClick}
-      className="no-print px-4 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2"
+      className="no-print btn-surface px-4 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2"
       style={{
-        background: hovered ? 'var(--surface-3)' : 'var(--surface-2)',
-        color: 'var(--text-primary)', }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}>
+        background: 'var(--surface-2)',
+        color: 'var(--text-primary)', }}>
       <Printer className="w-4 h-4" />
       Print
     </button>);
 }
 
 function QuickLink({ href, icon, label }: { href: string; icon: React.ReactNode; label: string }) {
-  const [hovered, setHovered] = useState(false);
   return (
     <Link
       href={href}
-      className="px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 transition-colors"
+      className="btn-surface px-3 py-1.5 rounded-lg text-xs flex items-center gap-1.5 transition-colors"
       style={{
-        background: hovered ? 'var(--surface-3)' : 'var(--surface-2)',
-        color: 'var(--text-secondary)', }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}>
+        background: 'var(--surface-2)',
+        color: 'var(--text-secondary)', }}>
       {icon} {label}
     </Link>);
 }
 
 function MeetingCard({ meeting: m, objs }: { meeting: Meeting; objs: Objection[] }) {
-  const [hovered, setHovered] = useState(false);
   return (
     <div
-      className="rounded-lg p-4 transition-colors"
+      className="hover-border rounded-lg p-4 transition-colors"
       style={{
-        border: `1px solid ${hovered ? 'var(--border-strong)' : 'var(--border-subtle)'}`, }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}>
+        border: '1px solid var(--border-subtle)', }}>
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">

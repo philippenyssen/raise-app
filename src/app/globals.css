@@ -551,6 +551,16 @@ body {
   background-color: var(--danger-muted);
 }
 
+.accept-btn {
+  color: var(--text-muted);
+  background-color: transparent;
+  transition: color 150ms ease, background-color 150ms ease;
+}
+.accept-btn:hover {
+  color: var(--success);
+  background-color: var(--success-muted);
+}
+
 .share-btn {
   background: var(--accent-muted);
   color: var(--accent);
@@ -571,6 +581,67 @@ body {
 
 .filter-inactive:hover {
   color: var(--text-secondary) !important;
+}
+
+.hover-surface-2 {
+  transition: background 150ms ease;
+}
+.hover-surface-2:hover {
+  background: var(--surface-2) !important;
+}
+
+.hover-row-activity {
+  transition: background-color 150ms ease;
+}
+.hover-row-activity:hover {
+  background-color: color-mix(in srgb, var(--surface-1) 30%, transparent);
+}
+
+.btn-accent-hover {
+  transition: opacity 150ms ease;
+}
+.btn-accent-hover:hover {
+  opacity: 0.85;
+}
+
+.task-row-hover {
+  transition: border-color 150ms ease;
+}
+.task-row-hover:hover {
+  border-color: var(--border-default);
+}
+
+.tab-hover:hover {
+  color: var(--text-secondary) !important;
+}
+
+.card-heat-hover {
+  transition: transform 150ms ease;
+}
+.card-heat-hover:hover {
+  transform: translateY(-2px);
+}
+
+.deal-card-hover {
+  transition: all 200ms ease;
+}
+.deal-card-hover:hover {
+  transform: translateY(-3px);
+}
+
+.link-row-hover {
+  transition: all 150ms ease;
+}
+.link-row-hover:hover {
+  background: var(--surface-2);
+}
+
+.hover-show-actions {
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+.hover-border:hover .hover-show-actions {
+  opacity: 1;
 }
 
 .action-draft {

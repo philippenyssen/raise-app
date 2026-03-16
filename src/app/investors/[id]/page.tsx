@@ -1500,7 +1500,6 @@ function EnrichmentStatusCard({
   enriching: boolean;
   onEnrich: () => void;
 }) {
-  const [hoveredEnrich, setHoveredEnrich] = useState(false);
   const [showProviders, setShowProviders] = useState(false);
 
   const hasData = status && status.total_fields > 0;
@@ -1517,14 +1516,13 @@ function EnrichmentStatusCard({
         <button
           onClick={onEnrich}
           disabled={enriching}
-          onMouseEnter={() => setHoveredEnrich(true)}
-          onMouseLeave={() => setHoveredEnrich(false)}
-          className="px-3 py-1.5 rounded-lg text-xs font-normal flex items-center gap-1.5 transition-colors"
+          className={`px-3 py-1.5 rounded-lg text-xs font-normal flex items-center gap-1.5 transition-colors ${enriching ? '' : 'btn-primary'}`}
           style={{
-            background: enriching ? 'var(--surface-2)' : hoveredEnrich ? 'var(--accent-hover)' : 'var(--accent)',
+            background: enriching ? 'var(--surface-2)' : 'var(--accent)',
             color: enriching ? 'var(--text-muted)' : 'var(--text-primary)',
             cursor: enriching ? 'not-allowed' : 'pointer',
-            transition: 'background 150ms ease', }}>
+            transition: 'background 150ms ease',
+            border: 'none', }}>
           {enriching
             ? <><Loader2 className="w-3 h-3 animate-spin" /> Enriching...</>
             : <><RefreshCw className="w-3 h-3" /> {hasData ? 'Re-enrich' : 'Enrich'}</>
@@ -1687,9 +1685,6 @@ function EnrichmentPanel({
   onToggleCategory: (cat: string) => void;
   onRefresh: () => void;
 }) {
-  const [hoveredRefresh, setHoveredRefresh] = useState(false);
-  const [hoveredRow, setHoveredRow] = useState<string | null>(null);
-
   if (loading) {
     return (
       <div className="flex items-center gap-3 py-6 justify-center">
@@ -1705,13 +1700,11 @@ function EnrichmentPanel({
         <p className="text-sm mb-3" style={textMuted}>No enrichment data yet. Run research to pull financials, strategy, people, and more.</p>
         <button
           onClick={onRefresh}
-          onMouseEnter={() => setHoveredRefresh(true)}
-          onMouseLeave={() => setHoveredRefresh(false)}
-          className="px-3 py-1.5 rounded-lg text-sm flex items-center gap-2 mx-auto transition-colors"
+          className="btn-primary px-3 py-1.5 rounded-lg text-sm flex items-center gap-2 mx-auto transition-colors"
           style={{
-            background: hoveredRefresh ? 'var(--accent-hover)' : 'var(--accent)',
+            background: 'var(--accent)',
             color: 'var(--text-primary)',
-            transition: 'background 150ms ease', }}>
+            border: 'none', }}>
           <RefreshCw className="w-3.5 h-3.5" /> Refresh</button>
       </div>);
   }
@@ -1736,12 +1729,10 @@ function EnrichmentPanel({
             {records.length} enriched fields across {sortedCategories.length} categories</span></div>
         <button
           onClick={onRefresh}
-          onMouseEnter={() => setHoveredRefresh(true)}
-          onMouseLeave={() => setHoveredRefresh(false)}
-          className="text-xs flex items-center gap-1 transition-colors"
+          className="sidebar-link text-xs flex items-center gap-1 transition-colors"
           style={{
-            color: hoveredRefresh ? 'var(--text-secondary)' : 'var(--text-muted)',
-            transition: 'color 150ms ease', }}>
+            color: 'var(--text-muted)',
+            background: 'transparent', }}>
           <RefreshCw className="w-3 h-3" /> Refresh</button></div>
 
       {sortedCategories.map(cat => {
@@ -1780,13 +1771,9 @@ function EnrichmentPanel({
                 {catRecords.map(rec => (
                   <div
                     key={rec.id}
-                    className="flex items-start gap-3 px-4 py-2.5 transition-colors"
+                    className="hover-row flex items-start gap-3 px-4 py-2.5 transition-colors"
                     style={{
-                      borderBottom: '1px solid var(--border-subtle)',
-                      background: hoveredRow === rec.id ? 'var(--surface-1)' : 'transparent',
-                      transition: 'background 150ms ease', }}
-                    onMouseEnter={() => setHoveredRow(rec.id)}
-                    onMouseLeave={() => setHoveredRow(null)}>
+                      borderBottom: '1px solid var(--border-subtle)', }}>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-0.5">
                         <span className="text-xs font-normal" style={textSecondary}>

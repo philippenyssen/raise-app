@@ -38,8 +38,6 @@ export default function NetworkPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
-  const [hoveredLink, setHoveredLink] = useState<string | null>(null);
-  const [, setHoveredCard] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -188,10 +186,8 @@ export default function NetworkPage() {
           return (
             <div
               key={cascade.keystoneId}
-              className="card transition-colors"
-              style={{ transition: 'all 0.15s ease' }}
-              onMouseEnter={() => setHoveredCard(cascade.keystoneId)}
-              onMouseLeave={() => setHoveredCard(null)}>
+              className="card hover-border"
+              style={{ transition: 'all 0.15s ease' }}>
               {/* Card Header */}
               <button
                 className="w-full flex items-center justify-between p-4"
@@ -276,7 +272,6 @@ export default function NetworkPage() {
                     <div className="flex flex-col gap-0">
                       {cascade.cascadeChain.map((link, idx) => {
                         const isBottleneck = cascade.networkBottleneck?.investorId === link.investorId;
-                        const isLinkHovered = hoveredLink === link.investorId;
 
                         return (
                           <div key={link.investorId}>
@@ -298,14 +293,11 @@ export default function NetworkPage() {
 
                             {/* Investor Row */}
                             <div
-                              className="flex items-center justify-between rounded-md p-3 transition-colors"
+                              className={`flex items-center justify-between rounded-md p-3 ${isBottleneck ? '' : 'link-row-hover'}`}
                               style={{
                                 marginLeft: '24px',
-                                background: isLinkHovered ? 'var(--surface-2)' : 'var(--surface-1)',
-                                ...(isBottleneck ? { background: 'var(--warning-muted)' } : {}),
-                                transition: 'all 0.15s ease', }}
-                              onMouseEnter={() => setHoveredLink(link.investorId)}
-                              onMouseLeave={() => setHoveredLink(null)}>
+                                background: isBottleneck ? 'var(--warning-muted)' : 'var(--surface-1)',
+                                transition: 'all 0.15s ease', }}>
                               <div className="flex items-center gap-3 min-w-0">
                                 <div style={{
                                   width: '8px',

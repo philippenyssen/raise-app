@@ -47,9 +47,6 @@ export default function TimelinePage() {
   const [creating, setCreating] = useState(false);
   const [filterPhase, setFilterPhase] = useState<string>('');
   const [filterStatus, setFilterStatus] = useState<string>('');
-  const [hoverStates, setHoverStates] = useState<Record<string, boolean>>({});
-
-  const setHover = (key: string, val: boolean) => setHoverStates(prev => ({ ...prev, [key]: val }));
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -163,10 +160,8 @@ export default function TimelinePage() {
             {pendingCount} pending, {doneCount} done{criticalCount > 0 ? `, ${criticalCount} critical` : ''}</p></div>
         <button
           onClick={() => setShowAdd(!showAdd)}
-          className="px-4 py-2 rounded-lg text-sm font-normal transition-colors flex items-center gap-2"
-          style={{ backgroundColor: hoverStates['addBtn'] ? 'var(--accent)' : 'var(--accent)', color: 'var(--surface-0)', opacity: hoverStates['addBtn'] ? 0.85 : 1 }}
-          onMouseEnter={() => setHover('addBtn', true)}
-          onMouseLeave={() => setHover('addBtn', false)}>
+          className="px-4 py-2 rounded-lg text-sm font-normal flex items-center gap-2 btn-accent-hover"
+          style={{ backgroundColor: 'var(--accent)', color: 'var(--surface-0)' }}>
           <Plus className="w-3.5 h-3.5" /> Add Task</button></div>
 
       {/* Quick Stats */}
@@ -309,25 +304,22 @@ export default function TimelinePage() {
                   {phaseTasks.map(task => {
                     const StatusIcon = STATUS_ICONS[task.status as TaskStatus] || Circle;
                     const isOverdue = task.due_date && task.status !== 'done' && new Date(task.due_date) < new Date();
-                    const rowKey = `row-${task.id}`;
                     return (
                       <div
                         key={task.id}
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors"
+                        className={`flex items-center gap-3 px-3 py-2.5 rounded-lg ${task.status !== 'done' && !isOverdue ? 'task-row-hover' : ''}`}
                         style={{
                           border: task.status === 'done'
                             ? '1px solid color-mix(in srgb, var(--border-subtle) 30%, transparent)'
                             : isOverdue
                             ? '1px solid color-mix(in srgb, var(--danger) 30%, transparent)'
-                            : `1px solid ${hoverStates[rowKey] ? 'var(--border-default)' : 'var(--border-subtle)'}`,
+                            : '1px solid var(--border-subtle)',
                           backgroundColor: task.status === 'done'
                             ? 'color-mix(in srgb, var(--surface-1) 20%, transparent)'
                             : isOverdue
                             ? 'color-mix(in srgb, var(--danger) 5%, transparent)'
                             : 'transparent',
-                          opacity: task.status === 'done' ? 0.6 : 1, }}
-                        onMouseEnter={() => setHover(rowKey, true)}
-                        onMouseLeave={() => setHover(rowKey, false)}>
+                          opacity: task.status === 'done' ? 0.6 : 1, }}>
                         <button onClick={() => toggleTask(task)} className="shrink-0">
                           <StatusIcon
                             className="w-4 h-4"
@@ -398,14 +390,10 @@ export default function TimelinePage() {
             </div>
           ) : (
             activity.map(event => {
-              const evKey = `ev-${event.id}`;
               return (
                 <div
                   key={event.id}
-                  className="flex items-start gap-3 px-3 py-2 rounded-lg transition-colors"
-                  style={{ backgroundColor: hoverStates[evKey] ? 'color-mix(in srgb, var(--surface-1) 30%, transparent)' : 'transparent' }}
-                  onMouseEnter={() => setHover(evKey, true)}
-                  onMouseLeave={() => setHover(evKey, false)}>
+                  className="flex items-start gap-3 px-3 py-2 rounded-lg hover-row-activity">
                   <div className="w-2 h-2 rounded-full mt-1.5 shrink-0" style={{ backgroundColor: 'var(--accent)' }} />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">

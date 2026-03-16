@@ -282,7 +282,6 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
 
 function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
   const [expanded, setExpanded] = useState(false);
-  const [hovered, setHovered] = useState(false);
 
   const cardStyle: React.CSSProperties = {
     borderRadius: 'var(--radius-lg)',
@@ -296,10 +295,8 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
 
   return (
     <div
-      className="transition-colors"
-      style={cardStyle}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}>
+      className="hover-border"
+      style={cardStyle}>
       <div
         className="p-4 cursor-pointer"
         onClick={() => setExpanded(!expanded)}>
@@ -420,8 +417,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                 {item.focusScore}</span>
               <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', letterSpacing: '0.08em' }}>Focus</span></div>
             {/* Quick action buttons — always visible for top 3, on hover for rest */}
-            {(rank <= 3 || hovered) && (
-              <div className="flex items-center gap-1" onClick={e => e.stopPropagation()}>
+              <div className={`flex items-center gap-1${rank > 3 ? ' hover-show-actions' : ''}`} onClick={e => e.stopPropagation()}>
                 <Link
                   href={`/meetings/new?investor=${item.investorId}`}
                   title="Schedule meeting"
@@ -437,8 +433,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                   style={{ width: '28px', height: '28px', borderRadius: 'var(--radius-md)', background: 'var(--surface-2)', color: 'var(--text-secondary)', transition: 'all 150ms ease' }}
                   onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-muted)'; e.currentTarget.style.color = 'var(--accent)'; }}
                   onMouseLeave={e => { e.currentTarget.style.background = 'var(--surface-2)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}>
-                  <Zap className="w-3.5 h-3.5" /></Link></div>
-            )}</div></div>
+                  <Zap className="w-3.5 h-3.5" /></Link></div></div></div>
 
         {/* Impact + Risk row */}
         <div className="flex items-start gap-4 ml-11" style={{ marginTop: '10px' }}>
