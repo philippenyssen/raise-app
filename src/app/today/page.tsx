@@ -583,8 +583,8 @@ export default function TodayPage() {
             <span style={{ color: 'var(--accent)', ...flexIcon }}><Target className="w-4 h-4" /></span>
             <span style={{ fontSize: 'var(--font-size-lg)', fontWeight: 300, fontVariantNumeric: 'tabular-nums', color: raiseProgress.isOver ? 'var(--danger)' : raiseProgress.pct >= 75 ? 'var(--warning)' : 'var(--text-primary)' }}>Day {raiseProgress.daysElapsed}</span>
             <span style={labelMuted}>of {raiseProgress.targetDays}</span></div>
-          <div style={{ flex: 1, height: '6px', background: 'var(--surface-3)', borderRadius: '3px', overflow: 'hidden' }}>
-            <div style={{ width: `${raiseProgress.pct}%`, height: '100%', borderRadius: '3px', background: raiseProgress.isOver ? 'var(--danger)' : raiseProgress.pct >= 75 ? 'var(--warning)' : 'var(--accent)', transition: 'width 600ms ease' }}
+          <div style={{ flex: 1, height: '6px', background: 'var(--surface-3)', borderRadius: 'var(--radius-sm)', overflow: 'hidden' }}>
+            <div style={{ width: `${raiseProgress.pct}%`, height: '100%', borderRadius: 'var(--radius-sm)', background: raiseProgress.isOver ? 'var(--danger)' : raiseProgress.pct >= 75 ? 'var(--warning)' : 'var(--accent)', transition: 'width 600ms ease' }}
               /></div>
           <span style={{ ...stFontXs, fontWeight: 400, fontVariantNumeric: 'tabular-nums', color: raiseProgress.isOver ? 'var(--danger)' : raiseProgress.daysRemaining <= 14 ? 'var(--warning)' : 'var(--text-tertiary)', whiteSpace: 'nowrap' }}>{raiseProgress.isOver ? `+${raiseProgress.daysElapsed - raiseProgress.targetDays}d over` : `${raiseProgress.daysRemaining}d left`}</span>
         </div>

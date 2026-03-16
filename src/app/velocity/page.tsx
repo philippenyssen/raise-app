@@ -120,13 +120,13 @@ export default function VelocityPage() {
               Raise Timeline</span></div>
           <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' }}>
             Day {summary.raise_days_elapsed} of {summary.raise_target_days}</span></div>
-        <div className="progress-track" style={{ height: '8px', borderRadius: '4px' }}>
+        <div className="progress-track" style={{ height: '8px', borderRadius: 'var(--radius-sm)' }}>
           <div
             className="progress-fill"
             style={{
               width: `${raiseProgress}%`,
               background: 'var(--accent)',
-              borderRadius: '4px',
+              borderRadius: 'var(--radius-sm)',
             }} /></div>
         <div className="flex items-center justify-between" style={{ marginTop: 'var(--space-1)' }}>
           <span style={labelMuted}>
@@ -292,7 +292,7 @@ export default function VelocityPage() {
                     <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
                       <div className="flex items-center gap-2">
                         <div style={velocityBarTrack}>
-                          <div style={{ width: `${inv.velocity_score}%`, height: '100%', background: velocityColor(inv.velocity_score), borderRadius: '3px', transition: 'width 500ms ease' }} />
+                          <div style={{ width: `${inv.velocity_score}%`, height: '100%', background: velocityColor(inv.velocity_score), borderRadius: 'var(--radius-sm)', transition: 'width 500ms ease' }} />
                         </div>
                         <span
                           style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, fontVariantNumeric: 'tabular-nums', color: velocityColor(inv.velocity_score), minWidth: '28px', textAlign: 'right' }}>

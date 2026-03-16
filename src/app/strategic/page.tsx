@@ -17,7 +17,7 @@ const mbSpace1 = { marginBottom: 'var(--space-1)' } as const;
 const fontSmTertiary = { ...textSmTertiary, fontWeight: 400 } as const;
 const trendValueBase = { fontSize: 'var(--font-size-lg)', fontWeight: 300, fontVariantNumeric: 'tabular-nums' } as const;
 const trendDeltaRow = { fontSize: 'var(--font-size-xs)' } as const;
-const trendStreakLabel = { fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginTop: '2px' } as const;
+const trendStreakLabel = { fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginTop: 'var(--space-0)' } as const;
 const trendAlertWrap = { marginTop: 'var(--space-1)' } as const;
 const trendAlertText = { fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', lineHeight: 1.3 } as const;
 
@@ -432,7 +432,7 @@ export default function StrategicPage() {
                       <td className="py-1.5 pr-3" style={stTextMuted}>{f.stage}</td>
                       <td className="py-1.5 pr-3 text-right" style={{ fontVariantNumeric: 'tabular-nums', color: 'var(--text-secondary)' }}>~{f.days}d</td>
                       <td className="py-1.5">
-                        <span style={{ fontSize: 'var(--font-size-xs)', padding: '2px 6px', borderRadius: 'var(--radius-sm)', ...confidenceStyle(f.confidence) }}>{f.confidence}</span>
+                        <span style={{ fontSize: 'var(--font-size-xs)', padding: 'var(--space-0) var(--space-1)', borderRadius: 'var(--radius-sm)', ...confidenceStyle(f.confidence) }}>{f.confidence}</span>
                       </td></tr>
                   ))}</tbody></table></div>
           )}
@@ -518,7 +518,7 @@ function RecommendationRow({ rec, isLast }: { rec: StrategicRecommendation; isLa
       <div className="flex items-start gap-4">
         {/* Priority badge */}
         <div className="flex flex-col items-center gap-1.5 shrink-0 pt-0.5">
-          <span style={{ fontSize: 'var(--font-size-xs)', padding: '2px 6px', borderRadius: 'var(--radius-sm)', border: '1px solid', fontWeight: 300, ...priorityStyle(rec.priority) }}>P{rec.priority}</span>
+          <span style={{ fontSize: 'var(--font-size-xs)', padding: 'var(--space-0) var(--space-1)', borderRadius: 'var(--radius-sm)', border: '1px solid', fontWeight: 300, ...priorityStyle(rec.priority) }}>P{rec.priority}</span>
           <div className="w-7 h-7 flex items-center justify-center" style={{ borderRadius: 'var(--radius-sm)', background: catCfg.bg }}>
             <CatIcon className="w-3.5 h-3.5" style={{ color: catCfg.color }} /></div></div>
 
@@ -529,7 +529,7 @@ function RecommendationRow({ rec, isLast }: { rec: StrategicRecommendation; isLa
             <span
               style={{
                 fontSize: 'var(--font-size-xs)',
-                padding: '2px 6px',
+                padding: 'var(--space-0) var(--space-1)',
                 borderRadius: 'var(--radius-sm)',
                 border: `1px solid ${catCfg.border}`,
                 background: catCfg.bg,
@@ -555,7 +555,7 @@ function RecommendationRow({ rec, isLast }: { rec: StrategicRecommendation; isLa
             <Link
               href={actionLink.route}
               className="ml-auto flex items-center gap-1 transition-colors hover-accent-invert"
-              style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, padding: '3px 10px', borderRadius: 'var(--radius-sm)', background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid var(--accent-muted)', transition: 'all 150ms ease', textDecoration: 'none' }}>
+              style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, padding: 'var(--space-1) var(--space-2)', borderRadius: 'var(--radius-sm)', background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid var(--accent-muted)', transition: 'all 150ms ease', textDecoration: 'none' }}>
               {actionLink.label}
               <ExternalLink className="w-3 h-3" /></Link></div></div></div>
     </div>);

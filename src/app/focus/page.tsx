@@ -110,7 +110,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
               style={{
                 flex: 1,
                 height: '6px',
-                borderRadius: '3px',
+                borderRadius: 'var(--radius-sm)',
                 background: dimensionBg(d.score, d.signal),
                 position: 'relative',
                 overflow: 'hidden',
@@ -123,7 +123,7 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
                   bottom: 0,
                   width: `${d.signal === 'unknown' ? 0 : d.score}%`,
                   background: dimensionColor(d.score, d.signal),
-                  borderRadius: '3px',
+                  borderRadius: 'var(--radius-sm)',
                   opacity: 0.85,
                   transition: 'width 300ms ease',
                 }} /></div>
