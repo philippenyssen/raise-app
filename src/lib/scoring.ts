@@ -982,9 +982,9 @@ export function computeInvestorScore(
   // 11-dimension phase-dynamic weights (cycle 31: added Engagement Velocity)
   const phaseWeights: Record<string, Record<string, number>> = {
     discovery: {
-      'Engagement': 0.09, 'Thesis Fit': 0.22, 'Check Size Fit': 0.12,
+      'Engagement': 0.09, 'Thesis Fit': 0.19, 'Check Size Fit': 0.12,
       'Speed Match': 0.05, 'Conflict Risk': 0.10, 'Warm Path': 0.14,
-      'Meeting Quality': 0.09, 'Momentum': 0.09, 'Network Effect': 0.03, 'Forecast Alignment': 0.02, 'Engagement Velocity': 0.05,
+      'Meeting Quality': 0.09, 'Momentum': 0.06, 'Network Effect': 0.03, 'Forecast Alignment': 0.02, 'Engagement Velocity': 0.11,
     },
     outreach: {
       'Engagement': 0.12, 'Thesis Fit': 0.17, 'Check Size Fit': 0.09,

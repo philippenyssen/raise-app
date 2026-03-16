@@ -143,6 +143,14 @@ Extract structured data in this exact JSON format (no markdown, just pure JSON):
     "specific_concerns": ["distinct concerns raised that are not objections but need addressing — e.g. 'wanted clarity on FX exposure', 'asked about board composition post-close'"],
     "body_language_at_pricing": "positive|neutral|negative|not_discussed"
   },
+  "decision_drivers": {
+    "commitment_language": "exact quote if investor used commitment language (e.g. 'we want to lead', 'allocating X for this'), empty string if none",
+    "timeline_specificity": "none|vague|specific",
+    "timeline_quote": "exact quote about timing/decision timeline if mentioned, empty string if not",
+    "ic_readiness": "not_discussed|early_stage|preparing_memo|scheduled|approved",
+    "deal_breakers_stated": ["explicit requirements stated as must-haves for them to proceed"],
+    "fund_constraints": "any LP/fund constraints mentioned (e.g. 'we can only do Europe', 'our fund closes in 6 months', 'we need co-investor'), empty string if not discussed"
+  },
   "competitive_intel": "Any intelligence gathered about competitors, market, other investors. Include: other deals they are looking at, market sentiment they shared, intel about other funds' activity in the sector.",
   "next_steps": "Clear next steps from both sides, with owners and deadlines if mentioned",
   "enthusiasm_score": 3,
@@ -163,6 +171,7 @@ Only count competitive_bids_mentioned when investor named a specific company or 
     questions_asked: [] as { text: string; topic: string }[],
     objections: [] as { text: string; severity: string; topic: string }[],
     engagement_signals: { enthusiasm: 3, asked_about_process: false, asked_about_timeline: false, requested_followup: false, mentioned_competitors: false, pricing_reception: 'not_discussed', slides_that_landed: [] as string[], slides_that_fell_flat: [] as string[], check_size_mentioned: '', ic_process_details: '', co_investors_referenced: [] as string[], portfolio_conflicts_surfaced: [] as string[], competitive_bids_mentioned: [] as string[], followup_commitments: [] as string[], specific_concerns: [] as string[], body_language_at_pricing: 'not_discussed' },
+    decision_drivers: { commitment_language: '', timeline_specificity: 'none' as const, timeline_quote: '', ic_readiness: 'not_discussed' as const, deal_breakers_stated: [] as string[], fund_constraints: '' },
     competitive_intel: '', next_steps: '', enthusiasm_score: 3,
     ai_analysis: 'Could not parse meeting notes. Please add more detail.', suggested_status: 'met',};
   const expectedFields = 10;
