@@ -17,6 +17,13 @@ const tierBadgeLow: React.CSSProperties = { ...tierBadgeBase, background: 'var(-
 const tabNumBase: React.CSSProperties = { fontSize: 'var(--font-size-sm)', fontWeight: 400, fontVariantNumeric: 'tabular-nums' };
 function daysProcessColor(days: number): string { return days > 50 ? 'var(--danger)' : days > 35 ? 'var(--warning)' : 'var(--text-secondary)'; }
 function daysStageColor(days: number): string { return days > 21 ? 'var(--danger)' : days > 14 ? 'var(--warning)' : 'var(--text-tertiary)'; }
+const trackingBadgeBase: React.CSSProperties = { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', padding: '2px 8px', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 400 };
+const velocityBarTrack: React.CSSProperties = { flex: 1, height: '6px', background: 'var(--surface-3)', borderRadius: '3px', overflow: 'hidden' };
+const actionBtnBase: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '3px 8px', gap: 'var(--space-1)', display: 'inline-flex', alignItems: 'center' };
+const rescueBtnStyle: React.CSSProperties = { ...actionBtnBase, background: 'var(--danger-muted)', color: 'var(--text-primary)', border: '1px solid var(--fg-6)' };
+const nudgeBtnStyle: React.CSSProperties = { ...actionBtnBase, background: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid var(--fg-5)' };
+const projDateStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', fontVariantNumeric: 'tabular-nums' };
+const iconMr4: React.CSSProperties = { marginRight: '4px' };
 
 interface VelocityInvestor { investor_id: string; investor_name: string; investor_type: string; investor_tier: number; status: string; enthusiasm: number; days_in_process: number; days_in_current_stage: number; projected_close_date: string; days_to_target: number; on_track: boolean; tracking_status: 'on_track' | 'behind' | 'at_risk'; bottleneck: string; velocity_score: number; meeting_count: number; meetings_per_week: number; days_since_last_meeting: number }
 interface VelocitySummary { total_active: number; on_track: number; behind: number; at_risk: number; avg_velocity_score: number; avg_days_in_process: number; raise_days_elapsed: number; raise_target_days: number }
@@ -244,7 +251,7 @@ export default function VelocityPage() {
 
                     {/* Projected Close */}
                     <td style={cellCenter}>
-                      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', fontVariantNumeric: 'tabular-nums' }}>
+                      <span style={projDateStyle}>
                         {new Date(inv.projected_close_date).toLocaleDateString('en-GB', {
                           day: 'numeric',
                           month: 'short',
@@ -253,13 +260,13 @@ export default function VelocityPage() {
                     {/* On-Track Status */}
                     <td style={cellCenter}>
                       <span
-                        style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', padding: '2px 8px', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 400, background: trackingBg(inv.tracking_status), color: trackingColor(inv.tracking_status) }}>
+                        style={{ ...trackingBadgeBase, background: trackingBg(inv.tracking_status), color: trackingColor(inv.tracking_status) }}>
                         {inv.tracking_status === 'on_track' ? (
-                          <><CheckCircle2 className="w-3 h-3" style={{ marginRight: '4px' }} /> On</>
+                          <><CheckCircle2 className="w-3 h-3" style={iconMr4} /> On</>
                         ) : inv.tracking_status === 'behind' ? (
-                          <><AlertTriangle className="w-3 h-3" style={{ marginRight: '4px' }} /> Late</>
+                          <><AlertTriangle className="w-3 h-3" style={iconMr4} /> Late</>
                         ) : (
-                          <><XCircle className="w-3 h-3" style={{ marginRight: '4px' }} /> Risk</>
+                          <><XCircle className="w-3 h-3" style={iconMr4} /> Risk</>
                         )}</span></td>
 
                     {/* Bottleneck */}
@@ -274,7 +281,7 @@ export default function VelocityPage() {
                     {/* Velocity Score Bar */}
                     <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
                       <div className="flex items-center gap-2">
-                        <div style={{ flex: 1, height: '6px', background: 'var(--surface-3)', borderRadius: '3px', overflow: 'hidden' }}>
+                        <div style={velocityBarTrack}>
                           <div style={{ width: `${inv.velocity_score}%`, height: '100%', background: velocityColor(inv.velocity_score), borderRadius: '3px', transition: 'width 500ms ease' }} />
                         </div>
                         <span
@@ -288,21 +295,21 @@ export default function VelocityPage() {
                           href={`/meetings/new?investor=${inv.investor_id}`}
                           className="btn btn-sm"
                           onClick={e => e.stopPropagation()}
-                          style={{ background: 'var(--danger-muted)', color: 'var(--text-primary)', border: '1px solid var(--fg-6)', fontSize: 'var(--font-size-xs)', padding: '3px 8px', gap: 'var(--space-1)', display: 'inline-flex', alignItems: 'center' }}>
+                          style={rescueBtnStyle}>
                           <Phone className="w-3 h-3" /> Rescue</Link>
                       ) : inv.tracking_status === 'behind' ? (
                         <Link
                           href={`/followups?investor=${inv.investor_id}`}
                           className="btn btn-sm"
                           onClick={e => e.stopPropagation()}
-                          style={{ background: 'var(--warning-muted)', color: 'var(--text-tertiary)', border: '1px solid var(--fg-5)', fontSize: 'var(--font-size-xs)', padding: '3px 8px', gap: 'var(--space-1)', display: 'inline-flex', alignItems: 'center' }}>
+                          style={nudgeBtnStyle}>
                           <Mail className="w-3 h-3" /> Nudge</Link>
                       ) : (
                         <Link
                           href={`/investors/${inv.investor_id}`}
                           className="btn btn-sm"
                           onClick={e => e.stopPropagation()}
-                          style={{ background: 'var(--surface-2)', color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)', padding: '3px 8px', gap: 'var(--space-1)', display: 'inline-flex', alignItems: 'center' }}>
+                          style={{ ...actionBtnBase, background: 'var(--surface-2)', color: 'var(--text-muted)' }}>
                           <Target className="w-3 h-3" /> View</Link>
                       )}</td></tr>
                 ))}</tbody></table></div>
