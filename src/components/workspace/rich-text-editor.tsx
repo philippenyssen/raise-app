@@ -12,13 +12,13 @@ import TableHeader from '@tiptap/extension-table-header';
 import Highlight from '@tiptap/extension-highlight';
 import TextStyle from '@tiptap/extension-text-style';
 import Color from '@tiptap/extension-color';
-import { useEffect, useCallback, useRef } from 'react';
+import { useEffect, useCallback, useRef, useState } from 'react';
 import {
   Bold, Italic, Underline as UnderlineIcon, Strikethrough,
   AlignLeft, AlignCenter, AlignRight,
   List, ListOrdered, Quote, Minus, Undo2, Redo2,
   Heading1, Heading2, Heading3, Table as TableIcon,
-  Code, Highlighter,
+  Code, Highlighter, ZoomIn, ZoomOut,
 } from 'lucide-react';
 
 interface RichTextEditorProps {
@@ -177,6 +177,7 @@ function ToolbarButton({ icon: Icon, isActive, onClick, title }: {
 export function RichTextEditor({ content, onChange, editable = true }: RichTextEditorProps) {
   const isUpdatingRef = useRef(false);
   const initialHtml = useRef(markdownToHtml(content));
+  const [zoom, setZoom] = useState(100);
 
   const editor = useEditor({
     extensions: [
@@ -348,6 +349,14 @@ export function RichTextEditor({ content, onChange, editable = true }: RichTextE
           <ToolbarButton icon={Minus} onClick={() => editor.chain().focus().setHorizontalRule().run()} title="Horizontal Rule" />
           <div style={dividerStyle} />
           <ToolbarButton icon={TableIcon} onClick={insertTable} title="Insert Table" />
+          <div style={dividerStyle} />
+          <ToolbarButton icon={ZoomOut} onClick={() => setZoom(z => Math.max(z - 10, 60))} title="Zoom out" />
+          <span
+            style={{ fontSize: '10px', color: 'var(--text-muted)', minWidth: '32px', textAlign: 'center', cursor: 'pointer' }}
+            onClick={() => setZoom(100)}
+            title="Reset zoom"
+          >{zoom}%</span>
+          <ToolbarButton icon={ZoomIn} onClick={() => setZoom(z => Math.min(z + 10, 200))} title="Zoom in" />
         </div>
       )}
 
@@ -395,7 +404,9 @@ export function RichTextEditor({ content, onChange, editable = true }: RichTextE
 
       {/* Editor content */}
       <div className="flex-1 overflow-y-auto">
-        <EditorContent editor={editor} className="h-full" />
+        <div style={{ fontSize: `${zoom}%` }}>
+          <EditorContent editor={editor} className="h-full" />
+        </div>
       </div>
     </div>
   );
