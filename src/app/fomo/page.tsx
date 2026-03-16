@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { getIntensityColor, inlineBadgeStyle, labelMuted, labelMutedTight, stAccent, stFontSm, stFontXs, stTextPrimary, textSmMuted, textSmSecondary } from '@/lib/styles';
 import { TierBadge, EnthusiasmDots } from '@/components/shared';
+import { EmptyState } from '@/components/ui/empty-state';
 import { MS_PER_HOUR } from '@/lib/time';
 import { TYPE_LABELS_SHORT as TYPE_LABELS } from '@/lib/constants';
 import { fmtDateTime } from '@/lib/format';
@@ -475,13 +476,7 @@ export default function FomoPage() {
 
             <div className="flex flex-col gap-2">
               {filteredInvestors.length === 0 ? (
-                <div
-                  style={{
-                    padding: 'var(--space-8)',
-                    textAlign: 'center',
-                    color: 'var(--text-muted)',
-                    fontSize: 'var(--font-size-sm)', }}>
-                  No investors match this filter.</div>
+                <EmptyState icon={Users} title="No investors match this filter" description="Try a different intensity filter or add more investors to your pipeline." />
               ) : (
                 filteredInvestors.map(inv => (
                   <PressureCard key={inv.investorId} inv={inv} />
@@ -495,15 +490,7 @@ export default function FomoPage() {
               <h2 style={sectionHeading}>
                 FOMO Triggers</h2>
               {data.triggerEvents.length === 0 ? (
-                <div
-                  style={{
-                    padding: 'var(--space-6)',
-                    textAlign: 'center',
-                    color: 'var(--text-muted)',
-                    fontSize: 'var(--font-size-sm)',
-                    background: 'var(--surface-1)',
-                    borderRadius: 'var(--radius-lg)', }}>
-                  No recent trigger events detected.</div>
+                <EmptyState icon={Zap} title="No recent trigger events" description="Trigger events are detected automatically from investor activity and market signals." />
               ) : (
                 <div className="flex flex-col gap-2">
                   {data.triggerEvents.slice(0, 8).map((event, i) => (
@@ -516,16 +503,7 @@ export default function FomoPage() {
               <h2 style={sectionHeading}>
                 Strategy Cards</h2>
               {data.strategyCards.length === 0 ? (
-                <div
-                  style={{
-                    padding: 'var(--space-6)',
-                    textAlign: 'center',
-                    color: 'var(--text-muted)',
-                    fontSize: 'var(--font-size-sm)',
-                    background: 'var(--surface-1)',
-                    borderRadius: 'var(--radius-lg)', }}>
-                  No actionable strategies right now. Add more investors or schedule meetings to generate competitive dynamics.
-                </div>
+                <EmptyState icon={Target} title="No actionable strategies yet" description="Add more investors or schedule meetings to generate competitive dynamics." />
               ) : (
                 <div className="flex flex-col gap-3">
                   {data.strategyCards.map((card, i) => (

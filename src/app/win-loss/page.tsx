@@ -6,7 +6,8 @@ import {
   TrendingDown, TrendingUp, RefreshCw, Users, Target, AlertTriangle,
   CheckCircle, XCircle, ArrowDown, Clock, Lightbulb, BarChart3,
 } from 'lucide-react';
-import { cardPad4, labelMuted, stAccent, stFontSm, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, strengthColor, textSmMuted, textSmSecondary } from '@/lib/styles';
+import { cardPad4, labelMuted, labelSecondary, stAccent, stFontSm, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, strengthColor, textSmMuted, textSmSecondary } from '@/lib/styles';
+import { EmptyState } from '@/components/ui/empty-state';
 import { fmtDateTime } from '@/lib/format';
 
 const textSmTertiary = { fontSize: 'var(--font-size-sm)', color: 'var(--text-tertiary)' } as const;
@@ -21,6 +22,13 @@ const typeCardStyle: React.CSSProperties = { padding: 'var(--space-2) var(--spac
 const insightCardStyle: React.CSSProperties = { padding: 'var(--space-2) var(--space-3)', borderRadius: 'var(--radius-sm)', background: 'var(--surface-1)', ...textSmSecondary };
 const closeRateLabel = { fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', fontWeight: 400 } as const;
 const passRateLabel = { fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', fontWeight: 400 } as const;
+const countBadgeStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', fontWeight: 400, fontVariantNumeric: 'tabular-nums' };
+const barTrack: React.CSSProperties = { height: '4px', background: 'var(--surface-1)', borderRadius: '2px', overflow: 'hidden' };
+const tdBase: React.CSSProperties = { padding: 'var(--space-2) var(--space-3)', fontSize: 'var(--font-size-sm)', borderBottom: '1px solid var(--border-subtle)' };
+const tdFactor: React.CSSProperties = { ...tdBase, color: 'var(--text-primary)', fontWeight: 400 };
+const tdNumSecondary: React.CSSProperties = { ...tdBase, color: 'var(--text-secondary)', textAlign: 'right', fontVariantNumeric: 'tabular-nums' };
+const tdNumPrimary: React.CSSProperties = { ...tdBase, color: 'var(--text-primary)', textAlign: 'right', fontVariantNumeric: 'tabular-nums' };
+const tdSigCell: React.CSSProperties = { ...tdBase, textAlign: 'right' };
 
 // ── Types ─────────────────────────────────────────────────────────────
 
@@ -273,8 +281,7 @@ export default function WinLossPage() {
                 </div>
               ))}</div>
           ) : (
-            <p style={textSmMuted}>
-              No closed deals yet. As investors reach term sheet or closed status, their profiles will appear here with performance insights.</p>
+            <EmptyState icon={CheckCircle} title="No closed deals yet" description="As investors reach term sheet or closed status, their profiles will appear here with performance insights." />
           )}</div>
 
         {/* Loser Profile */}
@@ -303,8 +310,7 @@ export default function WinLossPage() {
                 </div>
               ))}</div>
           ) : (
-            <p style={textSmMuted}>
-              No rejections yet. When investors pass, their profile appears here to help identify patterns in what&apos;s not landing.</p>
+            <EmptyState icon={XCircle} title="No rejections yet" description="When investors pass, their profile appears here to help identify patterns in what's not landing." />
           )}</div></div>
 
       {/* Pass Reasons + Key Predictors Row */}
@@ -328,15 +334,11 @@ export default function WinLossPage() {
                       padding: 'var(--space-2)',
                       borderRadius: 'var(--radius-sm)', }}>
                     <div className="flex items-center justify-between" style={{ marginBottom: '4px' }}>
-                      <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' }}>
+                      <span style={textSmPrimary400}>
                         {pr.reason}</span>
-                      <span style={{
-                        fontSize: 'var(--font-size-xs)',
-                        color: 'var(--text-secondary)',
-                        fontWeight: 400,
-                        fontVariantNumeric: 'tabular-nums',}}>
+                      <span style={countBadgeStyle}>
                         {pr.count}x</span></div>
-                    <div style={{ height: '4px', background: 'var(--surface-1)', borderRadius: '2px', overflow: 'hidden' }}>
+                    <div style={barTrack}>
                       <div style={{ height: '100%', width: `${barPct}%`, background: 'var(--danger)', borderRadius: '2px', opacity: 0.7 }} />
                     </div>
                   </div>);
@@ -405,15 +407,15 @@ export default function WinLossPage() {
                   <tr
                     key={f.factor}
                     className="hover-row">
-                    <td style={{ padding: 'var(--space-2) var(--space-3)', fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, borderBottom: '1px solid var(--border-subtle)' }}>
+                    <td style={tdFactor}>
                       {f.factor}</td>
-                    <td style={{ padding: 'var(--space-2) var(--space-3)', fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)', textAlign: 'right', fontVariantNumeric: 'tabular-nums', borderBottom: '1px solid var(--border-subtle)' }}>
+                    <td style={tdNumSecondary}>
                       {f.closedAvg}</td>
-                    <td style={{ padding: 'var(--space-2) var(--space-3)', fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', textAlign: 'right', fontVariantNumeric: 'tabular-nums', borderBottom: '1px solid var(--border-subtle)' }}>
+                    <td style={tdNumPrimary}>
                       {f.passedAvg}</td>
-                    <td style={{ padding: 'var(--space-2) var(--space-3)', fontSize: 'var(--font-size-sm)', color: f.delta > 0 ? 'var(--success)' : f.delta < 0 ? 'var(--danger)' : 'var(--text-muted)', textAlign: 'right', fontWeight: 400, fontVariantNumeric: 'tabular-nums', borderBottom: '1px solid var(--border-subtle)' }}>
+                    <td style={{ ...tdNumPrimary, color: f.delta > 0 ? 'var(--success)' : f.delta < 0 ? 'var(--danger)' : 'var(--text-muted)', fontWeight: 400 }}>
                       {f.delta > 0 ? '+' : ''}{f.delta}</td>
-                    <td style={{ padding: 'var(--space-2) var(--space-3)', textAlign: 'right', borderBottom: '1px solid var(--border-subtle)' }}>
+                    <td style={tdSigCell}>
                       <span style={{
                         fontSize: 'var(--font-size-xs)',
                         fontWeight: 400,
