@@ -575,9 +575,9 @@ export default function Dashboard() {
                         {stressTest.closeProbability}%</div></div>
                     <div>
                       <div style={labelXsTertiary4}>
-                        Status</div>
+                        Gap</div>
                       <div style={metricLgPrimary}>
-                        {stressTest.onTrack ? 'On track' : 'Needs attention'}</div></div></div></div>
+                        {stressTest.forecast.base >= stressTest.target ? 'Covered' : `€${Math.round(stressTest.target - stressTest.forecast.base)}M`}</div></div></div></div>
               </Link>);
           })() : sectionErrors.stressTest ? (
             <SectionError label="Raise progress" onRetry={() => fetchSection('stressTest')} />
