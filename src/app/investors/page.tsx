@@ -53,6 +53,21 @@ function computeCompleteness(inv: Investor): number {
   return Math.round((filled / COMPLETENESS_FIELDS.length) * 100);
 }
 
+function completenessDotColor(pct: number): string {
+  if (pct >= 80) return 'var(--success)';
+  if (pct >= 50) return 'var(--warning)';
+  return 'var(--danger)';
+}
+
+const TIER_BADGE_STYLES: Record<number, React.CSSProperties> = {
+  1: { boxShadow: 'none, none' },
+  2: { boxShadow: 'none, none' },
+  3: { boxShadow: 'none' },
+};
+const TIER_BADGE_DEFAULT: React.CSSProperties = { background: 'var(--surface-2)', color: 'var(--text-muted)' };
+
+const rowActionBtn: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '0.3rem 0.5rem', color: 'var(--text-muted)', borderRadius: 'var(--radius-sm)' };
+
 export default function InvestorsPage() {
   const router = useRouter();
   const { toast } = useToast();
@@ -314,7 +329,7 @@ export default function InvestorsPage() {
           className="card-elevated space-y-4">
           <h3 className="section-title">{editId ? 'Edit' : 'Add'} investor</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div><Input label="Name" value={form.name} onChange={v => setForm(f => ({ ...f, name: v }))} required autoFocus />{!editId && form.name.length >= 3 && (() => { const q = form.name.toLowerCase(); const match = investors.find(i => i.name.toLowerCase().includes(q)); return match ? <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--warning)' }}>Similar investor exists: {match.name}</span> : null; })()}</div>
+            <div><Input label="Name" value={form.name} onChange={v => setForm(f => ({ ...f, name: v }))} required autoFocus />{!editId && form.name.length >= 3 && (() => { const q = form.name.toLowerCase(), m = investors.find(i => i.name.toLowerCase().includes(q)); return m ? <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--warning)' }}>Similar investor exists: {m.name}</span> : null; })()}</div>
             <Select label="Type" value={form.type} onChange={v => setForm(f => ({ ...f, type: v as InvestorType }))} options={Object.entries(TYPE_LABELS)}
               />
             <Select label="Tier" value={String(form.tier)} onChange={v => setForm(f => ({ ...f, tier: Number(v) as InvestorTier }))} options={[['1','Tier 1'],['2','Tier 2'],['3','Tier 3'],['4','Tier 4']]}
@@ -366,33 +381,15 @@ export default function InvestorsPage() {
                       style={{ textDecoration: 'none', transition: 'color 150ms' }}>
                       {inv.name}</Link></td>
                   <td style={{ width: '2rem', padding: 'var(--space-3) var(--space-2)' }}>
-                    {(() => {
-                      const pct = computeCompleteness(inv);
-                      const dotColor = pct >= 80 ? 'var(--success)' : pct >= 50 ? 'var(--warning)' : 'var(--danger)';
-                      return (
-                        <div
-                          className="status-dot"
-                          style={{ background: dotColor, width: '10px', height: '10px' }}
-                          title={`Profile ${pct}% complete — add partner name, fund size, check size, and sector thesis to improve`} />);
-                    })()}</td>
+                    <div
+                      className="status-dot"
+                      style={{ background: completenessDotColor(computeCompleteness(inv)), width: '10px', height: '10px' }}
+                      title={`Profile ${computeCompleteness(inv)}% complete — add partner name, fund size, check size, and sector thesis to improve`} /></td>
                   <td style={{ padding: 'var(--space-3) var(--space-4)', color: 'var(--text-secondary)' }}>
                     {TYPE_LABELS[inv.type as InvestorType] ?? inv.type}</td>
                   <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
-                    <span className={`tier-badge ${
-                      inv.tier === 1 ? 'tier-1' :
-                      inv.tier === 2 ? 'tier-2' :
-                      inv.tier === 3 ? 'tier-3' : ''
-                    }`} style={
-                      inv.tier === 1
-                        ? { boxShadow: 'none, none' }
-                        : inv.tier === 2
-                          ? { boxShadow: 'none, none' }
-                          : inv.tier === 3
-                            ? { boxShadow: 'none' }
-                            : {
-                                background: 'var(--surface-2)',
-                                color: 'var(--text-muted)',}
-                    }>
+                    <span className={`tier-badge ${inv.tier <= 3 ? `tier-${inv.tier}` : ''}`}
+                      style={TIER_BADGE_STYLES[inv.tier] || TIER_BADGE_DEFAULT}>
                       {inv.tier}</span></td>
                   <td style={{ padding: 'var(--space-3) var(--space-4)', color: 'var(--text-secondary)' }}>
                     {inv.partner || '—'}</td>
@@ -406,18 +403,11 @@ export default function InvestorsPage() {
                   <td style={{ padding: 'var(--space-3) var(--space-4)', color: 'var(--text-secondary)', fontSize: 'var(--font-size-xs)' }}>
                     {inv.check_size_range || '—'}</td>
                   <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
-                    {(() => {
-                      const days = daysSince(inv.last_meeting_date);
-                      const s = stalenessStyle(days);
-                      return (
-                        <span
-                          className="inline-flex items-center gap-1"
+                    {(() => { const d = daysSince(inv.last_meeting_date), s = stalenessStyle(d); return (
+                        <span className="inline-flex items-center gap-1"
                           style={{ fontSize: 'var(--font-size-xs)', color: s.color, fontWeight: 400 }}
                           title={inv.last_meeting_date ? fmtDate(inv.last_meeting_date) : 'No meetings yet'}>
-                          {days !== null && days > 14 && <Clock className="w-3 h-3" />}
-                          {s.label}
-                        </span>);
-                    })()}</td>
+                          {d !== null && d > 14 && <Clock className="w-3 h-3" />}{s.label}</span>); })()}</td>
                   <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
                     {inv.enthusiasm > 0 ? (
                       <div className="enthusiasm-dots">
@@ -433,21 +423,21 @@ export default function InvestorsPage() {
                         className="btn btn-ghost btn-sm icon-accent"
                         title="Edit investor"
                         aria-label="Edit investor"
-                        style={{ fontSize: 'var(--font-size-xs)', padding: '0.3rem 0.5rem', color: 'var(--text-muted)', borderRadius: 'var(--radius-sm)' }}>
+                        style={rowActionBtn}>
                         <Pencil className="w-3 h-3" /></button>
                       <Link
                         href={`/meetings/new?investor=${inv.id}`}
                         className="btn btn-ghost btn-sm icon-success"
                         title="Log meeting"
                         aria-label="Log meeting"
-                        style={{ fontSize: 'var(--font-size-xs)', padding: '0.3rem 0.5rem', color: 'var(--text-muted)', borderRadius: 'var(--radius-sm)' }}>
+                        style={rowActionBtn}>
                         <Calendar className="w-3 h-3" /></Link>
                       <button
                         onClick={() => setDeleteTarget({ id: inv.id, name: inv.name })}
                         className="btn btn-ghost btn-sm icon-delete"
                         title="Delete investor"
                         aria-label="Delete investor"
-                        style={{ fontSize: 'var(--font-size-xs)', padding: '0.3rem 0.5rem', borderRadius: 'var(--radius-sm)' }}>
+                        style={rowActionBtn}>
                         <Trash2 className="w-3 h-3" /></button></div></td>
                 </tr>);
             })}</tbody></table></div>
