@@ -39,6 +39,11 @@ const CONF_GROUP_CONFIG = [
   { label: 'Low Confidence', key: 'low' as const, color: 'var(--text-primary)', bg: 'var(--danger-muted)', icon: AlertTriangle },
 ] as const;
 
+const riskFactorBox: React.CSSProperties = { display: 'flex', alignItems: 'flex-start', gap: 'var(--space-2)', padding: 'var(--space-2) var(--space-3)', background: 'var(--danger-muted)', borderRadius: 'var(--radius-sm)', textDecoration: 'none' } as const;
+const riskIconStyle: React.CSSProperties = { color: 'var(--text-primary)', marginTop: '2px', flexShrink: 0 } as const;
+const riskTextStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', lineHeight: 1.5, flex: 1 } as const;
+const riskArrowStyle: React.CSSProperties = { color: 'var(--text-primary)', marginTop: '2px', flexShrink: 0, opacity: 0.6 } as const;
+
 interface InvestorForecast { investorId: string; investorName: string; currentStage: string; tier: number; daysInStage: number; predictedDaysToClose: number; predictedCloseDate: string; confidence: 'high' | 'medium' | 'low'; reasoning: string }
 
 interface RaiseForecast { forecasts: InvestorForecast[]; expectedCloseDate: string; expectedAmount: number; confidence: 'high' | 'medium' | 'low'; criticalPathInvestors: string[]; riskFactors: string[] }
@@ -356,19 +361,12 @@ export default function ForecastPage() {
                     key={i}
                     href={riskLink}
                     className="hover-bg-fg6"
-                    style={{
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      gap: 'var(--space-2)',
-                      padding: 'var(--space-2) var(--space-3)',
-                      background: 'var(--danger-muted)',
-                      borderRadius: 'var(--radius-sm)',
-                      textDecoration: 'none', }}>
-                    <span style={{ color: 'var(--text-primary)', marginTop: '2px', flexShrink: 0 }}>
+                    style={riskFactorBox}>
+                    <span style={riskIconStyle}>
                       <AlertTriangle className="w-3 h-3" /></span>
-                    <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', lineHeight: 1.5, flex: 1 }}>
+                    <span style={riskTextStyle}>
                       {risk}</span>
-                    <span style={{ color: 'var(--text-primary)', marginTop: '2px', flexShrink: 0, opacity: 0.6 }}>
+                    <span style={riskArrowStyle}>
                       <ExternalLink className="w-3 h-3" /></span>
                   </Link>);
               })}</div>

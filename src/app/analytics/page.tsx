@@ -14,7 +14,7 @@ import {
 import {
   stTextMuted, stTextTertiary, stTextSecondary, stTextPrimary, stFontSm,
   stSurface0, stSurface1, stBorderTop,
-  labelMuted10, labelSmMuted, labelTertiary, labelMuted, textSmTertiary,
+  labelMuted10, labelSmMuted, labelSecondary, labelTertiary, labelMuted, textSmTertiary,
 } from '@/lib/styles';
 import { EnthusiasmDots } from '@/components/shared';
 
@@ -621,7 +621,7 @@ export default function AnalyticsPage() {
                             <div
                               className="h-full rounded flex items-center px-2"
                               style={{ width: `${Math.max(pct, 15)}%`, background: 'var(--danger-muted)' }}>
-                              <span className="truncate" style={{ fontSize: 'var(--font-size-xs)', ...stTextSecondary }}>{obj.topic}</span></div>
+                              <span className="truncate" style={labelSecondary}>{obj.topic}</span></div>
                           </div></div>
                         <span className="text-xs font-normal shrink-0 w-8 text-right" style={stTextPrimary}>
                           {obj.count}x</span>

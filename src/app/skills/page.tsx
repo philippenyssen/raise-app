@@ -6,6 +6,7 @@ import { useToast } from '@/components/toast';
 import { cachedFetch } from '@/lib/cache';
 import { fmtDateTime } from '@/lib/format';
 import { getHealthBg, getHealthColor, skelCardSm, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { EmptyState } from '@/components/ui/empty-state';
 
 interface SkillHealth {
   skill_name: string;
@@ -139,11 +140,7 @@ export default function SkillsPage() {
 
       {/* Skill health table */}
       {health.length === 0 ? (
-        <div className="card" style={{ padding: 'var(--space-8)', textAlign: 'center' }}>
-          <Activity className="w-8 h-8 mx-auto mb-3" style={stTextMuted} />
-          <p style={stTextTertiary}>
-            No skill executions yet. Skills start logging automatically when AI features are used — run a meeting analysis, investor research, or enrichment to begin tracking.
-          </p></div>
+        <EmptyState icon={Activity} title="No skill executions yet" description="Skills start logging automatically when AI features are used — run a meeting analysis, investor research, or enrichment to begin tracking." />
       ) : (
         <div className="space-y-2">
           <div className="text-xs font-normal" style={{ color: 'var(--text-tertiary)', letterSpacing: '0.01em' }}>
