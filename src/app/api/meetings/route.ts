@@ -248,6 +248,19 @@ export async function PATCH(req: NextRequest) {
         investor_name: meeting.investor_name,});
     } catch (e) { console.error('[MEETING_OUTCOME_LOG]', e instanceof Error ? e.message : e); }
 
+    // Auto-create review task when outcome is poor
+    if (typeof outcome_rating === 'number' && outcome_rating <= 2) {
+      try {
+        await createTask({
+          title: `Review approach for ${meeting.investor_name} — poor meeting outcome`,
+          description: key_takeaway ? `Takeaway: ${key_takeaway}` : 'Meeting outcome rated poorly. Review strategy before next touchpoint.',
+          assignee: '', due_date: new Date(Date.now() + 2 * 864e5).toISOString().split('T')[0],
+          status: 'pending', priority: 'high', phase: 'management_presentations',
+          investor_id: meeting.investor_id, investor_name: meeting.investor_name, auto_generated: true,
+        });
+      } catch (e) { console.error('[POOR_OUTCOME_TASK]', e instanceof Error ? e.message : e); }
+    }
+
     // Auto-create task when competitive mentions are recorded
     try {
       const mentions = Array.isArray(competitive_mentions) ? competitive_mentions as string[] : [];
