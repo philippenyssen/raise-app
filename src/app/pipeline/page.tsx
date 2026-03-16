@@ -140,23 +140,23 @@ export default function PipelinePage() {
 
   const hasActiveFilters = filters.tiers.size > 0 || filters.types.size > 0;
 
-  function toggleTier(tier: number) {
+  const toggleTier = useCallback((tier: number) => {
     setFilters(f => {
       const next = new Set(f.tiers);
       if (next.has(tier)) next.delete(tier); else next.add(tier);
       return { ...f, tiers: next };});
-  }
+  }, []);
 
-  function toggleType(type: string) {
+  const toggleType = useCallback((type: string) => {
     setFilters(f => {
       const next = new Set(f.types);
       if (next.has(type)) next.delete(type); else next.add(type);
       return { ...f, types: next };});
-  }
+  }, []);
 
-  function clearFilters() {
+  const clearFilters = useCallback(() => {
     setFilters({ tiers: new Set(), types: new Set() });
-  }
+  }, []);
 
   // ── Stats ────────────────────────────────────────────────────────
   const { activeInvestors, totalCount, avgEnthusiasm, pipelineVelocity, advancedCount } = useMemo(() => {

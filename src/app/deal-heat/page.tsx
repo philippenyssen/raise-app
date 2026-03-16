@@ -245,7 +245,7 @@ export default function DealHeatPage() {
                   <div className="flex items-center gap-2" style={{ marginTop: 'var(--space-3)' }}>
                     <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: cfg.text, letterSpacing: '0.01em' }}>
                       {cfg.label}</span>
-                    <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                    <span style={labelMuted}>
                       {STATUS_LABELS[inv.status] || inv.status}</span></div>
 
                   {/* Top driver */}

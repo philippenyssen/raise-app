@@ -82,7 +82,7 @@ function ActionCard({
 
           {/* Meta row */}
           <div className="flex items-center gap-4 flex-wrap">
-            <span className="flex items-center gap-1" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+            <span className="flex items-center gap-1" style={labelMuted10}>
               <Timer className="w-3 h-3" />
               {item.timeEstimate}</span>
             <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', opacity: 0.8 }}>
@@ -155,7 +155,7 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
         <span style={inlineBadgeStyle(PIPELINE_STATUS_STYLES[investor.status] ?? PIPELINE_STATUS_STYLES.identified)}>
           {STATUS_LABELS[investor.status] ?? investor.status}</span></div>
       <div className="flex items-center gap-3 mb-2">
-        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+        <span style={labelMuted10}>
           Score: <span style={{ color: 'var(--text-secondary)', fontWeight: 300 }}>{investor.score}</span>/100</span>
         <span style={{ fontSize: 'var(--font-size-xs)', ...(MOMENTUM_STYLES[investor.momentum] ?? {}) }}>
           {MOMENTUM_LABELS[investor.momentum]}</span>
@@ -192,7 +192,7 @@ function AtRiskCard({ investor }: { investor: InvestorSummary }) {
         <span style={inlineBadgeStyle(INVESTOR_TYPE_STYLES[investor.investorType] ?? INVESTOR_TYPE_STYLES.vc)}>
           {TYPE_LABELS[investor.investorType] ?? investor.investorType}</span></div>
       <div className="flex items-center gap-3 mb-2">
-        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+        <span style={labelMuted10}>
           Score: <span style={{ color: 'var(--text-secondary)', fontWeight: 300 }}>{investor.score}</span>/100</span>
         <span style={{ fontSize: 'var(--font-size-xs)', ...(MOMENTUM_STYLES[investor.momentum] ?? {}) }}>
           {investor.momentum === 'decelerating' || investor.momentum === 'stalled'
@@ -237,7 +237,7 @@ function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
                   style={{ fontSize: 'var(--font-size-sm)' }}>
                   {inv.investorName}</Link>
                 <TierBadge tier={inv.investorTier} />
-                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>Score: {inv.score}/100</span></div>
+                <span style={labelMuted10}>Score: {inv.score}/100</span></div>
               <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' as const }}>{inv.reason}</span>
             </div>
           ))}

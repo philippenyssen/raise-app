@@ -409,7 +409,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
                 <div key={comp.label} className="text-center">
                   <div className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 300, color: focusScoreColor(comp.value) }}>{comp.value}</div>
                   <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '2px' }}>{comp.label}</div>
-                  <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>{comp.weight}</div></div>
+                  <div style={labelMuted}>{comp.weight}</div></div>
               ))}</div></div>
 
           {/* Unresolved objections */}
