@@ -167,8 +167,8 @@ export default function ComparePage() {
     setCompareData(null);
   }
 
-  const filteredInvestors = allInvestors.filter(i =>
-    i.name.toLowerCase().includes(search.toLowerCase()));
+  const filteredInvestors = useMemo(() => allInvestors.filter(i =>
+    i.name.toLowerCase().includes(search.toLowerCase())), [allInvestors, search]);
 
   // Find the winner (highest overall score)
   const winnerId = useMemo(() => {

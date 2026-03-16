@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import { cachedFetch } from '@/lib/cache';
 import Link from 'next/link';
 import {
@@ -14,6 +14,7 @@ import { fmtDateTime } from '@/lib/format';
 
 const cardSurface1 = { padding: 'var(--space-4)', background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)' } as const;
 const textXlLight = { fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' } as const;
+const sectionHeading = { fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)', margin: '0 0 var(--space-3) 0' } as const;
 
 // ---------------------------------------------------------------------------
 // Types
@@ -412,20 +413,22 @@ export default function FomoPage() {
       <div className="loading-spinner" />
     </div>);
 
-  const filteredInvestors = data.perInvestorFomo.filter(inv => {
+  const filteredInvestors = useMemo(() => data.perInvestorFomo.filter(inv => {
     if (filterIntensity === 'all') return true;
     if (filterIntensity === 'high') return inv.intensity >= 70;
     if (filterIntensity === 'medium') return inv.intensity >= 40 && inv.intensity < 70;
     if (filterIntensity === 'low') return inv.intensity > 0 && inv.intensity < 40;
     if (filterIntensity === 'none') return inv.intensity === 0;
-    return true;});
+    return true;
+  }), [data.perInvestorFomo, filterIntensity]);
 
-  const filterTabs: { key: typeof filterIntensity; label: string; count: number }[] = [
+  const filterTabs = useMemo((): { key: typeof filterIntensity; label: string; count: number }[] => [
     { key: 'all', label: 'All', count: data.perInvestorFomo.length },
     { key: 'high', label: 'High', count: data.stats.highFomoCount },
     { key: 'medium', label: 'Medium', count: data.stats.mediumFomoCount },
     { key: 'low', label: 'Low', count: data.stats.lowFomoCount },
-    { key: 'none', label: 'None', count: data.stats.zeroFomoCount },];
+    { key: 'none', label: 'None', count: data.stats.zeroFomoCount },
+  ], [data.perInvestorFomo.length, data.stats.highFomoCount, data.stats.mediumFomoCount, data.stats.lowFomoCount, data.stats.zeroFomoCount]);
 
   return (
     <div className="flex-1 overflow-y-auto page-content" style={{ padding: 'var(--space-6)' }}>
@@ -502,7 +505,7 @@ export default function FomoPage() {
           <div className="flex flex-col gap-6">
             {/* FOMO Triggers */}
             <div>
-              <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)', margin: '0 0 var(--space-3) 0' }}>
+              <h2 style={sectionHeading}>
                 FOMO Triggers</h2>
               {data.triggerEvents.length === 0 ? (
                 <div
@@ -523,7 +526,7 @@ export default function FomoPage() {
 
             {/* Strategy Cards */}
             <div>
-              <h2 style={{ fontSize: 'var(--font-size-base)', fontWeight: 400, color: 'var(--text-primary)', margin: '0 0 var(--space-3) 0' }}>
+              <h2 style={sectionHeading}>
                 Strategy Cards</h2>
               {data.strategyCards.length === 0 ? (
                 <div
