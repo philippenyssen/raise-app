@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { cachedFetch } from '@/lib/cache';
 import { useToast } from '@/components/toast';
@@ -748,6 +748,29 @@ function EffectivenessTab({
 
   const { topic_effectiveness, response_leaderboard, worst_responses, evolution, summary } = data;
 
+  // Memoize: deduplicate .some() + .filter() into one pass
+  const worstNeedingRework = useMemo(
+    () => worst_responses.filter(r => r.effectiveness_score < 50).slice(0, 5),
+    [worst_responses]
+  );
+
+  // Memoize: sort is O(n log n) on every render
+  const sortedTopicEff = useMemo(
+    () => [...topic_effectiveness].sort((a, b) => b.resolution_rate - a.resolution_rate),
+    [topic_effectiveness]
+  );
+
+  // Memoize: heatmap week grouping + sort + slice
+  const heatmapWeeks = useMemo(() => {
+    const weekMap = new Map<string, number>();
+    for (const entry of evolution.objectionHeatMap) {
+      weekMap.set(entry.week, (weekMap.get(entry.week) || 0) + entry.count);
+    }
+    return Array.from(weekMap.entries())
+      .sort((a, b) => a[0].localeCompare(b[0]))
+      .slice(-8);
+  }, [evolution.objectionHeatMap]);
+
   function toggleLeaderboardItem(idx: number) {
     setExpandedLeaderboard(prev => {
       const next = new Set(prev);
@@ -948,13 +971,13 @@ function EffectivenessTab({
             )}</div>
 
           {/* Worst Performing Responses */}
-          {worst_responses.length > 0 && worst_responses.some(r => r.effectiveness_score < 50) && (
+          {worstNeedingRework.length > 0 && (
             <div className="rounded-xl overflow-hidden">
               <div className="p-4 flex items-center gap-2" style={{ background: 'var(--danger-muted)', borderBottom: '1px solid var(--border-subtle)' }}>
                 <AlertTriangle className="w-4 h-4" style={stTextPrimary} />
                 <h3 className="text-sm font-normal" style={stTextPrimary}>Responses Needing Rework</h3></div>
               <div>
-                {worst_responses.filter(r => r.effectiveness_score < 50).slice(0, 5).map((entry, idx) => {
+                {worstNeedingRework.map((entry, idx) => {
                   const color = getColor(entry.objection_topic);
                   return (
                     <div
@@ -1058,23 +1081,11 @@ function EffectivenessTab({
               <div className="flex items-center gap-2">
                 <BarChart3 className="w-4 h-4" style={stAccent} />
                 <h3 className="text-xs font-normal tracking-wide" style={stTextTertiary}>Activity by Week</h3></div>
-              {(() => {
-                // Group by week, show last 8 weeks max
-                const weekMap = new Map<string, number>();
-                for (const entry of evolution.objectionHeatMap) {
-                  weekMap.set(entry.week, (weekMap.get(entry.week) || 0) + entry.count);
-                }
-                const weeks = Array.from(weekMap.entries())
-                  .sort((a, b) => a[0].localeCompare(b[0]))
-                  .slice(-8);
-
-                if (weeks.length === 0) return null;
-
-                const maxCount = Math.max(...weeks.map(([, c]) => c));
-
+              {heatmapWeeks.length > 0 && (() => {
+                const maxCount = Math.max(...heatmapWeeks.map(([, c]) => c));
                 return (
                   <div className="space-y-1">
-                    {weeks.map(([week, count]) => {
+                    {heatmapWeeks.map(([week, count]) => {
                       const pct = maxCount > 0 ? Math.round((count / maxCount) * 100) : 0;
                       return (
                         <div key={week} className="flex items-center gap-2">
@@ -1101,9 +1112,7 @@ function EffectivenessTab({
               <p className="text-xs" style={stTextMuted}>Resolution data appears after objections are addressed in follow-ups.</p>
             ) : (
               <div className="space-y-2">
-                {topic_effectiveness
-                  .sort((a, b) => b.resolution_rate - a.resolution_rate)
-                  .map((te) => {
+                {sortedTopicEff.map((te) => {
                     const color = getColor(te.topic);
                     const barColor = te.resolution_rate >= 75 ? 'var(--success)' : te.resolution_rate >= 50 ? 'var(--warning)' : 'var(--danger)';
                     return (

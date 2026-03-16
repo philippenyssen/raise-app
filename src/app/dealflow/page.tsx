@@ -345,6 +345,7 @@ export default function DealflowPage() {
       {/* Loading state */}
       {loading && !investors.length && (
         <div className="space-y-3">
+          <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>Loading investor health signals...</p>
           {[1,2,3,4].map(i => <div key={i} className="skeleton" style={{ height: '56px', borderRadius: 'var(--radius-lg)' }} />)}
         </div>
       )}

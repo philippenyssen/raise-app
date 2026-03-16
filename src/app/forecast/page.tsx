@@ -11,7 +11,7 @@ import {
 import { STATUS_LABELS as STAGE_LABELS } from '@/lib/constants';
 import { fmtDate, fmtDateShort } from '@/lib/format';
 import { relativeTime } from '@/lib/time';
-import { confidenceBg, confidenceColor, labelMuted, labelMuted10, stAccent, stFontSm, stFontXs, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { confidenceBg, confidenceColor, labelMuted, labelMuted10, maxWidthCenter, cellCenter, stAccent, stFontSm, stFontXs, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 const mbSpace3 = { marginBottom: 'var(--space-3)' } as const;
 const mbSpace6 = { marginBottom: 'var(--space-6)' } as const;
@@ -90,7 +90,7 @@ export default function ForecastPage() {
 
   if (loading) {
     return (
-      <div className="flex-1 p-6 page-content" style={{ maxWidth: '1400px', margin: '0 auto' }}>
+      <div className="flex-1 p-6 page-content" style={maxWidthCenter}>
         <div className="flex items-center gap-3" style={{ marginBottom: 'var(--space-8)' }}>
           <div className="skeleton" style={{ width: '200px', height: '32px' }} /></div>
         <p className="text-xs" style={{ color: 'var(--text-muted)', marginBottom: 'var(--space-3)' }}>Calculating close probabilities and timelines...</p>
@@ -105,7 +105,7 @@ export default function ForecastPage() {
 
   if (error || !data) {
     return (
-      <div className="flex-1 p-6 page-content" style={{ maxWidth: '1400px', margin: '0 auto' }}>
+      <div className="flex-1 p-6 page-content" style={maxWidthCenter}>
         <div className="card" style={{ textAlign: 'center', padding: 'var(--space-12)' }}>
           <AlertTriangle className="w-8 h-8 mx-auto mb-3" style={{ color: 'var(--text-muted)' }} />
           <p style={{ color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)', marginBottom: 'var(--space-3)' }}>
@@ -141,7 +141,7 @@ export default function ForecastPage() {
   }, [forecast.forecasts]);
 
   return (
-    <div className="page-content flex-1 p-6" style={{ maxWidth: '1400px', margin: '0 auto' }}>
+    <div className="page-content flex-1 p-6" style={maxWidthCenter}>
       {/* Header */}
       <div className="flex items-center justify-between" style={mbSpace6}>
         <div>
@@ -487,22 +487,22 @@ export default function ForecastPage() {
                           {STAGE_LABELS[inv.currentStage] || inv.currentStage}</span></td>
 
                       {/* Days in Stage */}
-                      <td style={{ padding: 'var(--space-3) var(--space-4)', textAlign: 'center' }}>
+                      <td style={cellCenter}>
                         <span style={{ fontSize: 'var(--font-size-sm)', fontVariantNumeric: 'tabular-nums', fontWeight: 400, color: inv.daysInStage > 30 ? 'var(--danger)' : inv.daysInStage > 14 ? 'var(--warning)' : 'var(--text-secondary)' }}>
                           {inv.daysInStage}d</span></td>
 
                       {/* Predicted Close */}
-                      <td style={{ padding: 'var(--space-3) var(--space-4)', textAlign: 'center' }}>
+                      <td style={cellCenter}>
                         <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', fontVariantNumeric: 'tabular-nums' }}>
                           {fmtDateShort(inv.predictedCloseDate)}</span></td>
 
                       {/* Days Left */}
-                      <td style={{ padding: 'var(--space-3) var(--space-4)', textAlign: 'center' }}>
+                      <td style={cellCenter}>
                         <span style={{ fontSize: 'var(--font-size-sm)', fontVariantNumeric: 'tabular-nums', fontWeight: 400, color: inv.predictedDaysToClose > 60 ? 'var(--danger)' : inv.predictedDaysToClose > 30 ? 'var(--warning)' : 'var(--text-secondary)' }}>
                           {inv.predictedDaysToClose}d</span></td>
 
                       {/* Confidence */}
-                      <td style={{ padding: 'var(--space-3) var(--space-4)', textAlign: 'center' }}>
+                      <td style={cellCenter}>
                         <span style={{ display: 'inline-flex', alignItems: 'center', padding: '2px 8px', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 400, background: confidenceBg(inv.confidence), color: confidenceColor(inv.confidence) }}>
                           {inv.confidence}</span></td>
 
