@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getMeetings, getMeeting, createMeeting, updateMeeting, getInvestor, processPostMeetingIntelligence, logActivity, createObjectionRecord, updateObjectionEnthusiasmDelta, generateFollowupChoreography, extractAndStoreQuestionPatterns } from '@/lib/db';
+import { getMeetings, getMeeting, createMeeting, updateMeeting, getInvestor, processPostMeetingIntelligence, logActivity, createObjectionRecord, updateObjectionEnthusiasmDelta, generateFollowupChoreography, extractAndStoreQuestionPatterns, createTask } from '@/lib/db';
 import { analyzeMeetingNotes } from '@/lib/ai';
 import { emitContextChange } from '@/lib/context-bus';
 
@@ -247,6 +247,20 @@ export async function PATCH(req: NextRequest) {
         investor_id: meeting.investor_id,
         investor_name: meeting.investor_name,});
     } catch (e) { console.error('[MEETING_OUTCOME_LOG]', e instanceof Error ? e.message : e); }
+
+    // Auto-create task when competitive mentions are recorded
+    try {
+      const mentions = Array.isArray(competitive_mentions) ? competitive_mentions as string[] : [];
+      if (mentions.length > 0) {
+        await createTask({
+          title: `Review competitive positioning — ${meeting.investor_name} mentioned ${mentions.join(', ')}`,
+          description: `Investor raised competitive concerns during meeting. Update materials as needed.`,
+          assignee: '', due_date: new Date(Date.now() + 2 * 864e5).toISOString().split('T')[0],
+          status: 'pending', priority: 'high', phase: 'management_presentations',
+          investor_id: meeting.investor_id, investor_name: meeting.investor_name, auto_generated: true,
+        });
+      }
+    } catch (e) { console.error('[OUTCOME_TASK]', e instanceof Error ? e.message : e); }
 
     emitContextChange('meeting_updated', `Meeting outcome recorded for ${meeting.investor_name}`);
 
