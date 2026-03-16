@@ -19,6 +19,10 @@ const bottleneckBadge: React.CSSProperties = { fontSize: 'var(--font-size-xs)', 
 const tabNumSm: React.CSSProperties = { fontSize: 'var(--font-size-sm)', fontWeight: 400, fontVariantNumeric: 'tabular-nums' };
 const keystoneBadgeMuted: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-muted)', fontWeight: 400 };
 const keystoneBadgeSecondary: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-2)', color: 'var(--text-secondary)' };
+const probDot: React.CSSProperties = { width: '8px', height: '8px', borderRadius: '50%', flexShrink: 0 };
+const checkSizeLabel = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '2px', display: 'block' as const } as const;
+const investorLinkStyle = { fontWeight: 400, fontSize: 'var(--font-size-sm)', textDecoration: 'none' } as const;
+const arrowConnector = { color: 'var(--text-muted)', marginLeft: '-10px' } as const;
 
 interface CascadeLink { investorId: string; investorName: string; probability: number; cumulativeProbability: number; status: string; tier: number; checkSize: string; capitalM: number; expectedCapitalM: number }
 
@@ -265,7 +269,7 @@ export default function NetworkPage() {
                             {/* Arrow connector */}
                             <div className="flex items-center gap-2 py-1" style={{ paddingLeft: '16px' }}>
                               <div style={connectorLine} />
-                              <ArrowRight className="w-3 h-3" style={{ color: 'var(--text-muted)', marginLeft: '-10px' }} />
+                              <ArrowRight className="w-3 h-3" style={arrowConnector} />
                               <span style={{ ...tabNumSm, fontSize: 'var(--font-size-xs)', color: probColor(link.probability) }}>
                                 {Math.round(link.probability * 100)}%</span></div>
 
@@ -277,16 +281,13 @@ export default function NetworkPage() {
                                 background: isBottleneck ? 'var(--warning-muted)' : 'var(--surface-1)',
                                 transition: 'all 0.15s ease', }}>
                               <div className="flex items-center gap-3 min-w-0">
-                                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: probColor(link.probability), flexShrink: 0 }} />
+                                <div style={{ ...probDot, background: probColor(link.probability) }} />
                                 <div className="min-w-0">
                                   <div className="flex items-center gap-2">
                                     <Link
                                       href={`/investors/${link.investorId}`}
                                       className="investor-link"
-                                      style={{
-                                        fontWeight: 400,
-                                        fontSize: 'var(--font-size-sm)',
-                                        textDecoration: 'none', }}>
+                                      style={investorLinkStyle}>
                                       {link.investorName}</Link>
                                     <span style={chainBadgeMuted}>
                                       {tierLabel(link.tier)}</span>
@@ -297,7 +298,7 @@ export default function NetworkPage() {
                                         BOTTLENECK</span>
                                     )}</div>
                                   {link.checkSize && (
-                                    <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginTop: '2px', display: 'block' }}>
+                                    <span style={checkSizeLabel}>
                                       Check: {link.checkSize}</span>
                                   )}</div></div>
                               <div className="flex items-center gap-4 shrink-0">

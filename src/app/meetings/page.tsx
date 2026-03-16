@@ -14,6 +14,9 @@ const labelBlockMutedMb4 = { fontSize: 'var(--font-size-xs)', color: 'var(--text
 const ratingBtnBase: React.CSSProperties = { width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'none', border: 'none', padding: 0 };
 const objectionBadge: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--success-muted)', color: 'var(--text-secondary)' };
 const competitorBadge: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '1px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--warning-muted)', color: 'var(--text-tertiary)' };
+const competitorFormBadge: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '2px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--warning-muted)', color: 'var(--text-tertiary)' };
+const objectionFormBadge: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: '2px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--success-muted)', color: 'var(--text-secondary)' };
+const removeBtnInline: React.CSSProperties = { background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: 'inherit', display: 'flex' };
 const trendConfig = {
   up: { icon: TrendingUp, color: 'var(--text-secondary)', label: 'Rising' },
   down: { icon: TrendingDown, color: 'var(--text-primary)', label: 'Falling' },
@@ -243,13 +246,13 @@ function MeetingOutcomeSection({
             <span
               key={i}
               className="flex items-center gap-1"
-              style={{ fontSize: 'var(--font-size-xs)', padding: '2px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--success-muted)', color: 'var(--text-secondary)' }}>
+              style={objectionFormBadge}>
               {o}
               <button
                 type="button"
                 onClick={() => removeObjection(i)}
                 aria-label="Remove objection"
-                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: 'inherit', display: 'flex' }}>
+                style={removeBtnInline}>
                 <X className="w-3 h-3" /></button></span>
           ))}</div>
         <div className="flex gap-2">
@@ -270,13 +273,13 @@ function MeetingOutcomeSection({
             <span
               key={i}
               className="flex items-center gap-1"
-              style={{ fontSize: 'var(--font-size-xs)', padding: '2px 6px', borderRadius: 'var(--radius-sm)', background: 'var(--warning-muted)', color: 'var(--text-tertiary)' }}>
+              style={competitorFormBadge}>
               {c}
               <button
                 type="button"
                 onClick={() => removeCompetitor(i)}
                 aria-label="Remove competitor"
-                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: 'inherit', display: 'flex' }}>
+                style={removeBtnInline}>
                 <X className="w-3 h-3" /></button></span>
           ))}</div>
         <div className="flex gap-2">
