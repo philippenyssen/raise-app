@@ -203,7 +203,7 @@ function MeetingOutcomeSection({
               ))}</div></div>
           <div className="col-span-2">
             <div style={stTextMuted}>Key Takeaway</div>
-            <div style={{ color: 'var(--text-primary)', marginTop: '2px' }}>{meeting.key_takeaway || '-'}</div></div></div>
+            <div style={{ color: 'var(--text-primary)', marginTop: 'var(--space-0)' }}>{meeting.key_takeaway || '-'}</div></div></div>
 
         {existingObjections.length > 0 && (
           <div className="mt-2">
@@ -430,17 +430,17 @@ export default function MeetingsPage() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 card-stagger">
         <div className="card-metric">
           <div className="metric-label">Total Meetings</div>
-          <div className="metric-value" style={{ marginTop: '2px' }}>{meetings.length}</div></div>
+          <div className="metric-value" style={{ marginTop: 'var(--space-0)' }}>{meetings.length}</div></div>
         <div className="card-metric">
           <div className="metric-label">Avg Enthusiasm</div>
-          <div className="metric-value" style={{ marginTop: '2px' }}>
+          <div className="metric-value" style={{ marginTop: 'var(--space-0)' }}>
             {avgEnthusiasm}<span style={textSmMuted}>/5</span></div></div>
         <div className="card-metric">
           <div className="metric-label">Objections</div>
-          <div className="metric-value" style={{ marginTop: '2px', color: 'var(--text-tertiary)' }}>{totalObjections}</div></div>
+          <div className="metric-value" style={{ marginTop: 'var(--space-0)', color: 'var(--text-tertiary)' }}>{totalObjections}</div></div>
         <div className="card-metric">
           <div className="metric-label">Unique Investors</div>
-          <div className="metric-value" style={{ marginTop: '2px' }}>{uniqueInvestors}</div></div></div>
+          <div className="metric-value" style={{ marginTop: 'var(--space-0)' }}>{uniqueInvestors}</div></div></div>
 
       {/* Momentum Signals */}
       {momentumUp.length > 0 || momentumDown.length > 0 ? (
@@ -573,7 +573,7 @@ export default function MeetingsPage() {
                         key={i}
                         style={{
                           fontSize: 'var(--font-size-xs)',
-                          padding: '2px 8px',
+                          padding: 'var(--space-0) var(--space-2)',
                           borderRadius: 'var(--radius-sm)',
                           ...getObjectionStyle(o.severity), }}>
                         {o.text.length > 50 ? o.text.slice(0, 50) + '...' : o.text}</span>
@@ -600,7 +600,7 @@ export default function MeetingsPage() {
                     }
                     {hasOutcome ? 'Meeting Outcome' : 'Record Outcome'}
                     {hasOutcome && (
-                      <span style={{ marginLeft: '4px' }}>
+                      <span style={{ marginLeft: 'var(--space-1)' }}>
                         <CheckCircle2 className="w-3.5 h-3.5" /></span>
                     )}</button>
 

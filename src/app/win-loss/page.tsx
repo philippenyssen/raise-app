@@ -199,9 +199,9 @@ export default function WinLossPage() {
             style={{
               padding: 'var(--space-3)', }}>
             <div className="metric-label">{s.label}</div>
-            <div className="metric-value" style={{ marginTop: '2px' }}>{s.value}</div>
+            <div className="metric-value" style={{ marginTop: 'var(--space-0)' }}>{s.value}</div>
             {s.sub && (
-              <div style={{ ...labelMuted, marginTop: '2px' }}>{s.sub}</div>
+              <div style={{ ...labelMuted, marginTop: 'var(--space-0)' }}>{s.sub}</div>
             )}</div>
         ))}</div>
 
@@ -249,7 +249,7 @@ export default function WinLossPage() {
                       transition: 'width 0.6s ease',
                     }} /></div>
                 {i < funnel.length - 1 && (
-                  <div className="flex justify-center" style={{ marginTop: '2px', marginBottom: '2px' }}>
+                  <div className="flex justify-center" style={{ marginTop: 'var(--space-0)', marginBottom: 'var(--space-0)' }}>
                     <ArrowDown className="w-3 h-3" style={stTextMuted} /></div>
                 )}
               </div>);
@@ -335,7 +335,7 @@ export default function WinLossPage() {
                     style={{
                       padding: 'var(--space-2)',
                       borderRadius: 'var(--radius-sm)', }}>
-                    <div className="flex items-center justify-between" style={{ marginBottom: '4px' }}>
+                    <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-1)' }}>
                       <span style={textSmPrimary400}>
                         {pr.reason}</span>
                       <span style={countBadgeStyle}>
@@ -365,7 +365,7 @@ export default function WinLossPage() {
                   padding: 'var(--space-2) var(--space-3)',
                   borderRadius: 'var(--radius-sm)',
                   background: 'var(--surface-1)', }}>
-                <div className="flex items-center justify-between" style={{ marginBottom: '2px' }}>
+                <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-0)' }}>
                   <span style={textSmPrimary400}>
                     {p.signal}</span>
                   <span style={{
@@ -438,14 +438,14 @@ export default function WinLossPage() {
           <div className="space-y-3">
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-3)' }}>
               <div style={{ padding: 'var(--space-3)', borderRadius: 'var(--radius-md)', background: 'var(--surface-1)', textAlign: 'center' }}>
-                <div style={{ ...labelMuted, marginBottom: '4px' }}>
+                <div style={{ ...labelMuted, marginBottom: 'var(--space-1)' }}>
                   Avg Days to Close</div>
                 <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-secondary)' }}>
                   {timing.avgDaysToClose}</div>
                 <div style={labelMuted}>
                   Median: {timing.medianDaysToClose}d</div></div>
               <div style={{ padding: 'var(--space-3)', borderRadius: 'var(--radius-md)', background: 'var(--surface-1)', textAlign: 'center' }}>
-                <div style={{ ...labelMuted, marginBottom: '4px' }}>
+                <div style={{ ...labelMuted, marginBottom: 'var(--space-1)' }}>
                   Avg Days to Pass</div>
                 <div style={{ fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)' }}>
                   {timing.avgDaysToPass}</div>
