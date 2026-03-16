@@ -18,6 +18,9 @@ const fontSmTertiary = { ...textSmTertiary, fontWeight: 400 } as const;
 const trendValueBase = { fontSize: 'var(--font-size-lg)', fontWeight: 300, fontVariantNumeric: 'tabular-nums' } as const;
 const trendDeltaRow = { fontSize: 'var(--font-size-xs)' } as const;
 const trendStreakLabel = { fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginTop: 'var(--space-0)' } as const;
+const investorLinkStyle = { color: 'var(--accent)', textDecoration: 'none', fontWeight: 400 } as const;
+const daysNumericStyle = { fontVariantNumeric: 'tabular-nums', color: 'var(--text-secondary)' } as const;
+const riskFactorText = { fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', opacity: 0.8 } as const;
 const trendAlertWrap = { marginTop: 'var(--space-1)' } as const;
 const trendAlertText = { fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', lineHeight: 1.3 } as const;
 
@@ -427,10 +430,10 @@ export default function StrategicPage() {
                   {data.raiseForecast.investorForecasts.map((f) => (
                     <tr key={f.name} className="table-row">
                       <td className="py-1.5 pr-3">
-                        <Link href={`/dealflow?search=${encodeURIComponent(f.name)}`} style={{ color: 'var(--accent)', textDecoration: 'none', fontWeight: 400 }}>{f.name}</Link>
+                        <Link href={`/dealflow?search=${encodeURIComponent(f.name)}`} style={investorLinkStyle}>{f.name}</Link>
                       </td>
                       <td className="py-1.5 pr-3" style={stTextMuted}>{f.stage}</td>
-                      <td className="py-1.5 pr-3 text-right" style={{ fontVariantNumeric: 'tabular-nums', color: 'var(--text-secondary)' }}>~{f.days}d</td>
+                      <td className="py-1.5 pr-3 text-right" style={daysNumericStyle}>~{f.days}d</td>
                       <td className="py-1.5">
                         <span style={{ fontSize: 'var(--font-size-xs)', padding: 'var(--space-0) var(--space-1)', borderRadius: 'var(--radius-sm)', ...confidenceStyle(f.confidence) }}>{f.confidence}</span>
                       </td></tr>
@@ -443,7 +446,7 @@ export default function StrategicPage() {
               {data.raiseForecast.riskFactors.map((rf, i) => (
                 <div key={i} className="flex items-start gap-1.5">
                   <AlertTriangle className="w-3 h-3 shrink-0 mt-0.5" style={stTextTertiary} />
-                  <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', opacity: 0.8 }}>{rf}</span></div>
+                  <span style={riskFactorText}>{rf}</span></div>
               ))}</div>
           )}</div>
       )}

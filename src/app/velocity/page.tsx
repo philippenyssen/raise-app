@@ -18,6 +18,8 @@ const tierBadgeLow: React.CSSProperties = { ...tierBadgeBase, background: 'var(-
 const tabNumBase: React.CSSProperties = { fontSize: 'var(--font-size-sm)', fontWeight: 400, fontVariantNumeric: 'tabular-nums' };
 function daysProcessColor(days: number): string { return days > 50 ? 'var(--danger)' : days > 35 ? 'var(--warning)' : 'var(--text-secondary)'; }
 function daysStageColor(days: number): string { return days > 21 ? 'var(--danger)' : days > 14 ? 'var(--warning)' : 'var(--text-tertiary)'; }
+const tableCellPad: React.CSSProperties = { padding: 'var(--space-3) var(--space-4)' };
+const linkNoDecor: React.CSSProperties = { textDecoration: 'none' };
 const trackingBadgeBase: React.CSSProperties = { display: 'inline-flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--space-0) var(--space-2)', borderRadius: 'var(--radius-full)', fontSize: 'var(--font-size-xs)', fontWeight: 400 };
 const velocityBarTrack: React.CSSProperties = { flex: 1, height: '6px', background: 'var(--surface-3)', borderRadius: 'var(--radius-sm)', overflow: 'hidden' };
 const actionBtnBase: React.CSSProperties = { fontSize: 'var(--font-size-xs)', padding: 'var(--space-1) var(--space-2)', gap: 'var(--space-1)', display: 'inline-flex', alignItems: 'center' };
@@ -220,10 +222,10 @@ export default function VelocityPage() {
                     className="table-row"
                     style={{ cursor: 'pointer' }}>
                     {/* Investor Name */}
-                    <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
+                    <td style={tableCellPad}>
                       <Link
                         href={`/investors/${inv.investor_id}`}
-                        style={{ textDecoration: 'none' }}>
+                        style={linkNoDecor}>
                         <div className="flex items-center gap-2">
                           <span
                             className="tier-badge"
@@ -236,7 +238,7 @@ export default function VelocityPage() {
                               {TYPE_LABELS[inv.investor_type] || inv.investor_type}</div></div></div></Link></td>
 
                     {/* Stage */}
-                    <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
+                    <td style={tableCellPad}>
                       <div className="flex items-center gap-2">
                         <div
                           className="status-dot"
@@ -280,7 +282,7 @@ export default function VelocityPage() {
                         )}</span></td>
 
                     {/* Bottleneck */}
-                    <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
+                    <td style={tableCellPad}>
                       <span
                         style={{
                           fontSize: 'var(--font-size-xs)',
@@ -289,7 +291,7 @@ export default function VelocityPage() {
                         {inv.bottleneck}</span></td>
 
                     {/* Velocity Score Bar */}
-                    <td style={{ padding: 'var(--space-3) var(--space-4)' }}>
+                    <td style={tableCellPad}>
                       <div className="flex items-center gap-2">
                         <div style={velocityBarTrack}>
                           <div style={{ width: `${inv.velocity_score}%`, height: '100%', background: velocityColor(inv.velocity_score), borderRadius: 'var(--radius-sm)', transition: 'width 500ms ease' }} />
