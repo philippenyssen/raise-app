@@ -14,7 +14,7 @@ import {
   ShieldAlert, TrendingUp, TrendingDown,
   RefreshCw, AlertTriangle, CheckCircle2, Target,
   Clock, ChevronDown, ChevronUp, Zap, ArrowUpRight,
-  BarChart3,
+  BarChart3, Sliders,
 } from 'lucide-react';
 import type { StressTestInvestorForecast as InvestorForecast, GapInvestor, RiskItem } from '@/lib/types';
 import { cachedFetch } from '@/lib/cache';
@@ -133,6 +133,8 @@ export default function StressTestPage() {
   const [loadedAt, setLoadedAt] = useState<string | null>(null);
   const [expandedRisks, setExpandedRisks] = useState<number[]>([]);
   const [showAllInvestors, setShowAllInvestors] = useState(false);
+  const [showWhatIf, setShowWhatIf] = useState(false);
+  const [probOverrides, setProbOverrides] = useState<Record<string, number>>({});
 
   const fetchData = useCallback(async (silent = false) => {
     if (!silent) setLoading(true);
@@ -224,6 +226,59 @@ export default function StressTestPage() {
           style={{ background: 'var(--surface-2)', color: 'var(--text-secondary)' }}>
           <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
           {refreshing ? 'Refreshing...' : 'Refresh'}</button></div>
+
+      {/* ================================================================ */}
+      {/* WHAT-IF SCENARIO PANEL                                           */}
+      {/* ================================================================ */}
+      <div>
+        <button
+          onClick={() => setShowWhatIf(w => !w)}
+          className="btn btn-secondary btn-sm"
+          style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-1)', fontSize: 'var(--font-size-xs)' }}>
+          <Sliders className="w-3.5 h-3.5" />
+          {showWhatIf ? 'Hide' : 'Show'} What-If Scenarios
+        </button>
+        {showWhatIf && data && (() => {
+          const topInvestors = data.investorForecasts.slice(0, 8);
+          const scenarioForecast = data.investorForecasts.reduce((sum, inv) => {
+            const prob = (probOverrides[inv.name] ?? inv.closeProbability) / 100;
+            const baseProb = inv.closeProbability / 100 || 0.01;
+            return sum + (inv.expectedValue / baseProb) * prob;
+          }, 0);
+          const delta = scenarioForecast - data.forecast.base;
+          return (
+            <div style={{ marginTop: 'var(--space-3)', background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)', border: '1px solid var(--border-subtle)' }}>
+              <div className="flex items-center justify-between mb-3">
+                <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)' }}>
+                  Adjust probabilities to see forecast impact</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+                  {Object.keys(probOverrides).length > 0 && (
+                    <button onClick={() => setProbOverrides({})} className="btn btn-ghost btn-sm" style={{ fontSize: '10px' }}>Reset</button>
+                  )}
+                  <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 300, color: delta >= 0 ? 'var(--success)' : 'var(--danger)' }}>
+                    {formatEuro(Math.round(scenarioForecast))} ({delta >= 0 ? '+' : ''}{formatEuro(Math.round(delta))})</span>
+                </div>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+                {topInvestors.map(inv => {
+                  const current = probOverrides[inv.name] ?? inv.closeProbability;
+                  return (
+                    <div key={inv.name} style={{ display: 'grid', gridTemplateColumns: '140px 1fr 40px', gap: 'var(--space-2)', alignItems: 'center' }}>
+                      <span style={{ fontSize: '11px', color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{inv.name}</span>
+                      <input
+                        type="range" min={0} max={100} step={5}
+                        value={current}
+                        onChange={e => setProbOverrides(prev => ({ ...prev, [inv.name]: Number(e.target.value) }))}
+                        style={{ width: '100%', accentColor: 'var(--accent)' }} />
+                      <span style={{ fontSize: '10px', color: current !== inv.closeProbability ? 'var(--accent)' : 'var(--text-muted)', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{current}%</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })()}
+      </div>
 
       {/* ================================================================ */}
       {/* HEALTH BANNER                                                    */}
