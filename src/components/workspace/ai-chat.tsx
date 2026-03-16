@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { Send, Loader2, Sparkles, RotateCcw, Copy, Check, CheckCircle, XCircle } from 'lucide-react';
 import { VoiceInput } from './voice-input';
 import { textSmMuted } from '@/lib/styles';
+import { useMemo } from 'react';
 
 interface Message { role: 'user' | 'assistant'; content: string; error?: boolean; }
 
@@ -39,6 +40,160 @@ function computeChangeSummary(oldContent: string, newContent: string, docType?: 
   if (lineDiff > 0) parts.push(`+${lineDiff} lines`);
   else if (lineDiff < 0) parts.push(`${lineDiff} lines`);
   return parts.join(', ') || 'Content updated';
+}
+
+function renderMarkdown(text: string): React.ReactNode {
+  if (!text) return null;
+
+  // Split into blocks
+  const blocks: React.ReactNode[] = [];
+  const lines = text.split('\n');
+  let i = 0;
+
+  while (i < lines.length) {
+    const line = lines[i];
+
+    // Code block
+    if (line.startsWith('```')) {
+      const lang = line.slice(3).trim();
+      const codeLines: string[] = [];
+      i++;
+      while (i < lines.length && !lines[i].startsWith('```')) {
+        codeLines.push(lines[i]);
+        i++;
+      }
+      i++; // skip closing ```
+      blocks.push(
+        <pre key={blocks.length} style={{
+          background: 'var(--surface-2)',
+          borderRadius: 'var(--radius-md)',
+          padding: 'var(--space-3)',
+          fontSize: 'var(--font-size-xs)',
+          overflow: 'auto',
+          margin: '4px 0',
+          fontFamily: 'monospace',
+        }}>
+          <code>{codeLines.join('\n')}</code>
+        </pre>
+      );
+      continue;
+    }
+
+    // Heading
+    if (line.startsWith('### ')) {
+      blocks.push(<div key={blocks.length} style={{ fontWeight: 600, marginTop: '8px' }}>{inlineFormat(line.slice(4))}</div>);
+      i++;
+      continue;
+    }
+    if (line.startsWith('## ')) {
+      blocks.push(<div key={blocks.length} style={{ fontWeight: 600, marginTop: '8px', fontSize: '1.05em' }}>{inlineFormat(line.slice(3))}</div>);
+      i++;
+      continue;
+    }
+    if (line.startsWith('# ')) {
+      blocks.push(<div key={blocks.length} style={{ fontWeight: 600, marginTop: '8px', fontSize: '1.1em' }}>{inlineFormat(line.slice(2))}</div>);
+      i++;
+      continue;
+    }
+
+    // Bullet list
+    if (line.match(/^[-*]\s/)) {
+      const items: string[] = [];
+      while (i < lines.length && lines[i].match(/^[-*]\s/)) {
+        items.push(lines[i].replace(/^[-*]\s/, ''));
+        i++;
+      }
+      blocks.push(
+        <ul key={blocks.length} style={{ margin: '4px 0', paddingLeft: '1.2em' }}>
+          {items.map((item, j) => <li key={j}>{inlineFormat(item)}</li>)}
+        </ul>
+      );
+      continue;
+    }
+
+    // Numbered list
+    if (line.match(/^\d+\.\s/)) {
+      const items: string[] = [];
+      while (i < lines.length && lines[i].match(/^\d+\.\s/)) {
+        items.push(lines[i].replace(/^\d+\.\s/, ''));
+        i++;
+      }
+      blocks.push(
+        <ol key={blocks.length} style={{ margin: '4px 0', paddingLeft: '1.2em' }}>
+          {items.map((item, j) => <li key={j}>{inlineFormat(item)}</li>)}
+        </ol>
+      );
+      continue;
+    }
+
+    // Empty line
+    if (line.trim() === '') {
+      i++;
+      continue;
+    }
+
+    // Regular paragraph
+    blocks.push(<div key={blocks.length} style={{ margin: '2px 0' }}>{inlineFormat(line)}</div>);
+    i++;
+  }
+
+  return blocks;
+}
+
+function inlineFormat(text: string): React.ReactNode {
+  // Split on bold, italic, code patterns and reconstruct with React elements
+  const parts: React.ReactNode[] = [];
+  let remaining = text;
+  let key = 0;
+
+  while (remaining.length > 0) {
+    // Bold: **text**
+    const boldMatch = remaining.match(/^([\s\S]*?)\*\*(.+?)\*\*([\s\S]*)/);
+    // Code: `text`
+    const codeMatch = remaining.match(/^([\s\S]*?)`(.+?)`([\s\S]*)/);
+    // Italic: *text* (but not **)
+    const italicMatch = remaining.match(/^([\s\S]*?)\*([^*]+?)\*([\s\S]*)/);
+    // Skip italic if it looks like bold
+    if (italicMatch && italicMatch[1].endsWith('*')) {
+      parts.push(remaining);
+      break;
+    }
+
+    // Find which match comes first
+    const matches = [
+      boldMatch ? { type: 'bold', index: boldMatch[1].length, match: boldMatch } : null,
+      codeMatch ? { type: 'code', index: codeMatch[1].length, match: codeMatch } : null,
+      italicMatch ? { type: 'italic', index: italicMatch[1].length, match: italicMatch } : null,
+    ].filter(Boolean).sort((a, b) => a!.index - b!.index);
+
+    if (matches.length === 0) {
+      parts.push(remaining);
+      break;
+    }
+
+    const first = matches[0]!;
+    const m = first.match!;
+    if (m[1]) parts.push(m[1]);
+
+    if (first.type === 'bold') {
+      parts.push(<strong key={key++}>{m[2]}</strong>);
+    } else if (first.type === 'code') {
+      parts.push(
+        <code key={key++} style={{
+          background: 'var(--surface-2)',
+          padding: '1px 4px',
+          borderRadius: '3px',
+          fontSize: '0.9em',
+          fontFamily: 'monospace',
+        }}>{m[2]}</code>
+      );
+    } else {
+      parts.push(<em key={key++}>{m[2]}</em>);
+    }
+    remaining = m[3];
+  }
+
+  return parts.length === 1 ? parts[0] : <>{parts}</>;
 }
 
 export function AIChat({ documentId, documentContent, documentTitle, documentType, onApplyChange }: AIChatProps) {
@@ -308,7 +463,7 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
                 background: msg.role === 'user' ? 'var(--accent-muted)' : 'var(--surface-1)',
                 color: msg.role === 'user' ? 'var(--accent)' : 'var(--text-secondary)',
                 border: `1px solid ${msg.role === 'user' ? 'var(--accent-10)' : 'var(--border-subtle)'}`,}}>
-              <div className="whitespace-pre-wrap">{msg.content}</div>
+              <div className="whitespace-pre-wrap">{msg.role === 'assistant' ? renderMarkdown(msg.content) : msg.content}</div>
               {msg.role === 'assistant' && (
                 <div
                   className="flex items-center"

@@ -172,6 +172,29 @@ export function DocumentViewer({ document, onContentChange, onSave, onDelete, on
   const format = useMemo(() => document ? detectFormat(document) : 'richtext', [document]);
   const exportFormats = useMemo(() => getExportFormats(format), [format]);
 
+  // Word/character count
+  const docStats = useMemo(() => {
+    if (!document) return null;
+    if (format === 'spreadsheet') {
+      try {
+        const parsed = JSON.parse(document.content);
+        const cells = parsed.cells || parsed;
+        return { label: `${Object.keys(cells).length} cells` };
+      } catch { return null; }
+    }
+    if (format === 'slides') {
+      try {
+        const parsed = JSON.parse(document.content);
+        const slides = Array.isArray(parsed) ? parsed : parsed.slides || [];
+        return { label: `${slides.length} slide${slides.length !== 1 ? 's' : ''}` };
+      } catch { return null; }
+    }
+    // Text: strip HTML, count words
+    const text = document.content.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    const words = text ? text.split(' ').length : 0;
+    return { label: `${words.toLocaleString()} words` };
+  }, [document, format]);
+
   const handleExport = useCallback(async (ext: string) => {
     if (!document) return;
     setExporting(true);
@@ -323,6 +346,11 @@ export function DocumentViewer({ document, onContentChange, onSave, onDelete, on
           <span style={labelMuted}>{TYPE_LABELS[document.type] || document.type}</span>
         </div>
         <div className="flex items-center shrink-0" style={{ gap: 'var(--space-2)' }}>
+          {docStats && (
+            <span style={{ ...labelMuted, fontSize: 'var(--font-size-xs)' }}>
+              {docStats.label}
+            </span>
+          )}
           <span className="flex items-center" style={{ ...labelMuted, gap: 'var(--space-1)' }}>
             <Clock style={{ width: '12px', height: '12px' }} />
             {new Date(document.updated_at).toLocaleString()}

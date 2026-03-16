@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { useSearchParams } from 'next/navigation';
 import { cachedFetch } from '@/lib/cache';
@@ -11,7 +11,7 @@ const AIChat = dynamic(() => import('@/components/workspace/ai-chat').then(m => 
 import { useToast } from '@/components/toast';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { DocSummaryRecord as Doc } from '@/lib/types';
-import { FileText, Plus, ChevronRight, Wand2, Loader2, FilePlus } from 'lucide-react';
+import { FileText, Plus, ChevronRight, Wand2, Loader2, FilePlus, FileSpreadsheet, Presentation } from 'lucide-react';
 import { labelMuted, stAccent, stTextMuted } from '@/lib/styles';
 import { EmptyState } from '@/components/ui/empty-state';
 
@@ -55,6 +55,9 @@ export default function WorkspacePage() {
   const [autoSelected, setAutoSelected] = useState(false);
   const [creatingDoc, setCreatingDoc] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(false);
+  const [showNewDocMenu, setShowNewDocMenu] = useState(false);
+  const newDocMenuRef = useRef<HTMLDivElement>(null);
+  const autoSaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const fetchDocs = useCallback(async () => {
     try {
@@ -199,19 +202,46 @@ export default function WorkspacePage() {
     }
   }, [toast, fetchDocs, selectDoc]);
 
-  const createNewDocument = useCallback(async () => {
+  const createNewDocument = useCallback(async (docType: 'custom' | 'presentation' | 'model' = 'custom') => {
     setCreatingDoc(true);
+    setShowNewDocMenu(false);
+    const defaults: Record<string, { title: string; content: string }> = {
+      custom: { title: 'New Document', content: '<h1>New Document</h1>\n<p>Start writing here...</p>' },
+      presentation: {
+        title: 'New Presentation',
+        content: JSON.stringify([
+          { id: crypto.randomUUID(), layout: 'title', elements: [
+            { id: crypto.randomUUID(), type: 'title', content: 'Presentation Title', x: 5, y: 30, width: 90 },
+            { id: crypto.randomUUID(), type: 'subtitle', content: 'Subtitle goes here', x: 5, y: 55, width: 90 },
+          ]},
+          { id: crypto.randomUUID(), layout: 'title_content', elements: [
+            { id: crypto.randomUUID(), type: 'title', content: 'Slide Title', x: 5, y: 5, width: 90 },
+            { id: crypto.randomUUID(), type: 'body', content: 'Add your content here...', x: 5, y: 25, width: 90 },
+          ]},
+        ], null, 2),
+      },
+      model: {
+        title: 'New Spreadsheet',
+        content: JSON.stringify({
+          A1: { v: 'Label', t: 's', bold: true }, B1: { v: 'Value', t: 's', bold: true },
+          A2: { v: 'Revenue', t: 's' }, B2: { v: 0, t: 'n' },
+          A3: { v: 'Costs', t: 's' }, B3: { v: 0, t: 'n' },
+          A4: { v: 'Profit', t: 's', bold: true }, B4: { v: 0, t: 'n', f: '=B2-B3' },
+        }, null, 2),
+      },
+    };
+    const d = defaults[docType];
     try {
       const res = await fetch('/api/documents', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: 'New Document', type: 'custom', content: '<h1>New Document</h1>\n<p>Start writing here...</p>' }),
+        body: JSON.stringify({ title: d.title, type: docType, content: d.content }),
       });
       if (!res.ok) throw new Error('Failed to create');
       const doc = await res.json();
       toast('Document created');
       const refreshed = await fetchDocs();
-      const created = refreshed.find((d: Doc) => d.id === doc.id);
+      const created = refreshed.find((dd: Doc) => dd.id === doc.id);
       if (created) selectDoc(created);
     } catch (e) {
       console.warn('[WORKSPACE_CREATE]', e instanceof Error ? e.message : e);
@@ -274,7 +304,31 @@ export default function WorkspacePage() {
     }
   }, [selectedDoc, toast, fetchDocs]);
 
-  // Keyboard shortcuts: Cmd/Ctrl+S to save, Cmd/Ctrl+Z to undo
+  // Close new doc menu on outside click
+  useEffect(() => {
+    if (!showNewDocMenu) return;
+    const handler = (e: MouseEvent) => {
+      if (newDocMenuRef.current && !newDocMenuRef.current.contains(e.target as Node)) {
+        setShowNewDocMenu(false);
+      }
+    };
+    window.addEventListener('mousedown', handler);
+    return () => window.removeEventListener('mousedown', handler);
+  }, [showNewDocMenu]);
+
+  // Auto-save: debounce 3 seconds after last edit
+  useEffect(() => {
+    if (!dirty || !selectedDoc || saving) return;
+    if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
+    autoSaveTimer.current = setTimeout(() => {
+      handleSave();
+    }, 3000);
+    return () => {
+      if (autoSaveTimer.current) clearTimeout(autoSaveTimer.current);
+    };
+  }, [dirty, editedContent, selectedDoc, saving, handleSave]);
+
+  // Keyboard shortcuts: Cmd/Ctrl+S to save, Cmd/Ctrl+Z to undo, Cmd/Ctrl+N for new doc
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 's') {
@@ -284,7 +338,8 @@ export default function WorkspacePage() {
       if ((e.metaKey || e.ctrlKey) && e.key === 'z' && !e.shiftKey) {
         e.preventDefault();
         handleUndo();
-      }};
+      }
+    };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
   }, [handleSave, handleUndo]);
@@ -393,14 +448,48 @@ export default function WorkspacePage() {
                 </button>);
             })}</div>
           <div className="space-y-1" style={sectionDividerStyle}>
-            <button
-              onClick={createNewDocument}
-              disabled={creatingDoc}
-              className="w-full flex items-center gap-2 sidebar-link"
-              style={genBtnEnabled}>
-              <FilePlus className="w-3.5 h-3.5" />
-              <span className="truncate">New Blank Document</span>
-            </button>
+            <div className="relative" ref={newDocMenuRef}>
+              <button
+                onClick={() => setShowNewDocMenu(!showNewDocMenu)}
+                disabled={creatingDoc}
+                className="w-full flex items-center gap-2 sidebar-link"
+                style={genBtnEnabled}>
+                <FilePlus className="w-3.5 h-3.5" />
+                <span className="truncate">New Document</span>
+              </button>
+              {showNewDocMenu && (
+                <div
+                  className="absolute z-50"
+                  style={{
+                    bottom: '100%',
+                    left: 0,
+                    right: 0,
+                    marginBottom: '4px',
+                    background: 'var(--surface-1)',
+                    border: '1px solid var(--border-default)',
+                    borderRadius: 'var(--radius-lg)',
+                    boxShadow: 'var(--shadow-lg)',
+                    overflow: 'hidden',
+                  }}>
+                  {([
+                    { type: 'custom' as const, icon: FileText, label: 'Text Document' },
+                    { type: 'presentation' as const, icon: Presentation, label: 'Presentation' },
+                    { type: 'model' as const, icon: FileSpreadsheet, label: 'Spreadsheet' },
+                  ]).map(({ type, icon: Icon, label }) => (
+                    <button
+                      key={type}
+                      onClick={() => createNewDocument(type)}
+                      className="w-full flex items-center gap-2"
+                      style={{ padding: 'var(--space-2) var(--space-3)', background: 'transparent', border: 'none', cursor: 'pointer', fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
+                      <Icon className="w-3.5 h-3.5" />
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
             <a
               href="/context"
               className="flex items-center gap-2 sidebar-link"
