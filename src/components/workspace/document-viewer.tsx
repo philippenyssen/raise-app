@@ -258,7 +258,6 @@ export function DocumentViewer({ document, onContentChange, onSave, onDelete, on
           padding: 'var(--space-2) var(--space-3)',
           background: 'var(--surface-0)',
           backdropFilter: 'blur(8px)',
-          overflow: 'hidden',
         }}
       >
         <div className="flex items-center min-w-0" style={{ gap: 'var(--space-3)' }}>
