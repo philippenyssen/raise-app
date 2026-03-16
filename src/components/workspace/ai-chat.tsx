@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Send, Loader2, Sparkles, RotateCcw, Copy, Check, CheckCircle, XCircle } from 'lucide-react';
 import { VoiceInput } from './voice-input';
+import { textSmMuted } from '@/lib/styles';
 
 interface Message { role: 'user' | 'assistant'; content: string; error?: boolean; }
 
@@ -178,7 +179,7 @@ export function AIChat({ documentId, documentContent, documentTitle, onApplyChan
           <div className="text-center" style={{ padding: 'var(--space-12) 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--space-4)' }}>
             <Sparkles style={{ width: '32px', height: '32px', color: 'var(--text-muted)' }} />
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
-              <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>Edit, critique, or rewrite any section of this document</p>
+              <p style={textSmMuted}>Edit, critique, or rewrite any section of this document</p>
               <div className="flex flex-wrap gap-2 justify-center">
                 {[
                   'Make the executive summary more concise',

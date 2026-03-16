@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/components/toast';
 import { fmtDateTime } from '@/lib/format';
-import { labelMuted, labelTertiary, skelCardSm, stFontSm, stFontXs, stTextMuted, icon14, icon12, textSmSecondary } from '@/lib/styles';
+import { labelMuted, labelTertiary, skelCardSm, stFontSm, stFontXs, stTextMuted, icon14, icon12, textSmMuted, textSmSecondary } from '@/lib/styles';
 
 const flexCenterGap2 = { display: 'flex', alignItems: 'center', gap: 'var(--space-2)' } as const;
 const investorRowGrid: React.CSSProperties = { display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr auto', gap: 'var(--space-2)', alignItems: 'center', padding: 'var(--space-2) var(--space-4)' };
@@ -193,7 +193,7 @@ export default function EnrichmentPage() {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div>
           <h1 className="page-title">Data Enrichment</h1>
-          <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', marginTop: 'var(--space-1)' }}>
+          <p style={{ ...textSmMuted, marginTop: 'var(--space-1)' }}>
             {configuredCount} sources active ({freeCount} free) &middot; {investors.length} investors in pipeline</p></div>
         <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
           <button

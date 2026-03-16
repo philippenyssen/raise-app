@@ -9,6 +9,7 @@ import {
   ShieldCheck, AlertTriangle, ChevronDown, ChevronUp, Loader2,
 } from 'lucide-react';
 import { labelMuted10, scoreBg, scoreColor, stAccent, stAccentBadge, stSurface0, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { EmptyState } from '@/components/ui/empty-state';
 import type { TermScenario, TermScenarioResult } from '@/lib/types';
 
 // ---------------------------------------------------------------------------
@@ -546,11 +547,10 @@ export default function TermComparePage() {
 
       {/* Empty state when no results yet */}
       {!results && scenarios.length >= 2 && scenarios.filter(s => s.investor_name && s.pre_money_valuation > 0 && s.investment_amount > 0).length >= 2 && (
-        <div
-          className="rounded-xl p-8 text-center"
-          style={stTextMuted}>
-          <Scale className="w-8 h-8 mx-auto mb-3" style={stTextMuted} />
-          <p className="text-sm">Fill in 2+ term sheets above to compare economics, dilution, and founder-friendliness side-by-side.</p></div>
+        <EmptyState
+          icon={Scale}
+          title="Ready to compare"
+          description="Fill in 2+ term sheets above to compare economics, dilution, and founder-friendliness side-by-side." />
       )}
     </div>);
 }

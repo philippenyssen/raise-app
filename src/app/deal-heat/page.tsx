@@ -8,7 +8,7 @@ import { Flame, Filter, TrendingUp, Thermometer } from 'lucide-react';
 import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
 import { DealHeatInvestor } from '@/lib/types';
 import { fmtDateShort } from '@/lib/format';
-import { labelMuted, maxWidthCenter, stTextMuted, textSmSecondary } from '@/lib/styles';
+import { labelMuted, maxWidthCenter, stTextMuted, textSmMuted, textSmSecondary } from '@/lib/styles';
 
 interface DealHeatData {
   investors: DealHeatInvestor[];
@@ -115,7 +115,7 @@ export default function DealHeatPage() {
       <div className="flex items-center justify-between flex-wrap gap-4" style={{ marginBottom: 'var(--space-6)' }}>
         <div>
           <h1 className="page-title">Deal Heat Map</h1>
-          <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', marginTop: '2px' }}>
+          <p style={{ ...textSmMuted, marginTop: '2px' }}>
             Composite deal temperature across {counts.total} active investors</p></div>
         <div
           className="flex items-center gap-2"

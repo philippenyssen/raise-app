@@ -7,7 +7,7 @@ import {
   Zap, RefreshCw, AlertTriangle, TrendingUp, Users,
   ArrowRight, Clock, Activity, Target, Flame,
 } from 'lucide-react';
-import { getIntensityColor, inlineBadgeStyle, labelMuted, stAccent, stFontSm, stFontXs, stTextPrimary, textSmSecondary } from '@/lib/styles';
+import { getIntensityColor, inlineBadgeStyle, labelMuted, stAccent, stFontSm, stFontXs, stTextPrimary, textSmMuted, textSmSecondary } from '@/lib/styles';
 import { TierBadge, EnthusiasmDots } from '@/components/shared';
 import { MS_PER_HOUR } from '@/lib/time';
 import { TYPE_LABELS_SHORT as TYPE_LABELS } from '@/lib/constants';
@@ -433,7 +433,7 @@ export default function FomoPage() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="page-title">FOMO Dynamics</h1>
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', marginTop: '4px' }}>
+            <p style={{ ...textSmMuted, marginTop: '4px' }}>
               Competitive pressure between investors — leverage asymmetry to accelerate the process</p></div>
           <button
             onClick={fetchData}

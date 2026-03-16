@@ -7,7 +7,7 @@ import Link from 'next/link';
 import type { Meeting } from '@/lib/types';
 import { Search, FileSearch, Calendar, Download, ChevronDown, ChevronRight, Star, CheckCircle2, X, TrendingUp, TrendingDown, Minus, Hash } from 'lucide-react';
 import { fmtDateTime } from '@/lib/format';
-import { labelMuted, labelTertiary, stFontSm, stFontXs, stTextMuted, stTextTertiary, textSmSecondary } from '@/lib/styles';
+import { labelMuted, labelTertiary, stFontSm, stFontXs, stTextMuted, stTextTertiary, textSmMuted, textSmSecondary } from '@/lib/styles';
 import { EmptyState } from '@/components/ui/empty-state';
 import { CopyButton } from '@/components/copy-button';
 
@@ -417,7 +417,7 @@ export default function MeetingsPage() {
         <div className="card-metric">
           <div className="metric-label">Avg Enthusiasm</div>
           <div className="metric-value" style={{ marginTop: '2px' }}>
-            {avgEnthusiasm}<span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>/5</span></div></div>
+            {avgEnthusiasm}<span style={textSmMuted}>/5</span></div></div>
         <div className="card-metric">
           <div className="metric-label">Objections</div>
           <div className="metric-value" style={{ marginTop: '2px', color: 'var(--text-tertiary)' }}>{totalObjections}</div></div>

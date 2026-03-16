@@ -7,7 +7,7 @@ import {
   DollarSign, Target, Calendar, Users, ChevronDown,
 } from 'lucide-react';
 import { useToast } from '@/components/toast';
-import { labelMuted, stFontSm, stFontXs, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, textSmSecondary } from '@/lib/styles';
+import { labelMuted, stFontSm, stFontXs, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, textSmMuted, textSmSecondary } from '@/lib/styles';
 import { cachedFetch } from '@/lib/cache';
 
 const rangeAccent = { accentColor: 'var(--accent)' } as const;
@@ -241,9 +241,11 @@ export default function SettingsPage() {
         <div>
           <h1 className="page-title" style={{ fontSize: 'var(--font-size-xl)' }}>Raise Settings</h1>
           <p style={{ ...stTextMuted, ...stFontSm, marginTop: 'var(--space-1)' }}>Loading configuration...</p></div>
-        <div className="flex items-center gap-3" style={stTextMuted}>
-          <RefreshCw className="w-4 h-4 animate-spin" />
-          <span style={stFontSm}>Loading settings...</span></div>
+        <div className="space-y-6">
+          <div className="skeleton" style={{ height: '160px', borderRadius: 'var(--radius-xl)' }} />
+          <div className="skeleton" style={{ height: '200px', borderRadius: 'var(--radius-xl)' }} />
+          <div className="skeleton" style={{ height: '280px', borderRadius: 'var(--radius-xl)' }} />
+        </div>
       </div>);
   }
 
@@ -693,7 +695,7 @@ export default function SettingsPage() {
           <Settings2 className="w-5 h-5" style={stTextTertiary} />
           <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-tertiary)' }}>IMPORTANT: Claude.ai vs API Credits</h3>
         </div>
-        <div className="space-y-2" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
+        <div className="space-y-2" style={textSmMuted}>
           <p>Anthropic has <strong style={stTextSecondary}>two separate billing systems</strong>:</p>
           <ul className="list-disc list-inside space-y-1 ml-2">
             <li><strong style={stTextSecondary}>claude.ai</strong> --- subscription credits for the chatbot (Claude Pro/Team)</li>

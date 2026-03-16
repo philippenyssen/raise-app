@@ -9,7 +9,7 @@ import {
   TrendingUp, Users, Link2, ChevronDown, ChevronUp, Calendar,
 } from 'lucide-react';
 import { STATUS_LABELS } from '@/lib/constants';
-import { labelMuted, labelSecondary, probColor, skelCardMd, stAccent, stFontSm, stSurface1, stTextMuted, stTextPrimary, stTextTertiary } from '@/lib/styles';
+import { labelMuted, labelSecondary, probColor, skelCardMd, stAccent, stFontSm, stSurface1, stTextMuted, stTextPrimary, stTextTertiary, textSmMuted } from '@/lib/styles';
 
 const textRight = { textAlign: 'right' as const } as const;
 const keystoneAvatar: React.CSSProperties = { width: '36px', height: '36px', borderRadius: 'var(--radius-md)', background: 'var(--accent-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 };
@@ -129,7 +129,7 @@ export default function NetworkPage() {
         <div>
           <div>
             <h1 className="page-title">Investor Network</h1>
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', marginTop: '2px' }}>
+            <p style={{ ...textSmMuted, marginTop: '2px' }}>
               Cascade effects from keystone investors</p></div></div>
         <div className="flex items-center gap-3">
           <div style={{ padding: 'var(--space-2) var(--space-4)', background: 'var(--accent-muted)', borderRadius: 'var(--radius-md)' }}>
@@ -318,7 +318,7 @@ export default function NetworkPage() {
                           </div>);
                       })}</div>
                   ) : (
-                    <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)', padding: 'var(--space-3)' }}>
+                    <p style={{ ...textSmMuted, padding: 'var(--space-3)' }}>
                       No downstream investors in cascade chain.</p>
                   )}
 

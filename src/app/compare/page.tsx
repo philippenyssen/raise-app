@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { STATUS_LABELS, TYPE_LABELS, MEETING_TYPE_LABELS } from '@/lib/constants';
-import { labelMuted, labelMuted10, stAccent, stFontSm, stFontXs, stSurface1, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { labelMuted, labelMuted10, stAccent, stFontSm, stFontXs, stSurface1, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, textSmMuted } from '@/lib/styles';
 
 const compareCellBase: React.CSSProperties = { padding: 'var(--space-3) var(--space-4)', fontSize: 'var(--font-size-sm)', ...stTextSecondary };
 const compareThBase = { padding: 'var(--space-3) var(--space-4)', minWidth: 200 } as const;
@@ -247,7 +247,7 @@ export default function ComparePage() {
                     aria-label="Search investors" /></div>
                 <div className="overflow-y-auto max-h-56">
                   {filteredInvestors.length === 0 ? (
-                    <div style={{ padding: 'var(--space-3) var(--space-4)', fontSize: 'var(--font-size-sm)', color: 'var(--text-muted)' }}>
+                    <div style={{ padding: 'var(--space-3) var(--space-4)', ...textSmMuted }}>
                       No investors found</div>
                   ) : (
                     filteredInvestors.map(inv => {
