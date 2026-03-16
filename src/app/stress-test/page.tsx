@@ -409,8 +409,8 @@ export default function StressTestPage() {
             <button
               onClick={() => setShowAllInvestors(!showAllInvestors)}
               aria-expanded={showAllInvestors}
-              className="text-xs flex items-center gap-1 mx-auto"
-              style={{ color: 'var(--accent)' }}>
+              className="text-xs flex items-center gap-1 mx-auto px-3 py-1 rounded-md transition-colors hover-opacity-link"
+              style={{ color: 'var(--accent)', cursor: 'pointer' }}>
               {showAllInvestors ? (
                 <>Show less <ChevronUp className="w-3 h-3" /></>
               ) : (
