@@ -17,7 +17,7 @@ import {
   Rocket, Shield, XCircle, ChevronDown, Play, Ban, BarChart3,
   Star, Eye, Flame, Flag, MessageSquare,
 } from 'lucide-react';
-import { cardPad4, dimensionBg, dimensionColor, inlineBadgeStyle, labelMuted, labelMuted10, labelSecondary, labelTertiary, scoreBgStyle as focusScoreBgStyle, scoreColor as focusScoreColor, stAccent, stBorderTop, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, INVESTOR_TYPE_STYLES } from '@/lib/styles';
+import { cardPad4, dimensionBg, dimensionColor, inlineBadgeStyle, labelMuted, labelMuted10, labelSecondary, labelTertiary, scoreBgStyle as focusScoreBgStyle, scoreColor as focusScoreColor, skelCardSm, stAccent, stBorderTop, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, INVESTOR_TYPE_STYLES } from '@/lib/styles';
 import { TierBadge, EnthusiasmDots } from '@/components/shared';
 const mt10 = { marginTop: '10px' } as const;
 const dimLabel = { ...labelMuted, fontWeight: 400, letterSpacing: '0.01em' } as const;
@@ -767,7 +767,7 @@ export default function FocusPage() {
         <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Ranking investors by priority...</p>
         <div className="grid grid-cols-4 gap-3">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="skeleton" style={{ height: '80px', borderRadius: 'var(--radius-lg)' }} />
+            <div key={i} className="skeleton" style={skelCardSm} />
           ))}</div>
         {[...Array(5)].map((_, i) => (
           <div key={i} className="skeleton" style={{ height: '128px', borderRadius: 'var(--radius-lg)' }} />

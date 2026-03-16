@@ -16,7 +16,7 @@ import {
 import { useToast } from '@/components/toast';
 import { fmtDateShort, fmtDate } from '@/lib/format';
 import { STATUS_LABELS, OUTCOME_CONFIG } from '@/lib/constants';
-import { labelMuted, labelSecondary, scoreBorderColor, scoreColor4 as scoreColor, stAccent, stAccentBadge, stBorderTop, stSurface1, stSurface2, stTextMuted as textMuted, stTextPrimary as textPrimary, stTextSecondary as textSecondary, stTextTertiary as textTertiary } from '@/lib/styles';
+import { labelMuted, labelSecondary, scoreBorderColor, scoreColor4 as scoreColor, skelCardLg, stAccent, stAccentBadge, stBorderTop, stSurface1, stSurface2, stTextMuted as textMuted, stTextPrimary as textPrimary, stTextSecondary as textSecondary, stTextTertiary as textTertiary } from '@/lib/styles';
 import { cachedFetch, invalidateCache } from '@/lib/cache';
 import { MS_PER_DAY } from '@/lib/time';
 
@@ -332,7 +332,7 @@ export default function InvestorDetailPage() {
     return (
       <div className="space-y-6 page-content">
         <div className="skeleton" style={{ height: '28px', width: '200px' }} />
-        <div className="skeleton" style={{ height: '120px', borderRadius: 'var(--radius-xl)' }} />
+        <div className="skeleton" style={skelCardLg} />
         <div className="skeleton" style={{ height: '250px', borderRadius: 'var(--radius-xl)' }} />
       </div>);
   }

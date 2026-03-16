@@ -9,7 +9,7 @@ import {
   TrendingUp, Users, Link2, ChevronDown, ChevronUp, Calendar,
 } from 'lucide-react';
 import { STATUS_LABELS } from '@/lib/constants';
-import { labelMuted, labelSecondary, probColor, stAccent, stFontSm, stSurface1, stTextMuted, stTextPrimary, stTextTertiary } from '@/lib/styles';
+import { labelMuted, labelSecondary, probColor, skelCardMd, stAccent, stFontSm, stSurface1, stTextMuted, stTextPrimary, stTextTertiary } from '@/lib/styles';
 
 const textRight = { textAlign: 'right' as const } as const;
 const keystoneAvatar: React.CSSProperties = { width: '36px', height: '36px', borderRadius: 'var(--radius-md)', background: 'var(--accent-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 };
@@ -91,7 +91,7 @@ export default function NetworkPage() {
       <div className="space-y-6 page-content">
         <div className="skeleton" style={{ height: '28px', width: '250px' }} />
         <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Mapping network cascade effects...</p>
-        {[1,2,3].map(i => <div key={i} className="skeleton" style={{ height: '100px', borderRadius: 'var(--radius-xl)' }} />)}
+        {[1,2,3].map(i => <div key={i} className="skeleton" style={skelCardMd} />)}
       </div>);
   }
 

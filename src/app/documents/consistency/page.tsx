@@ -5,7 +5,7 @@ import { cachedFetch } from '@/lib/cache';
 import Link from 'next/link';
 import { CheckCircle, AlertTriangle, ArrowLeft, RefreshCw } from 'lucide-react';
 import { fmtDateTime } from '@/lib/format';
-import { stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { skelCardLg, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 interface ConsistencyValue { document: string; value: string; }
 
@@ -77,7 +77,7 @@ export default function ConsistencyPage() {
         <div className="space-y-4">
           <div className="skeleton" style={{ height: '64px', borderRadius: 'var(--radius-xl)' }} />
           {[1,2,3,4].map(i => (
-            <div key={i} className="skeleton" style={{ height: '120px', borderRadius: 'var(--radius-xl)' }} />
+            <div key={i} className="skeleton" style={skelCardLg} />
           ))}</div>
       )}
 

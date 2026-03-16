@@ -5,7 +5,7 @@ import { cachedFetch } from '@/lib/cache';
 import { useToast } from '@/components/toast';
 import { EmptyState } from '@/components/ui/empty-state';
 import { BarChart3 } from 'lucide-react';
-import { stAccent, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { skelCardSm, stAccent, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 interface AnalysisData {
   patterns: {
@@ -112,7 +112,7 @@ export default function AnalysisPage() {
       {loading && (
         <div className="space-y-4">
           <p style={{ color: 'var(--text-muted)', fontSize: 'var(--font-size-sm)' }}>Analyzing fundraise patterns...</p>
-          <div className="skeleton" style={{ height: '80px', borderRadius: 'var(--radius-lg)' }} />
+          <div className="skeleton" style={skelCardSm} />
           <div className="grid grid-cols-2 gap-4">
             {[1,2,3,4].map(i => <div key={i} className="skeleton" style={{ height: '120px', borderRadius: 'var(--radius-lg)' }} />)}
           </div>

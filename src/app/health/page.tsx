@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { fmtDateTime } from '@/lib/format';
 import { relativeTime } from '@/lib/time';
-import { stAccent, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { skelCardLg, stAccent, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 interface IntelligenceCheck { name: string; status: 'pass' | 'fail' | 'warn'; detail: string; }
 
@@ -98,7 +98,7 @@ export default function HealthPage() {
     <div className="page-content space-y-6">
       <div className="skeleton" style={{ height: '28px', width: '200px' }} />
       <div className="skeleton" style={{ height: '16px', width: '350px' }} />
-      {[1,2,3].map(i => <div key={i} className="skeleton" style={{ height: '120px', borderRadius: 'var(--radius-xl)' }} />)}
+      {[1,2,3].map(i => <div key={i} className="skeleton" style={skelCardLg} />)}
     </div>);
 
   return (

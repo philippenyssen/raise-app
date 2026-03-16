@@ -16,7 +16,7 @@ import { fmtDate } from '@/lib/format';
 import {
   stTextMuted, stTextTertiary, stTextSecondary, stTextPrimary, stAccent, stFontXs,
   stSurface0, stSurface1, stSurface2, stSurface1Border, stBgSuccess, stBgDanger,
-  stBgMuted, stAccentBg, stBorderTop, stBorderSubtle, labelMuted10,
+  stBgMuted, stAccentBg, stBorderTop, stBorderSubtle, labelMuted10, skelCardLg,
 } from '@/lib/styles';
 
 const TREND_CONFIG = {
@@ -331,7 +331,7 @@ export default function ObjectionsPage() {
         <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Analyzing objection patterns and response effectiveness...</p>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {[1, 2, 3].map(i => (
-            <div key={i} className="skeleton" style={{ height: '120px', borderRadius: 'var(--radius-xl)' }} />
+            <div key={i} className="skeleton" style={skelCardLg} />
           ))}</div>
       </div>);
   }

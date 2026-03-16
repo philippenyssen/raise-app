@@ -6,7 +6,7 @@ import { useToast } from '@/components/toast';
 import { fmtDateTime } from '@/lib/format';
 import { relativeTime } from '@/lib/time';
 import { STATUS_LABELS } from '@/lib/constants';
-import { labelMuted, labelMuted10, stBorderTop, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { labelMuted, labelMuted10, skelCardMd, stBorderTop, stSurface2, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 import {
   ShieldAlert, TrendingUp, TrendingDown,
   RefreshCw, AlertTriangle, CheckCircle2, Target,
@@ -166,7 +166,7 @@ export default function StressTestPage() {
         <div className="skeleton" style={{ height: '96px', borderRadius: 'var(--radius-xl)' }} />
         <div className="grid grid-cols-3 gap-4">
           {[1,2,3].map(i => (
-            <div key={i} className="skeleton" style={{ height: '100px', borderRadius: 'var(--radius-xl)' }} />
+            <div key={i} className="skeleton" style={skelCardMd} />
           ))}</div>
         <div className="skeleton" style={{ height: '250px', borderRadius: 'var(--radius-xl)' }} />
       </div>);

@@ -97,6 +97,13 @@ export const stBgDanger: React.CSSProperties = { background: 'var(--danger)' } a
 export const stBgMuted: React.CSSProperties = { background: 'var(--text-muted)' } as const;
 export const stAccentBg: React.CSSProperties = { background: 'var(--accent-muted)' } as const;
 
+// Skeleton loading constants
+export const skelCardLg: React.CSSProperties = { height: '120px', borderRadius: 'var(--radius-xl)' };
+export const skelCardMd: React.CSSProperties = { height: '100px', borderRadius: 'var(--radius-xl)' };
+export const skelCardSm: React.CSSProperties = { height: '80px', borderRadius: 'var(--radius-lg)' };
+export const skelRow: React.CSSProperties = { height: '64px', borderRadius: 'var(--radius-lg)' };
+export const skelRowSm: React.CSSProperties = { height: '48px', borderRadius: 'var(--radius-md)' };
+
 // Border constants
 export const stBorderTop: React.CSSProperties = { borderTop: '1px solid var(--border-subtle)' } as const;
 export const stBorderSubtle: React.CSSProperties = { borderColor: 'var(--border-subtle)' } as const;

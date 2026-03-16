@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/components/toast';
 import { fmtDateTime } from '@/lib/format';
-import { labelMuted, labelTertiary, stFontSm, stFontXs, stTextMuted, icon14, icon12, textSmSecondary } from '@/lib/styles';
+import { labelMuted, labelTertiary, skelCardSm, stFontSm, stFontXs, stTextMuted, icon14, icon12, textSmSecondary } from '@/lib/styles';
 
 const flexCenterGap2 = { display: 'flex', alignItems: 'center', gap: 'var(--space-2)' } as const;
 const investorRowGrid: React.CSSProperties = { display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr auto', gap: 'var(--space-2)', alignItems: 'center', padding: 'var(--space-2) var(--space-4)' };
@@ -175,7 +175,7 @@ export default function EnrichmentPage() {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
         <div className="skeleton" style={{ height: '32px', width: '200px' }} />
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 'var(--space-4)' }}>
-          {[...Array(4)].map((_, i) => <div key={i} className="skeleton" style={{ height: '80px', borderRadius: 'var(--radius-lg)' }} />)}
+          {[...Array(4)].map((_, i) => <div key={i} className="skeleton" style={skelCardSm} />)}
         </div>
         <div className="skeleton" style={{ height: '400px', borderRadius: 'var(--radius-lg)' }} />
       </div>);

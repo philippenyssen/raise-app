@@ -5,7 +5,7 @@ import { Activity, AlertTriangle, CheckCircle2, XCircle, ChevronDown, ChevronRig
 import { useToast } from '@/components/toast';
 import { cachedFetch } from '@/lib/cache';
 import { fmtDateTime } from '@/lib/format';
-import { getHealthBg, getHealthColor, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { getHealthBg, getHealthColor, skelCardSm, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 interface SkillHealth {
   skill_name: string;
@@ -108,7 +108,7 @@ export default function SkillsPage() {
     <div className="space-y-6 page-content">
       <div className="skeleton" style={{ width: '200px', height: '28px', borderRadius: 'var(--radius-md)' }} />
       <div className="grid grid-cols-3 gap-4">
-        {[1,2,3].map(i => <div key={i} className="skeleton" style={{ height: '80px', borderRadius: 'var(--radius-lg)' }} />)}
+        {[1,2,3].map(i => <div key={i} className="skeleton" style={skelCardSm} />)}
       </div>
       <div className="skeleton" style={{ height: '200px', borderRadius: 'var(--radius-lg)' }} />
     </div>);

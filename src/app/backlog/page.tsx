@@ -6,9 +6,9 @@ import { cachedFetch } from '@/lib/cache';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Plus, Trash2, DollarSign, ShieldCheck, AlertTriangle, TrendingUp, FileText, Download } from 'lucide-react';
-import { stAccent, stSurface1, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { skelRow, stAccent, stSurface1, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
-const skeletonRow = { height: '64px', borderRadius: 'var(--radius-lg)' } as const;
+const skeletonRow = skelRow;
 const typeBadgeStyle = { background: 'var(--surface-2)', color: 'var(--text-secondary)' } as const;
 
 interface Commitment {

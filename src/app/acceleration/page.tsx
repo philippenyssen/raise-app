@@ -12,7 +12,7 @@ import {
   ChevronDown, Play, Ban, XCircle, Rocket, Timer, ArrowUpRight,
   TrendingDown, SkipForward,
 } from 'lucide-react';
-import { inlineBadgeStyle, labelMuted, labelMuted10, stBorderTop, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, textSmMuted, textSmSecondary, INVESTOR_TYPE_STYLES } from '@/lib/styles';
+import { inlineBadgeStyle, labelMuted, labelMuted10, skelCardMd, stBorderTop, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, textSmMuted, textSmSecondary, INVESTOR_TYPE_STYLES } from '@/lib/styles';
 import { TierBadge, EnthusiasmDots } from '@/components/shared';
 import { relativeTime } from '@/lib/time';
 import { cachedFetch } from '@/lib/cache';
@@ -23,7 +23,7 @@ const tabBtnInactive: React.CSSProperties = { ...tabBtnBase, color: 'var(--text-
 const tabCountActive = { padding: '2px 6px', fontSize: 'var(--font-size-xs)', background: 'var(--accent-muted)', color: 'var(--accent)' } as const;
 const tabCountInactive = { padding: '2px 6px', fontSize: 'var(--font-size-xs)', background: 'var(--surface-2)', color: 'var(--text-muted)' } as const;
 const skeletonSm = { height: '80px', borderRadius: 'var(--radius-xl)' } as const;
-const skeletonMd = { height: '100px', borderRadius: 'var(--radius-xl)' } as const;
+const skeletonMd = skelCardMd;
 const actionCardDone: React.CSSProperties = { borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)', background: 'var(--fg-30)', opacity: 0.6, transition: 'all 200ms ease' };
 const actionCardActive: React.CSSProperties = { borderRadius: 'var(--radius-lg)', padding: 'var(--space-4)', background: 'var(--surface-1)', transition: 'all 200ms ease' };
 

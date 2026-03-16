@@ -9,7 +9,7 @@ import {
 import type { Task, ActivityEvent, TaskStatus, TaskPriority, RaisePhase } from '@/lib/types';
 import { useToast } from '@/components/toast';
 import Link from 'next/link';
-import { stAccent, stTextMuted, stTextPrimary, stTextSecondary } from '@/lib/styles';
+import { skelRowSm, stAccent, stTextMuted, stTextPrimary, stTextSecondary } from '@/lib/styles';
 
 const progressTrackBg = { backgroundColor: 'var(--surface-2)' } as const;
 const tabCountBadge = { backgroundColor: 'var(--surface-2)', color: 'var(--text-tertiary)' } as const;
@@ -182,7 +182,7 @@ export default function TimelinePage() {
       <div className="space-y-6 page-content">
         <div className="skeleton" style={{ height: '28px', width: '200px' }} />
         <div className="space-y-2">
-          {[1,2,3,4,5,6].map(i => <div key={i} className="skeleton" style={{ height: '48px', borderRadius: 'var(--radius-md)' }} />)}
+          {[1,2,3,4,5,6].map(i => <div key={i} className="skeleton" style={skelRowSm} />)}
         </div>
       </div>);
   }

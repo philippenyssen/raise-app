@@ -8,7 +8,7 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { FolderOpen, Upload, FileText, Table, Image, Trash2, ChevronDown, ChevronRight, Search, Eye, BarChart3, Users, AlertCircle, Send, TrendingUp } from 'lucide-react';
 import { fmtDateTime, fmtDate } from '@/lib/format';
 import { STATUS_LABELS } from '@/lib/constants';
-import { labelMuted, stAccent, stFontSm, stFontXs, stSurface2, stTextMuted, stTextSecondary, stTextTertiary, textSmSecondary } from '@/lib/styles';
+import { labelMuted, skelCardSm, stAccent, stFontSm, stFontXs, stSurface2, stTextMuted, stTextSecondary, stTextTertiary, textSmSecondary } from '@/lib/styles';
 import { cachedFetch } from '@/lib/cache';
 
 const fontSmPrimary = { ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' } as const;
@@ -235,7 +235,7 @@ export default function DataRoomPage() {
         <div className="skeleton" style={{ height: '28px', width: '200px' }} />
         <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Preparing data room...</p>
         {[1,2,3].map(i => (
-          <div key={i} className="skeleton" style={{ height: '80px', borderRadius: 'var(--radius-lg)' }} />
+          <div key={i} className="skeleton" style={skelCardSm} />
         ))}
       </div>);
   }

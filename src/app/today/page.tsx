@@ -12,7 +12,7 @@ import {
   TrendingDown, Minus, Users, Shield, Target,
   CheckCircle, Sparkles, ArrowUpRight,
 } from 'lucide-react';
-import { cardPad4, flexColGap2, labelMuted, labelSecondary, labelTertiary, stAccent, stFontSm, stFontXs, stTextMuted, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { cardPad4, flexColGap2, labelMuted, labelSecondary, labelTertiary, skelCardSm, skelRow, stAccent, stFontSm, stFontXs, stTextMuted, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 // ---------------------------------------------------------------------------
 // Extracted style constants (avoid re-allocation each render)
@@ -486,14 +486,14 @@ export default function TodayPage() {
         <div>
           <div className="skeleton" style={{ height: '12px', width: '140px', marginBottom: 'var(--space-3)' }} />
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="skeleton" style={{ height: '80px', borderRadius: 'var(--radius-lg)', marginBottom: 'var(--space-2)' }}
+            <div key={i} className="skeleton" style={{ ...skelCardSm, marginBottom: 'var(--space-2)' }}
               />
           ))}</div>
         <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: 'var(--space-3)' }}>
           {[...Array(4)].map((_, i) => (
             <div key={i} className="skeleton" style={{ height: '72px', borderRadius: 'var(--radius-lg)' }} />
           ))}</div>
-        <div className="skeleton" style={{ height: '64px', borderRadius: 'var(--radius-lg)' }} />
+        <div className="skeleton" style={skelRow} />
         <div className="skeleton" style={{ height: '56px', borderRadius: 'var(--radius-lg)' }} />
       </div>);
   }
