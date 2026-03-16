@@ -302,6 +302,15 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
     };
   }, [draggingElement, slides, activeIdx, onChange]);
 
+  const deleteElement = useCallback((elementId: string) => {
+    const updated = slides.map((slide, i) => {
+      if (i !== activeIdx) return slide;
+      return { ...slide, elements: slide.elements.filter(el => el.id !== elementId) };
+    });
+    onChange(updated);
+    setEditingElement(null);
+  }, [slides, activeIdx, onChange]);
+
   const setSlideBackground = useCallback((bg: string) => {
     const updated = slides.map((slide, i) => {
       if (i !== activeIdx) return slide;
@@ -550,26 +559,52 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
                   }}
                 >
                   {isEditing ? (
-                    <textarea
-                      autoFocus
-                      value={el.content}
-                      onChange={e => updateElement(el.id, e.target.value)}
-                      onBlur={() => setEditingElement(null)}
-                      onKeyDown={e => { if (e.key === 'Escape') setEditingElement(null); }}
-                      style={{
-                        width: '100%',
-                        minHeight: el.type === 'bullet' || el.type === 'body' ? '80px' : '40px',
-                        background: 'transparent',
-                        border: 'none',
-                        outline: 'none',
-                        resize: 'vertical',
-                        font: 'inherit',
-                        color: 'inherit',
-                        fontSize: 'inherit',
-                        fontWeight: 'inherit',
-                        lineHeight: 'inherit',
-                      }}
-                    />
+                    <div style={{ position: 'relative' }}>
+                      <textarea
+                        autoFocus
+                        value={el.content}
+                        onChange={e => updateElement(el.id, e.target.value)}
+                        onBlur={() => setTimeout(() => setEditingElement(null), 150)}
+                        onKeyDown={e => { if (e.key === 'Escape') setEditingElement(null); }}
+                        style={{
+                          width: '100%',
+                          minHeight: el.type === 'bullet' || el.type === 'body' ? '80px' : '40px',
+                          background: 'transparent',
+                          border: 'none',
+                          outline: 'none',
+                          resize: 'vertical',
+                          font: 'inherit',
+                          color: 'inherit',
+                          fontSize: 'inherit',
+                          fontWeight: 'inherit',
+                          lineHeight: 'inherit',
+                        }}
+                      />
+                      <button
+                        onClick={(e) => { e.stopPropagation(); deleteElement(el.id); }}
+                        style={{
+                          position: 'absolute',
+                          top: '-12px',
+                          right: '-12px',
+                          width: '20px',
+                          height: '20px',
+                          borderRadius: '50%',
+                          background: 'var(--danger, #ef4444)',
+                          color: 'white',
+                          border: 'none',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '12px',
+                          lineHeight: 1,
+                          zIndex: 5,
+                        }}
+                        title="Delete element"
+                      >
+                        &times;
+                      </button>
+                    </div>
                   ) : el.type === 'bullet' ? (
                     <ul style={{ margin: 0, paddingLeft: '1.5em' }}>
                       {el.content.split('\n').filter(l => l.trim()).map((item, i) => (

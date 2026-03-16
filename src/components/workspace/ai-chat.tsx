@@ -653,7 +653,18 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
                 borderRadius: 'var(--radius-lg)',
                 paddingRight: 'var(--space-10)',
                 opacity: loading || !documentId ? 0.5 : 1,
-              }}/></div>
+              }}/>
+            {input.length > 100 && (
+              <span style={{
+                position: 'absolute',
+                bottom: '4px',
+                right: '8px',
+                fontSize: '10px',
+                color: input.length > 4500 ? 'var(--danger)' : 'var(--text-muted)',
+              }}>
+                {input.length}/5000
+              </span>
+            )}</div>
           {loading ? (
             <button
               onClick={stopGeneration}

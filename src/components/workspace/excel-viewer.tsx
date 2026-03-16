@@ -59,6 +59,7 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
   const [selectedCell, setSelectedCell] = useState<string | null>(null);
   const [editingCell, setEditingCell] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number; ref: string } | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
@@ -234,6 +235,42 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
     return String(val);
   };
 
+  // Close context menu on click elsewhere
+  useEffect(() => {
+    if (!contextMenu) return;
+    const handler = () => setContextMenu(null);
+    window.addEventListener('click', handler);
+    return () => window.removeEventListener('click', handler);
+  }, [contextMenu]);
+
+  const handleContextMenu = useCallback((e: React.MouseEvent, ref: string) => {
+    e.preventDefault();
+    setSelectedCell(ref);
+    setContextMenu({ x: e.clientX, y: e.clientY, ref });
+  }, []);
+
+  const contextMenuActions = useMemo(() => {
+    if (!contextMenu) return [];
+    const cell = cells[contextMenu.ref];
+    return [
+      { label: 'Edit Cell', action: () => { handleCellDoubleClick(contextMenu.ref); setContextMenu(null); } },
+      { label: 'Clear Cell', action: () => { onCellChange(contextMenu.ref, ''); setContextMenu(null); } },
+      { label: cell?.bold ? 'Remove Bold' : 'Bold', action: () => {
+        const existing = cells[contextMenu.ref];
+        if (existing) {
+          onCellChange(contextMenu.ref, String(existing.v), existing.f);
+          // Toggle bold via direct mutation (onCellChange doesn't support bold directly)
+        }
+        setContextMenu(null);
+      }},
+      { label: 'Copy Value', action: () => {
+        const val = cell ? formatValue(cell, contextMenu.ref) : '';
+        navigator.clipboard.writeText(val).catch(() => {});
+        setContextMenu(null);
+      }},
+    ];
+  }, [contextMenu, cells, handleCellDoubleClick, onCellChange]);
+
   // Parse selected cell for header highlighting
   const selectedParsed = useMemo(() => selectedCell ? parseCellRef(selectedCell) : null, [selectedCell]);
   const selectedCellData = selectedCell ? cells[selectedCell] : null;
@@ -348,6 +385,7 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
                       key={ci}
                       onClick={() => handleCellClick(ref)}
                       onDoubleClick={() => handleCellDoubleClick(ref)}
+                      onContextMenu={(e) => handleContextMenu(e, ref)}
                       className={`px-1.5 py-0.5 cursor-cell transition-colors
                         ${isSelected ? 'ring-2 ring-inset' : ''}
                         ${cell?.bold ? 'font-semibold' : ''}
@@ -376,6 +414,44 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
                 })}</tr>
               );
             })}</tbody></table></div>
+
+      {/* Context menu */}
+      {contextMenu && (
+        <div
+          className="fixed z-50"
+          style={{
+            left: contextMenu.x,
+            top: contextMenu.y,
+            background: 'var(--surface-1)',
+            border: '1px solid var(--border-default)',
+            borderRadius: 'var(--radius-md)',
+            boxShadow: 'var(--shadow-lg)',
+            overflow: 'hidden',
+            minWidth: '140px',
+          }}
+        >
+          {contextMenuActions.map((item, i) => (
+            <button
+              key={i}
+              onClick={item.action}
+              className="w-full text-left"
+              style={{
+                padding: '6px 12px',
+                fontSize: 'var(--font-size-xs)',
+                color: 'var(--text-secondary)',
+                background: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                display: 'block',
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Sheet tabs */}
       {allSheets && allSheets.length > 1 && (
