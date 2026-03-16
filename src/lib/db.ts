@@ -624,6 +624,9 @@ async function ensureInitialized() {
   try { await db.execute(`ALTER TABLE investor_partners ADD COLUMN source TEXT DEFAULT ''`); } catch { /* column already exists */ }
   try { await db.execute(`ALTER TABLE investor_portfolio ADD COLUMN source TEXT DEFAULT ''`); } catch { /* column already exists */ }
 
+  // Migration: committed capital tracking
+  try { await db.execute(`ALTER TABLE investors ADD COLUMN committed_amount REAL DEFAULT 0`); } catch { /* column already exists */ }
+
   // Indexes for frequent foreign key lookups
   try { await db.execute(`CREATE INDEX IF NOT EXISTS idx_enrichment_investor ON enrichment_records(investor_id)`); } catch { /* */ }
   try { await db.execute(`CREATE UNIQUE INDEX IF NOT EXISTS idx_enrichment_dedup ON enrichment_records(investor_id, source_id, field_name)`); } catch { /* */ }

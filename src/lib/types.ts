@@ -19,6 +19,7 @@ export interface Investor {
   portfolio_conflicts: string;
   notes: string;
   enthusiasm: number; // 1-5
+  committed_amount: number; // in millions, 0 = not committed
   created_at: string;
   updated_at: string;
   last_meeting_date?: string | null;

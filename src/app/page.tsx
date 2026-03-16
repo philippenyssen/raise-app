@@ -200,6 +200,8 @@ interface HealthData {
   avgEnthusiasm: number;
   tierBreakdown: Record<string, number>;
   topObjections: { text: string; count: number }[];
+  committedCapital?: number;
+  committedInvestorCount?: number;
 }
 
 // Pulse types
@@ -605,6 +607,18 @@ export default function Dashboard() {
                       const weeksLeft = Math.ceil(daysLeft / 7);
                       return daysLeft > 0 ? <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: timeColor(weeksLeft, 4, 8) }}>{weeksLeft}w left</span> : null;
                     })()}</div>
+
+                  {/* Committed Capital */}
+                  {data?.committedCapital != null && data.committedCapital > 0 && (
+                    <div className="flex items-center gap-3" style={{ marginBottom: 'var(--space-4)' }}>
+                      <div style={{ flex: 1, height: '4px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-3)', overflow: 'hidden' }}>
+                        <div style={{ width: `${Math.min(100, Math.round((data.committedCapital / stressTest.target) * 100))}%`, height: '100%', borderRadius: 'var(--radius-sm)', background: 'var(--success)', transition: 'width 0.4s ease' }} /></div>
+                      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--success)', whiteSpace: 'nowrap', fontWeight: 400 }}>
+                        €{Math.round(data.committedCapital)}M committed</span>
+                      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
+                        ({data.committedInvestorCount} investor{data.committedInvestorCount !== 1 ? 's' : ''})</span>
+                    </div>
+                  )}
 
                   <div className="grid grid-cols-3 gap-4">
                     <div>

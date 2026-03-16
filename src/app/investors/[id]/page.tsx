@@ -1159,6 +1159,7 @@ export default function InvestorDetailPage() {
             ) : (
               <Row label="Check Size" value={investor.check_size_range} />
             )}
+            <Row label="Committed" value={investor.committed_amount ? `€${investor.committed_amount}M` : '—'} />
             {editing ? (
               <EditRow label="Thesis" value={editForm.sector_thesis} onChange={v => setEditForm(f => ({ ...f, sector_thesis: v }))}
                 />

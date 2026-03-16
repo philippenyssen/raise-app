@@ -6,7 +6,7 @@ import { emitContextChange } from '@/lib/context-bus';
 const ALLOWED_UPDATE_FIELDS = new Set([
   'name', 'type', 'tier', 'status', 'partner', 'fund_size', 'check_size_range',
   'sector_thesis', 'warm_path', 'ic_process', 'speed', 'portfolio_conflicts',
-  'notes', 'enthusiasm',]);
+  'notes', 'enthusiasm', 'committed_amount',]);
 
 function filterFields<T extends Record<string, unknown>>(data: T, allowed: Set<string>): Partial<T> {
   const filtered: Record<string, unknown> = {};

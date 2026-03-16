@@ -54,6 +54,10 @@ export async function GET() {
       timeInStage[key].avg = Math.round(timeInStage[key].avg / timeInStage[key].count);
     }
 
+    // Committed capital: sum of committed_amount for term_sheet + closed investors
+    const committedInvestors = investors.filter(i => (i.status === 'term_sheet' || i.status === 'closed') && (i.committed_amount || 0) > 0);
+    const committedCapital = committedInvestors.reduce((sum, i) => sum + (i.committed_amount || 0), 0);
+
     return NextResponse.json({
       funnel,
       convergence,
@@ -65,6 +69,8 @@ export async function GET() {
       totalInvestors: investors.length,
       totalMeetings: meetings.length,
       timeInStage,
+      committedCapital,
+      committedInvestorCount: committedInvestors.length,
     }, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
   } catch (e) {
     console.error('[HEALTH_GET]', e instanceof Error ? e.message : e);
