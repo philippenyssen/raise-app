@@ -191,7 +191,7 @@ function MeetingCard({ meeting }: { meeting: BriefingMeeting }) {
                 ))}</span>
             )}</div>
 
-          <p style={{ ...labelSecondary, marginTop: '6px', lineHeight: 1.5 }}>{renderMarkdown(meeting.keyPoint)}</p></div>
+          <p style={{ ...labelSecondary, marginTop: 'var(--space-1)', lineHeight: 1.5 }}>{renderMarkdown(meeting.keyPoint)}</p></div>
 
         <div className="flex gap-1.5 shrink-0">
           <Link
@@ -226,7 +226,7 @@ function ActionCard({ action }: { action: UrgentAction }) {
             <p style={labelTertiaryLine}>{renderMarkdown(action.description)}</p>
           )}
 
-          <div className="flex items-center gap-3 flex-wrap" style={{ marginTop: '8px' }}>
+          <div className="flex items-center gap-3 flex-wrap" style={{ marginTop: 'var(--space-2)' }}>
             {action.investorName && (
               <span className="flex items-center gap-1" style={{ ...stFontXs, color: 'var(--accent)' }}>
                 <span style={flexIcon}><Users className="w-3 h-3" /></span>{action.investorName}</span>
@@ -290,7 +290,7 @@ function AlertCard({ alert }: { alert: BriefingAlert }) {
           <Icon className="w-4 h-4" /></span>
         <div className="flex-1 min-w-0">
           <p style={textBodySm}>{renderMarkdown(alert.title)}</p>
-          <p style={{ ...labelTertiary, marginTop: '2px' }}>{renderMarkdown(alert.detail)}</p></div>
+          <p style={{ ...labelTertiary, marginTop: 'var(--space-0)' }}>{renderMarkdown(alert.detail)}</p></div>
         <Link
           href={alertLink}
           className="shrink-0 flex items-center gap-1 transition-colors hover-bg-fg6"
@@ -668,7 +668,7 @@ export default function TodayPage() {
           <div className="card" style={emptyStatePad}>
             <span style={emptyStateIcon}><Calendar className="w-8 h-8" style={stTextMuted} /></span>
             <p style={emptyStateText}>No meetings scheduled today</p>
-            <p style={{ ...labelTertiary, marginTop: '4px', lineHeight: 1.5 }}>Use the open calendar to schedule follow-ups with your highest-momentum investors, or work through overdue actions.</p>
+            <p style={{ ...labelTertiary, marginTop: 'var(--space-1)', lineHeight: 1.5 }}>Use the open calendar to schedule follow-ups with your highest-momentum investors, or work through overdue actions.</p>
             <div className="flex items-center justify-center gap-2" style={{ marginTop: 'var(--space-3)' }}>
               <Link href="/focus" className="btn btn-primary btn-sm">
                 Schedule high-momentum follow-ups</Link>
@@ -720,7 +720,7 @@ export default function TodayPage() {
                     <div className="flex-1 min-w-0">
                       <p className="truncate" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' }}>
                         {fu.description}</p>
-                      <div className="flex items-center gap-2" style={{ marginTop: '2px' }}>
+                      <div className="flex items-center gap-2" style={{ marginTop: 'var(--space-0)' }}>
                         <Link href={`/investors/${fu.investor_id}`} style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)', textDecoration: 'none' }}>
                           {fu.investor_name}</Link></div></div>
                     <div className="flex items-center gap-1 shrink-0">
@@ -752,7 +752,7 @@ export default function TodayPage() {
             className="card hover-border"
             style={linkCardPad}>
             <div className="metric-label">Active</div>
-            <div className="metric-value" style={{ fontSize: 'var(--font-size-xl)', marginTop: '4px', color: 'var(--text-primary)' }}>
+            <div className="metric-value" style={{ fontSize: 'var(--font-size-xl)', marginTop: 'var(--space-1)', color: 'var(--text-primary)' }}>
               {data.pipelineSnapshot.totalActive}</div></Link>
 
           <Link
@@ -760,7 +760,7 @@ export default function TodayPage() {
             className="card hover-border"
             style={linkCardPad}>
             <div className="metric-label">In DD</div>
-            <div className="metric-value" style={{ fontSize: 'var(--font-size-xl)', marginTop: '4px', color: data.pipelineSnapshot.inDD > 0 ? 'var(--warning)' : 'var(--text-muted)' }}>
+            <div className="metric-value" style={{ fontSize: 'var(--font-size-xl)', marginTop: 'var(--space-1)', color: data.pipelineSnapshot.inDD > 0 ? 'var(--warning)' : 'var(--text-muted)' }}>
               {data.pipelineSnapshot.inDD}</div></Link>
 
           <Link
@@ -768,7 +768,7 @@ export default function TodayPage() {
             className="card hover-border"
             style={linkCardPad}>
             <div className="metric-label">Term Sheets</div>
-            <div className="metric-value" style={{ fontSize: 'var(--font-size-xl)', marginTop: '4px', color: data.pipelineSnapshot.termSheets > 0 ? 'var(--success)' : 'var(--text-muted)' }}>
+            <div className="metric-value" style={{ fontSize: 'var(--font-size-xl)', marginTop: 'var(--space-1)', color: data.pipelineSnapshot.termSheets > 0 ? 'var(--success)' : 'var(--text-muted)' }}>
               {data.pipelineSnapshot.termSheets}</div></Link>
 
           <div className="card" style={cardPad4}>
@@ -857,11 +857,11 @@ export default function TodayPage() {
                 <Sparkles className="w-4 h-4" /></span></div>
 
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2" style={{ marginBottom: '4px' }}>
+              <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-1)' }}>
                 <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--accent)', letterSpacing: '0.01em' }}>
                   AI Insight</span></div>
               <p style={textBodySm}>{insight.title}</p>
-              <p style={{ ...stFontXs, color: 'var(--text-secondary)', marginTop: '4px', lineHeight: 1.5 }}>{insight.detail}</p>
+              <p style={{ ...stFontXs, color: 'var(--text-secondary)', marginTop: 'var(--space-1)', lineHeight: 1.5 }}>{insight.detail}</p>
             </div>
 
             <Link

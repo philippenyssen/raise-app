@@ -129,13 +129,13 @@ export default function NetworkPage() {
         <div>
           <div>
             <h1 className="page-title">Investor Network</h1>
-            <p style={{ ...textSmMuted, marginTop: '2px' }}>
+            <p style={{ ...textSmMuted, marginTop: 'var(--space-0)' }}>
               Cascade effects from keystone investors</p></div></div>
         <div className="flex items-center gap-3">
           <div style={{ padding: 'var(--space-2) var(--space-4)', background: 'var(--accent-muted)', borderRadius: 'var(--radius-md)' }}>
             <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)', fontWeight: 400 }}>
               Expected Capital</span>
-            <p style={{ fontSize: 'var(--font-size-lg)', fontWeight: 300, color: 'var(--text-primary)', marginTop: '2px' }}>
+            <p style={{ fontSize: 'var(--font-size-lg)', fontWeight: 300, color: 'var(--text-primary)', marginTop: 'var(--space-0)' }}>
               {summary.totalExpectedCapitalM > 0 ? `\u20AC${formatCapital(summary.totalExpectedCapitalM)}` : '--'}</p></div>
           <button
             className="btn-secondary flex items-center gap-2"
@@ -171,7 +171,7 @@ export default function NetworkPage() {
           <div className="flex-1">
             <p style={{ fontWeight: 400, color: 'var(--text-primary)', fontSize: 'var(--font-size-sm)' }}>
               Bottleneck Alert</p>
-            <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--font-size-sm)', marginTop: '4px' }}>
+            <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--font-size-sm)', marginTop: 'var(--space-1)' }}>
               If <strong>{bottleneckAlert.bottleneckName}</strong> passes, it would collapse{' '}
               <strong>{bottleneckAlert.keystoneName}</strong>&apos;s cascade chain.{' '}
               {bottleneckAlert.capitalAtRiskM > 0 && (
@@ -218,7 +218,7 @@ export default function NetworkPage() {
                         {tierLabel(cascade.keystoneTier)}</span>
                       <span style={keystoneBadgeSecondary}>
                         {STATUS_LABELS[cascade.keystoneStatus] || cascade.keystoneStatus}</span></div>
-                    <p style={{ ...labelMuted, marginTop: '2px' }}>
+                    <p style={{ ...labelMuted, marginTop: 'var(--space-0)' }}>
                       {cascade.signal}</p></div></div>
                 <div className="flex items-center gap-4 shrink-0 ml-4">
                   <div style={textRight}>
@@ -243,14 +243,14 @@ export default function NetworkPage() {
                       {enthusiasmDots(cascade.keystoneEnthusiasm)}</span>
                     {cascade.keystoneCheckSize && (
                       <>
-                        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--border-default)', margin: '0 4px' }}>|</span>
+                        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--border-default)', margin: '0 var(--space-1)' }}>|</span>
                         <span style={labelMuted}>
                           Check: {cascade.keystoneCheckSize}</span>
                       </>
                     )}
                     {cascade.totalCascadeCapitalM > 0 && (
                       <>
-                        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--border-default)', margin: '0 4px' }}>|</span>
+                        <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--border-default)', margin: '0 var(--space-1)' }}>|</span>
                         <span style={labelMuted}>
                           Total Potential: {'\u20AC'}{formatCapital(cascade.totalCascadeCapitalM)}</span>
                       </>
@@ -265,7 +265,7 @@ export default function NetworkPage() {
                         return (
                           <div key={link.investorId}>
                             {/* Arrow connector */}
-                            <div className="flex items-center gap-2 py-1" style={{ paddingLeft: '16px' }}>
+                            <div className="flex items-center gap-2 py-1" style={{ paddingLeft: 'var(--space-4)' }}>
                               <div style={connectorLine} />
                               <ArrowRight className="w-3 h-3" style={arrowConnector} />
                               <span style={{ ...tabNumSm, fontSize: 'var(--font-size-xs)', color: probColor(link.probability) }}>
@@ -357,21 +357,21 @@ export default function NetworkPage() {
           <div>
             <p style={labelMutedTight}>
               Strongest Chain</p>
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, marginTop: '2px' }}>
+            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, marginTop: 'var(--space-0)' }}>
               {summary.strongestChain
                 ? `${summary.strongestChain.name} (\u20AC${formatCapital(summary.strongestChain.capitalM)})`
                 : '--'}</p></div>
           <div>
             <p style={labelMutedTight}>
               Weakest Chain</p>
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, marginTop: '2px' }}>
+            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, marginTop: 'var(--space-0)' }}>
               {summary.weakestChain
                 ? `${summary.weakestChain.name} (\u20AC${formatCapital(summary.weakestChain.capitalM)})`
                 : '--'}</p></div>
           <div>
             <p style={labelMutedTight}>
               Total Raise Forecast</p>
-            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--accent)', fontWeight: 400, marginTop: '2px' }}>
+            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--accent)', fontWeight: 400, marginTop: 'var(--space-0)' }}>
               {summary.totalExpectedCapitalM > 0 ? `\u20AC${formatCapital(summary.totalExpectedCapitalM)}` : '--'}</p></div></div>
       </div>
     </div>);
