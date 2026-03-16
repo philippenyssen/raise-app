@@ -18,6 +18,17 @@ import {
   stBgMuted, stAccentBg, stBorderTop, stBorderSubtle, labelMuted10,
 } from '@/lib/styles';
 
+const TREND_CONFIG = {
+  improving: { icon: ArrowUpRight, color: 'var(--text-secondary)', bg: 'var(--success-muted)', label: 'Improving' },
+  declining: { icon: ArrowDownRight, color: 'var(--text-primary)', bg: 'var(--danger-muted)', label: 'Declining' },
+  stable: { icon: Minus, color: 'var(--text-muted)', bg: 'var(--surface-2)', label: 'Stable' },
+} as const;
+
+const OBJ_TABS = [
+  { key: 'playbook' as const, label: 'Playbook', icon: Shield },
+  { key: 'effectiveness' as const, label: 'Response Effectiveness', icon: BarChart3 },
+];
+
 interface ObjectionRecord {
   id: string;
   objection_text: string;
@@ -185,7 +196,7 @@ export default function ObjectionsPage() {
       if (!res.ok) throw new Error('Failed to load');
       const json = await res.json();
       setData(json);
-    } catch { toast('Couldn\'t load objections — try refreshing the page', 'error'); }
+    } catch (e) { console.warn('[OBJECTIONS_LOAD]', e instanceof Error ? e.message : e); toast('Couldn\'t load objections — try refreshing the page', 'error'); }
     setLoading(false);
   }, []);
 
@@ -245,7 +256,7 @@ export default function ObjectionsPage() {
       setEditingId(null);
       loadData();
       if (effectivenessData) loadEffectivenessData();
-    } catch { toast('Couldn\'t save response — check your connection and retry', 'error'); }
+    } catch (e) { console.warn('[OBJECTIONS_SAVE]', e instanceof Error ? e.message : e); toast('Couldn\'t save response — check your connection and retry', 'error'); }
     setSaving(false);
   }
 
@@ -260,7 +271,7 @@ export default function ObjectionsPage() {
       if (!res.ok) throw new Error('Failed to load');
       const json = await res.json();
       setInvestorObjections(json);
-    } catch { toast('Couldn\'t load investor objections — try refreshing', 'error'); }
+    } catch (e) { console.warn('[OBJECTIONS_INVESTOR]', e instanceof Error ? e.message : e); toast('Couldn\'t load investor objections — try refreshing', 'error'); }
     setLoadingInvestor(false);
   }
 
@@ -301,11 +312,7 @@ export default function ObjectionsPage() {
   }
 
   function TrendBadge({ trend }: { trend: 'improving' | 'declining' | 'stable' }) {
-    const config = {
-      improving: { icon: ArrowUpRight, color: 'var(--text-secondary)', bg: 'var(--success-muted)', label: 'Improving' },
-      declining: { icon: ArrowDownRight, color: 'var(--text-primary)', bg: 'var(--danger-muted)', label: 'Declining' },
-      stable: { icon: Minus, color: 'var(--text-muted)', bg: 'var(--surface-2)', label: 'Stable' },
-    }[trend];
+    const config = TREND_CONFIG[trend];
     const Icon = config.icon;
     return (
       <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs" style={{ background: config.bg, color: config.color }}>
@@ -351,10 +358,7 @@ export default function ObjectionsPage() {
 
       {/* Tabs */}
       <div className="flex gap-1" style={{ borderBottom: '1px solid var(--border-default)' }}>
-        {([
-          { key: 'playbook' as Tab, label: 'Playbook', icon: Shield },
-          { key: 'effectiveness' as Tab, label: 'Response Effectiveness', icon: BarChart3 },
-        ]).map(t => (
+        {OBJ_TABS.map(t => (
           <button
             key={t.key}
             onClick={() => setTab(t.key)}

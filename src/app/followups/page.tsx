@@ -23,6 +23,20 @@ const textMutedXs = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)
 const textSecSm = { fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' } as const;
 const completedOutcomeBox = { background: 'var(--surface-2)', borderRadius: 'var(--radius-sm)', padding: '0.375rem 0.5rem', fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' } as const;
 const completingFormBox = { background: 'var(--surface-2)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-3)' } as const;
+const VEL_CONFIG: Record<string, { color: string; bg: string; icon: typeof ArrowUpRight; label: string }> = {
+  accelerating: { color: 'var(--text-secondary)', bg: 'var(--success-muted)', icon: ArrowUpRight, label: 'Rising' },
+  decelerating: { color: 'var(--text-primary)', bg: 'var(--danger-muted)', icon: ArrowDownRight, label: 'Falling' },
+  stable: { color: 'var(--text-muted)', bg: 'var(--surface-3)', icon: Activity, label: 'Stable' },
+  new: { color: 'var(--text-tertiary)', bg: 'var(--warning-muted)', icon: Zap, label: 'New' },
+  gone_silent: { color: 'var(--text-primary)', bg: 'var(--danger-muted)', icon: AlertTriangle, label: 'Silent' },
+};
+const ACCENT_COLOR_MAP: Record<string, string> = {
+  red: 'var(--danger)',
+  blue: 'var(--accent)',
+  zinc: 'var(--text-secondary)',
+  green: 'var(--success)',
+};
+const dangerBadgePill = { marginLeft: '0.375rem', background: 'var(--danger)', color: 'var(--text-primary)', fontSize: 'var(--font-size-xs)', padding: '0 0.25rem', borderRadius: 'var(--radius-full)' } as const;
 const cardInnerPad = { padding: 'var(--space-4)' } as const;
 const smallDot = { width: '16px', height: '16px', borderRadius: '50%', background: 'var(--accent-muted)' } as const;
 const footerRow = { padding: '0.375rem var(--space-4)', borderTop: '1px solid var(--border-subtle)', display: 'flex', gap: 'var(--space-3)', flexWrap: 'wrap' as const, alignItems: 'center', background: 'var(--surface-1)' } as const;
@@ -235,7 +249,7 @@ function FollowupsContent() {
         }),});
       if (!res.ok) throw new Error('Failed');
       fetchFollowups();
-    } catch { toast('Couldn\'t complete follow-up — restoring', 'error'); setFollowups(prev); }
+    } catch (e) { console.warn('[FOLLOWUP_COMPLETE]', e instanceof Error ? e.message : e); toast('Couldn\'t complete follow-up — restoring', 'error'); setFollowups(prev); }
   }
 
   async function handleSkip(id: string) {
@@ -250,7 +264,7 @@ function FollowupsContent() {
         body: JSON.stringify({ id, status: 'skipped' }),});
       if (!res.ok) throw new Error('Failed');
       fetchFollowups();
-    } catch { toast('Couldn\'t skip follow-up — restoring', 'error'); setFollowups(prev); }
+    } catch (e) { console.warn('[FOLLOWUP_SKIP]', e instanceof Error ? e.message : e); toast('Couldn\'t skip follow-up — restoring', 'error'); setFollowups(prev); }
     finally { setProcessingIds(prev => { const n = new Set(prev); n.delete(id); return n; }); }
   }
 
@@ -267,7 +281,7 @@ function FollowupsContent() {
         body: JSON.stringify({ id, status: 'completed' }),});
       if (!res.ok) throw new Error('Failed');
       fetchFollowups();
-    } catch { toast('Couldn\'t complete follow-up — restoring', 'error'); setFollowups(prev); }
+    } catch (e) { console.warn('[FOLLOWUP_QUICK]', e instanceof Error ? e.message : e); toast('Couldn\'t complete follow-up — restoring', 'error'); setFollowups(prev); }
     finally { setProcessingIds(prev => { const n = new Set(prev); n.delete(id); return n; }); }
   }
 
@@ -518,13 +532,7 @@ function FollowupsContent() {
 
             {/* Engagement velocity */}
             {item.velocity && (() => {
-              const velConfig: Record<string, { color: string; bg: string; icon: typeof ArrowUpRight; label: string }> = {
-                accelerating: { color: 'var(--text-secondary)', bg: 'var(--success-muted)', icon: ArrowUpRight, label: 'Rising' },
-                decelerating: { color: 'var(--text-primary)', bg: 'var(--danger-muted)', icon: ArrowDownRight, label: 'Falling' },
-                stable: { color: 'var(--text-muted)', bg: 'var(--surface-3)', icon: Activity, label: 'Stable' },
-                new: { color: 'var(--text-tertiary)', bg: 'var(--warning-muted)', icon: Zap, label: 'New' },
-                gone_silent: { color: 'var(--text-primary)', bg: 'var(--danger-muted)', icon: AlertTriangle, label: 'Silent' },};
-              const vc = velConfig[item.velocity!.acceleration] || velConfig.stable;
+              const vc = VEL_CONFIG[item.velocity!.acceleration] || VEL_CONFIG.stable;
               const VelIcon = vc.icon;
               return (
                 <div
@@ -651,11 +659,7 @@ function FollowupsContent() {
   ) {
     if (items.length === 0) return null;
 
-    const accentColorMap: Record<string, string> = {
-      red: 'var(--danger)',
-      blue: 'var(--accent)',
-      zinc: 'var(--text-secondary)',
-      green: 'var(--success)',};
+    const accentColorMap = ACCENT_COLOR_MAP;
 
     return (
       <div>
@@ -750,7 +754,7 @@ function FollowupsContent() {
             {f.charAt(0).toUpperCase() + f.slice(1)}
             {f === 'pending' && overdue.length > 0 && (
               <span
-                style={{ marginLeft: '0.375rem', background: 'var(--danger)', color: 'var(--text-primary)', fontSize: 'var(--font-size-xs)', padding: '0 0.25rem', borderRadius: 'var(--radius-full)' }}>
+                style={dangerBadgePill}>
                 {overdue.length}</span>
             )}</button>
         ))}</div>
