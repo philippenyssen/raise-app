@@ -256,7 +256,10 @@ export default function WorkspacePage() {
                       onClick={() => selectDoc(doc)}
                       className={`w-full text-left ${isSelected ? '' : 'sidebar-link'}`}
                       style={isSelected ? docBtnActive : docBtnBase}>
-                      <div className="truncate">{doc.title}</div>
+                      <div className="flex items-center gap-2">
+                        <div className="truncate flex-1">{doc.title}</div>
+                        {isSelected && dirty && <span className="w-2 h-2 rounded-full shrink-0" style={{ background: 'var(--warning)' }} title="Unsaved changes" />}
+                      </div>
                     </button>);
                 })}</div>
             ))}
