@@ -92,6 +92,26 @@ interface AnalyticsData {
     outcomeByTier: Record<number, { active: number; passed: number; dropped: number }>;
     outcomeByType: Record<string, { active: number; passed: number; dropped: number }>;
   };
+  segmentation: {
+    segments: Array<{
+      key: string;
+      label: string;
+      description: string;
+      count: number;
+      conversionRate: number;
+      topInvestors: Array<{
+        id: string;
+        name: string;
+        tier: number;
+        type: string;
+        status: string;
+        enthusiasm: number;
+        velocityScore: number;
+        enthusiasmTrend: 'rising' | 'stable' | 'declining';
+      }>;
+    }>;
+    totalSegmented: number;
+  };
   summary: {
     totalInvestors: number;
     activeInvestors: number;
@@ -122,7 +142,7 @@ export default function AnalyticsPage() {
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
-    new Set(['funnel', 'velocity', 'risks', 'engagement', 'winloss']));
+    new Set(['funnel', 'velocity', 'risks', 'engagement', 'winloss', 'segments']));
 
   useEffect(() => { document.title = 'Raise | Process Analytics'; }, []);
   useEffect(() => { fetchAnalytics(); }, []);
@@ -181,7 +201,7 @@ export default function AnalyticsPage() {
       </div>);
   }
 
-  const { funnel, velocity, engagement, risks, winLoss, summary } = data;
+  const { funnel, velocity, engagement, risks, winLoss, segmentation, summary } = data;
   const maxStageCount = useMemo(() => Math.max(...(summary.pipelineStages?.map(s => s.count) ?? []), 1), [summary.pipelineStages]);
 
   // Pre-sort expensive Object.entries chains
@@ -788,6 +808,97 @@ export default function AnalyticsPage() {
             <p style={labelSmMuted}>
               No investors have passed or dropped yet. Win/loss insights will appear as the process progresses.</p>
           )}</div></CollapsibleSection>
+
+      {/* ═══════════════════════════════════════════════════════════
+          6. BEHAVIORAL SEGMENTS
+          ═══════════════════════════════════════════════════════════ */}
+      <CollapsibleSection
+        title="Behavioral Segments"
+        icon={<Users className="w-4 h-4" />}
+        isOpen={expandedSections.has('segments')}
+        onToggle={() => toggleSection('segments')}
+        badge={segmentation ? { text: `${segmentation.totalSegmented} investors`, color: 'var(--accent-muted)' } : undefined}>
+        <div className="space-y-6">
+          {/* Segment distribution bar */}
+          {segmentation && segmentation.segments.filter(s => s.count > 0).length > 0 && (
+            <div>
+              <div className="flex gap-0.5 h-6 rounded overflow-hidden mb-2">
+                {segmentation.segments.filter(s => s.count > 0).map((seg, i) => {
+                  const pct = segmentation.totalSegmented > 0 ? Math.max((seg.count / segmentation.totalSegmented) * 100, 3) : 0;
+                  const opacities = [1, 0.7, 0.45, 0.25, 0.12];
+                  return (
+                    <div
+                      key={seg.key}
+                      className="relative cursor-default"
+                      style={{ width: `${pct}%`, background: `rgba(27, 42, 74, ${opacities[i] ?? 0.1})`, borderRadius: 'var(--radius-sm)' }}
+                      title={`${seg.label}: ${seg.count}`}>
+                      {pct >= 12 && (
+                        <span className="absolute inset-0 flex items-center justify-center" style={{
+                          fontSize: 'var(--font-size-xs)', fontWeight: 400,
+                          color: (opacities[i] ?? 0.1) > 0.5 ? 'var(--surface-0)' : 'var(--text-secondary)',
+                        }}>{seg.count}</span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="flex flex-wrap gap-3">
+                {segmentation.segments.filter(s => s.count > 0).map(seg => (
+                  <span key={seg.key} className="flex items-center gap-1" style={labelSecondary}>
+                    <span style={{ fontWeight: 400 }}>{seg.count}</span> {seg.label}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Segment cards */}
+          {segmentation && segmentation.segments.filter(s => s.count > 0).map(seg => (
+            <div key={seg.key} className="rounded-lg" style={{ background: 'var(--surface-1)', padding: 'var(--space-4)' }}>
+              <div className="flex items-center justify-between mb-2">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-normal" style={stTextPrimary}>{seg.label}</span>
+                    <span className="tabular-nums" style={labelTertiary}>{seg.count}</span>
+                  </div>
+                  <div style={labelSmMuted}>{seg.description}</div>
+                </div>
+                <div className="text-right">
+                  <div className="tabular-nums text-sm" style={{
+                    color: seg.conversionRate >= 50 ? 'var(--success)' : seg.conversionRate >= 25 ? 'var(--warning)' : 'var(--text-muted)',
+                    fontWeight: 400,
+                  }}>{seg.conversionRate}%</div>
+                  <div style={labelSmMuted}>to engaged+</div>
+                </div>
+              </div>
+
+              {seg.topInvestors.length > 0 && (
+                <div className="space-y-1 mt-3 pt-3" style={stBorderTop}>
+                  {seg.topInvestors.map(inv => (
+                    <Link key={inv.id} href={`/investors/${inv.id}`}
+                      className="flex items-center gap-3 py-1.5 px-2 rounded transition-colors hover-surface-2"
+                      style={{ textDecoration: 'none' }}>
+                      <span style={labelTertiary}>T{inv.tier}</span>
+                      <span className="flex-1 min-w-0 truncate text-sm" style={stTextPrimary}>{inv.name}</span>
+                      <span style={labelTertiary}>{STAGE_LABELS[inv.status as keyof typeof STAGE_LABELS] ?? inv.status}</span>
+                      <span className="flex items-center gap-1 shrink-0">
+                        {inv.enthusiasmTrend === 'rising' && <TrendingUp className="w-3 h-3" style={{ color: 'var(--success)' }} />}
+                        {inv.enthusiasmTrend === 'declining' && <span style={{ color: 'var(--danger)' }}><TrendingUp className="w-3 h-3" style={{ transform: 'scaleY(-1)' }} /></span>}
+                        <EnthusiasmDots score={inv.enthusiasm} />
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+
+          {(!segmentation || segmentation.totalSegmented === 0) && (
+            <p style={labelSmMuted}>
+              No active investors to segment. Add investors and log meetings to see behavioral patterns.</p>
+          )}
+        </div>
+      </CollapsibleSection>
     </div>);
 }
 

@@ -323,14 +323,116 @@ export async function GET() {
       passStageDistribution, outcomeByTier, outcomeByType,};
 
     // ═══════════════════════════════════════════════════════════════════
-    // 6. SUMMARY STATS
+    // 6. BEHAVIORAL SEGMENTATION
+    // ═══════════════════════════════════════════════════════════════════
+
+    interface SegmentInvestor {
+      id: string;
+      name: string;
+      tier: number;
+      type: string;
+      status: string;
+      enthusiasm: number;
+      meetingCount: number;
+      daysInProcess: number;
+      velocityScore: number;
+      enthusiasmTrend: 'rising' | 'stable' | 'declining';
+    }
+
+    type SegmentLabel = 'fast_movers' | 'momentum_builders' | 'slow_burns' | 'fading_interest' | 'cold_leads';
+
+    const segments: Record<SegmentLabel, {
+      label: string;
+      description: string;
+      investors: SegmentInvestor[];
+      conversionRate: number;
+    }> = {
+      fast_movers: { label: 'Fast Movers', description: 'High velocity, advancing quickly through stages', investors: [], conversionRate: 0 },
+      momentum_builders: { label: 'Momentum Builders', description: 'Steady engagement, consistent progress', investors: [], conversionRate: 0 },
+      slow_burns: { label: 'Slow Burns', description: 'Engaged but slow stage progression', investors: [], conversionRate: 0 },
+      fading_interest: { label: 'Fading Interest', description: 'Declining enthusiasm or reduced contact', investors: [], conversionRate: 0 },
+      cold_leads: { label: 'Cold Leads', description: 'Minimal engagement, stalled pipeline', investors: [], conversionRate: 0 },
+    };
+
+    for (const inv of activeInvestors) {
+      const invMeetings = meetings.filter(m => m.investor_id === inv.id);
+      const firstContact = invMeetings.length > 0 ? new Date(invMeetings[invMeetings.length - 1].date) : new Date(inv.created_at);
+      const daysInProcess = Math.max(1, Math.round((now.getTime() - firstContact.getTime()) / 864e5));
+      const meetingCount = invMeetings.length;
+      const stageIdx = PIPELINE_ORDER.indexOf(inv.status);
+      const stagesPerDay = stageIdx / Math.max(daysInProcess, 1);
+      const meetingsPerWeek = (meetingCount / daysInProcess) * 7;
+
+      // Enthusiasm trend
+      let enthusiasmTrend: 'rising' | 'stable' | 'declining' = 'stable';
+      const mtgScores = meetingsByInvestorAll[inv.id];
+      if (mtgScores && mtgScores.length >= 2) {
+        const sorted = [...mtgScores].sort((a, b) => a.date.localeCompare(b.date));
+        const latest = sorted[sorted.length - 1].score;
+        const previous = sorted[sorted.length - 2].score;
+        if (latest > previous) enthusiasmTrend = 'rising';
+        else if (latest < previous) enthusiasmTrend = 'declining';
+      }
+
+      const velocityScore = Math.round(
+        (stagesPerDay * 500) + // stage advancement speed
+        (meetingsPerWeek * 15) + // meeting frequency
+        (inv.enthusiasm * 8) // current enthusiasm
+      );
+
+      const segInv: SegmentInvestor = {
+        id: inv.id, name: inv.name, tier: inv.tier, type: inv.type,
+        status: inv.status, enthusiasm: inv.enthusiasm,
+        meetingCount, daysInProcess, velocityScore, enthusiasmTrend,
+      };
+
+      // Classify into segment
+      if (velocityScore >= 60 && enthusiasmTrend !== 'declining' && stageIdx >= 3) {
+        segments.fast_movers.investors.push(segInv);
+      } else if (velocityScore >= 35 && enthusiasmTrend !== 'declining' && meetingCount >= 2) {
+        segments.momentum_builders.investors.push(segInv);
+      } else if (meetingCount >= 2 && daysInProcess > 21 && stageIdx <= 4) {
+        segments.slow_burns.investors.push(segInv);
+      } else if (enthusiasmTrend === 'declining' || (inv.enthusiasm <= 2 && meetingCount >= 1)) {
+        segments.fading_interest.investors.push(segInv);
+      } else {
+        segments.cold_leads.investors.push(segInv);
+      }
+    }
+
+    // Compute conversion rates (what % of each segment reaches engaged+ stages)
+    for (const seg of Object.values(segments)) {
+      if (seg.investors.length === 0) continue;
+      const advanced = seg.investors.filter(i => ['engaged', 'in_dd', 'term_sheet', 'closed'].includes(i.status)).length;
+      seg.conversionRate = Math.round((advanced / seg.investors.length) * 100);
+      seg.investors.sort((a, b) => b.velocityScore - a.velocityScore);
+    }
+
+    const segmentation = {
+      segments: Object.entries(segments).map(([key, seg]) => ({
+        key,
+        label: seg.label,
+        description: seg.description,
+        count: seg.investors.length,
+        conversionRate: seg.conversionRate,
+        topInvestors: seg.investors.slice(0, 5).map(i => ({
+          id: i.id, name: i.name, tier: i.tier, type: i.type,
+          status: i.status, enthusiasm: i.enthusiasm,
+          velocityScore: i.velocityScore, enthusiasmTrend: i.enthusiasmTrend,
+        })),
+      })),
+      totalSegmented: activeInvestors.length,
+    };
+
+    // ═══════════════════════════════════════════════════════════════════
+    // 7. SUMMARY STATS
     // ═══════════════════════════════════════════════════════════════════
 
     const summary = {
       totalInvestors: investors.length, activeInvestors: activeInvestors.length, totalMeetings: meetings.length, avgEnthusiasm: engagement.avgEnthusiasm,
       pipelineStages: PIPELINE_ORDER.map(stage => ({ stage, label: STAGE_LABELS[stage], count: funnelExact[stage] || 0 })),};
 
-    return NextResponse.json({ funnel, velocity, engagement, risks, winLoss, summary, generatedAt: new Date().toISOString() }, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
+    return NextResponse.json({ funnel, velocity, engagement, risks, winLoss, segmentation, summary, generatedAt: new Date().toISOString() }, { headers: { 'Cache-Control': 'private, max-age=30, stale-while-revalidate=60' } });
   } catch (error) {
     console.error('[ANALYTICS_GET]', error instanceof Error ? error.message : error);
     return NextResponse.json({ error: 'Failed to compute analytics' }, { status: 500 });
