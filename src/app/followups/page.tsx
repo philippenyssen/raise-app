@@ -699,7 +699,7 @@ function FollowupsContent() {
         <div>
           <h1 className="page-title">Follow-ups</h1>
           <p style={{ ...stTextMuted, fontSize: 'var(--font-size-sm)', marginTop: 'var(--space-1)' }}>
-            Automated follow-up choreography after investor meetings. Track actions, record outcomes, and learn what works.</p>
+            Post-meeting actions and outcomes across {followups.length} follow-up{followups.length !== 1 ? 's' : ''}</p>
           {investorFilter && followups.length > 0 && (
             <div className="flex items-center gap-2 mt-2">
               <span className="text-xs px-2 py-1 rounded-md" style={{ background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid var(--accent-10)' }}>
