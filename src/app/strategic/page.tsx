@@ -154,15 +154,26 @@ export default function StrategicPage() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [readinessMap, setReadinessMap] = useState<Record<string, { score: number; level: string; blockers: string[] }>>({});
 
   const fetchData = useCallback(async (silent = false) => {
     if (!silent) setLoading(true);
     else setRefreshing(true);
     setError(null);
     try {
-      const res = await cachedFetch('/api/intelligence/strategic');
-      if (!res.ok) throw new Error('Couldn\'t load strategic data — try refreshing');
-      setData(await res.json());
+      const [stratRes, readyRes] = await Promise.allSettled([
+        cachedFetch('/api/intelligence/strategic').then(r => { if (!r.ok) throw new Error('Couldn\'t load strategic data — try refreshing'); return r.json(); }),
+        cachedFetch('/api/readiness').then(r => r.ok ? r.json() : null),
+      ]);
+      if (stratRes.status === 'rejected') throw stratRes.reason;
+      setData(stratRes.value);
+      if (readyRes.status === 'fulfilled' && readyRes.value?.investors) {
+        const map: Record<string, { score: number; level: string; blockers: string[] }> = {};
+        for (const inv of readyRes.value.investors) {
+          map[inv.investorName] = { score: inv.readinessScore ?? 0, level: inv.readinessLevel ?? 'cold', blockers: inv.blockingFactors ?? [] };
+        }
+        setReadinessMap(map);
+      }
     } catch (e) {
       const msg = e instanceof Error ? e.message : 'Couldn\'t load data — try refreshing';
       setError(msg);
@@ -426,19 +437,27 @@ export default function StrategicPage() {
                     <th scope="col" className="text-left py-1.5 pr-3">Investor</th>
                     <th scope="col" className="text-left py-1.5 pr-3">Stage</th>
                     <th scope="col" className="text-right py-1.5 pr-3">Days to Close</th>
+                    <th scope="col" className="text-center py-1.5 pr-3">Readiness</th>
                     <th scope="col" className="text-left py-1.5">Confidence</th></tr></thead>
                 <tbody>
-                  {data.raiseForecast.investorForecasts.map((f) => (
+                  {data.raiseForecast.investorForecasts.map((f) => {
+                    const ready = readinessMap[f.name];
+                    return (
                     <tr key={f.name} className="table-row">
                       <td className="py-1.5 pr-3">
                         <Link href={`/dealflow?search=${encodeURIComponent(f.name)}`} style={investorLinkStyle}>{f.name}</Link>
                       </td>
                       <td className="py-1.5 pr-3" style={stTextMuted}>{f.stage}</td>
                       <td className="py-1.5 pr-3 text-right" style={daysNumericStyle}>~{f.days}d</td>
+                      <td className="py-1.5 pr-3 text-center" title={ready?.blockers?.length ? `Blockers: ${ready.blockers.join(', ')}` : undefined}>
+                        {ready ? (
+                          <span style={{ fontSize: 'var(--font-size-xs)', fontVariantNumeric: 'tabular-nums', color: ready.level === 'ready' ? 'var(--success)' : ready.level === 'progressing' ? 'var(--warning)' : 'var(--text-muted)' }}>{ready.score}</span>
+                        ) : <span style={stTextMuted}>—</span>}
+                      </td>
                       <td className="py-1.5">
                         <span style={{ fontSize: 'var(--font-size-xs)', padding: 'var(--space-0) var(--space-1)', borderRadius: 'var(--radius-sm)', ...confidenceStyle(f.confidence) }}>{f.confidence}</span>
-                      </td></tr>
-                  ))}</tbody></table></div>
+                      </td></tr>);
+                  })}</tbody></table></div>
           )}
 
           {/* Risk factors */}
