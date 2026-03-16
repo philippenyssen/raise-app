@@ -730,16 +730,19 @@ export async function deleteInvestor(id: string) {
 }
 
 // Meetings
-export async function getMeetings(investorId?: string): Promise<Meeting[]> {
+export async function getMeetings(investorId?: string, limit = 200, offset = 0): Promise<Meeting[]> {
   await ensureInitialized();
   if (investorId) {
     const result = await getClient().execute({
-      sql: 'SELECT * FROM meetings WHERE investor_id = ? ORDER BY date DESC',
-      args: [investorId],
+      sql: 'SELECT * FROM meetings WHERE investor_id = ? ORDER BY date DESC LIMIT ? OFFSET ?',
+      args: [investorId, limit, offset],
     });
     return result.rows as unknown as Meeting[];
   }
-  const result = await getClient().execute('SELECT * FROM meetings ORDER BY date DESC');
+  const result = await getClient().execute({
+    sql: 'SELECT * FROM meetings ORDER BY date DESC LIMIT ? OFFSET ?',
+    args: [limit, offset],
+  });
   return result.rows as unknown as Meeting[];
 }
 
@@ -1943,6 +1946,38 @@ export async function createObjectionRecord(data: {
     enthusiasm_at_objection: data.enthusiasm_at_objection ?? 0,
   });
   return (await genericGetById<ObjectionRecord>('objection_responses', id))!;
+}
+
+export async function createObjectionRecordsBatch(records: {
+  objection_text: string;
+  objection_topic: string;
+  investor_id?: string;
+  investor_name?: string;
+  meeting_id?: string;
+  response_text?: string;
+  effectiveness?: string;
+  enthusiasm_at_objection?: number;
+}[]): Promise<void> {
+  if (records.length === 0) return;
+  await ensureInitialized();
+  const cols = 'id, objection_text, objection_topic, investor_id, investor_name, meeting_id, response_text, effectiveness, next_meeting_enthusiasm_delta, enthusiasm_at_objection, created_at, updated_at';
+  const placeholder = '(?, ?, ?, ?, ?, ?, ?, ?, 0, ?, datetime(\'now\'), datetime(\'now\'))';
+  const placeholders = records.map(() => placeholder).join(', ');
+  const args: InValue[] = [];
+  for (const r of records) {
+    args.push(
+      crypto.randomUUID(),
+      r.objection_text,
+      r.objection_topic,
+      r.investor_id || null,
+      r.investor_name || null,
+      r.meeting_id || null,
+      r.response_text || '',
+      r.effectiveness || 'unknown',
+      r.enthusiasm_at_objection ?? 0,
+    );
+  }
+  await getClient().execute({ sql: `INSERT INTO objection_responses (${cols}) VALUES ${placeholders}`, args });
 }
 
 export async function updateObjectionResponse(id: string, response: string, effectiveness: string): Promise<void> {

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getMeetings, getMeeting, createMeeting, updateMeeting, getInvestor, processPostMeetingIntelligence, logActivity, createObjectionRecord, updateObjectionEnthusiasmDelta, generateFollowupChoreography, extractAndStoreQuestionPatterns, createTask } from '@/lib/db';
+import { getMeetings, getMeeting, createMeeting, updateMeeting, getInvestor, processPostMeetingIntelligence, logActivity, createObjectionRecordsBatch, updateObjectionEnthusiasmDelta, generateFollowupChoreography, extractAndStoreQuestionPatterns, createTask } from '@/lib/db';
 import { analyzeMeetingNotes } from '@/lib/ai';
 import { emitContextChange } from '@/lib/context-bus';
 
@@ -119,15 +119,15 @@ export async function POST(req: NextRequest) {
           await updateObjectionEnthusiasmDelta(investor_id, delta);
         }}
 
-      // Create new objection records for this meeting
-      for (const obj of objections) {
-        await createObjectionRecord({
-          objection_text: obj.text,
-          objection_topic: obj.topic || 'general',
-          investor_id,
-          investor_name,
-          meeting_id: meeting.id,});
-      }}
+      // Batch-create objection records for this meeting
+      await createObjectionRecordsBatch(objections.map(obj => ({
+        objection_text: obj.text,
+        objection_topic: obj.topic || 'general',
+        investor_id,
+        investor_name,
+        meeting_id: meeting.id,
+      })));
+    }
   } catch (err) {
     console.error('[OBJECTION_EXTRACTION]', err instanceof Error ? err.message : err);
   }
