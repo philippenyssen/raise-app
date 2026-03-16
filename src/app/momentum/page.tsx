@@ -15,6 +15,39 @@ import {
 
 const bgSurface2Sec = { background: 'var(--surface-2)', color: 'var(--text-secondary)' } as const;
 
+const TRAJECTORY_COLORS: Record<string, { bg: string; border: string; color: string }> = {
+  critical_warning:  { border: 'var(--fg-50)',  bg: 'var(--fg-10)',  color: 'var(--danger)' },
+  early_warning:     { border: 'var(--warn-50)',  bg: 'var(--fg-6)',  color: 'var(--text-secondary)' },
+  term_sheet_signal: { border: 'var(--accent-50)',  bg: 'var(--accent-10)',   color: 'var(--success)' },
+};
+const TRAJECTORY_LABELS: Record<string, string> = {
+  critical_warning: 'Critical',
+  early_warning: 'Warning',
+  term_sheet_signal: 'Signal',
+};
+
+const URGENCY_STYLES: Record<string, { bg: string; border: string; color: string }> = {
+  high:   { bg: 'var(--fg-20)',  border: 'var(--fg-40)',  color: 'var(--danger)' },
+  medium: { bg: 'var(--warn-20)',  border: 'var(--warn-40)',  color: 'var(--warning)' },
+  low:    { bg: 'var(--fg-40)',   border: 'var(--warn-40)',   color: 'var(--text-secondary)' },
+};
+const TIMING_TYPE_LABELS: Record<string, string> = {
+  competitive_tension: 'Competitive Tension',
+  engagement_gap: 'Engagement Gap',
+  dd_synchronization: 'DD Synchronization',
+};
+const TIMING_TYPE_ICON_COLORS: Record<string, string> = {
+  competitive_tension: 'var(--danger)',
+  engagement_gap: 'var(--text-secondary)',
+  dd_synchronization: 'var(--success)',
+};
+
+const NARRATIVE_STATUS_STYLES: Record<string, { bg: string; color: string; label: string }> = {
+  effective:         { bg: 'var(--accent-20)',   color: 'var(--success)',  label: 'Effective' },
+  struggling:        { bg: 'var(--fg-20)', color: 'var(--danger)',  label: 'Struggling' },
+  insufficient_data: { bg: 'var(--fg-40)',  color: 'var(--text-muted)', label: 'Low data' },
+};
+
 // ── Types ─────────────────────────────────────────────────────────────
 
 interface WeekScore { week: string; score: number; }
@@ -277,15 +310,7 @@ export default function MomentumPage() {
                 style={{ background: 'var(--surface-2)', color: 'var(--text-muted)' }}>
                 {data.trajectoryAlerts.length}</span></h3>
             {data.trajectoryAlerts.map((alert, i) => {
-              const colors: Record<string, { bg: string; border: string; color: string }> = {
-                critical_warning:  { border: 'var(--fg-50)',  bg: 'var(--fg-10)',  color: 'var(--danger)' },
-                early_warning:     { border: 'var(--warn-50)',  bg: 'var(--fg-6)',  color: 'var(--text-secondary)' },
-                term_sheet_signal: { border: 'var(--accent-50)',  bg: 'var(--accent-10)',   color: 'var(--success)' },};
-              const labels: Record<string, string> = {
-                critical_warning: 'Critical',
-                early_warning: 'Warning',
-                term_sheet_signal: 'Signal',};
-              const c = colors[alert.type] || colors.early_warning;
+              const c = TRAJECTORY_COLORS[alert.type] || TRAJECTORY_COLORS.early_warning;
               return (
                 <div
                   key={i}
@@ -293,7 +318,7 @@ export default function MomentumPage() {
                   style={{ background: c.bg, color: c.color }}>
                   <div className="flex items-center justify-between mb-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-normal ">{labels[alert.type]}</span>
+                      <span className="text-xs font-normal ">{TRAJECTORY_LABELS[alert.type]}</span>
                       <span className="text-sm font-normal" style={stTextPrimary}>{alert.investorName}</span></div>
                     <div className="flex items-center gap-3 text-xs">
                       <span>Score: {alert.currentScore}</span>
@@ -609,19 +634,7 @@ export default function MomentumPage() {
             </div>
             <div className="space-y-2">
               {data.timingSignals.map((signal, i) => {
-                const urgencyStyles: Record<string, { bg: string; border: string; color: string }> = {
-                  high:   { bg: 'var(--fg-20)',  border: 'var(--fg-40)',  color: 'var(--danger)' },
-                  medium: { bg: 'var(--warn-20)',  border: 'var(--warn-40)',  color: 'var(--warning)' },
-                  low:    { bg: 'var(--fg-40)',   border: 'var(--warn-40)',   color: 'var(--text-secondary)' },};
-                const typeLabels: Record<string, string> = {
-                  competitive_tension: 'Competitive Tension',
-                  engagement_gap: 'Engagement Gap',
-                  dd_synchronization: 'DD Synchronization',};
-                const typeIconColors: Record<string, string> = {
-                  competitive_tension: 'var(--danger)',
-                  engagement_gap: 'var(--text-secondary)',
-                  dd_synchronization: 'var(--success)',};
-                const us = urgencyStyles[signal.urgency] || urgencyStyles.low;
+                const us = URGENCY_STYLES[signal.urgency] || URGENCY_STYLES.low;
 
                 return (
                   <div
@@ -631,8 +644,8 @@ export default function MomentumPage() {
                     <div className="flex items-center gap-2 mb-1.5">
                       <span
                         className="text-xs font-normal "
-                        style={{ color: typeIconColors[signal.type] || 'var(--text-secondary)' }}>
-                        {typeLabels[signal.type] || signal.type}</span>
+                        style={{ color: TIMING_TYPE_ICON_COLORS[signal.type] || 'var(--text-secondary)' }}>
+                        {TIMING_TYPE_LABELS[signal.type] || signal.type}</span>
                       <span className="text-xs px-1.5 py-0.5 rounded font-normal" style={{ background: us.bg, color: us.color }}>{signal.urgency}</span>
                     </div>
                     <p className="text-xs mb-2" style={stTextSecondary}>{signal.description}</p>
@@ -653,11 +666,7 @@ export default function MomentumPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               {data.narrativeHealth.map((nh) => {
                 const tc = TYPE_COLORS[nh.investorType] || TYPE_COLORS.vc;
-                const statusStyles: Record<string, { bg: string; color: string; label: string }> = {
-                  effective:         { bg: 'var(--accent-20)',   color: 'var(--success)',  label: 'Effective' },
-                  struggling:        { bg: 'var(--fg-20)', color: 'var(--danger)',  label: 'Struggling' },
-                  insufficient_data: { bg: 'var(--fg-40)',  color: 'var(--text-muted)',                   label: 'Low data' },};
-                const sc = statusStyles[nh.status] || statusStyles.insufficient_data;
+                const sc = NARRATIVE_STATUS_STYLES[nh.status] || NARRATIVE_STATUS_STYLES.insufficient_data;
 
                 return (
                   <div

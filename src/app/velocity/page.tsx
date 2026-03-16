@@ -11,6 +11,12 @@ import { STATUS_LABELS, TYPE_LABELS } from '@/lib/constants';
 import { relativeTime } from '@/lib/time';
 import { cellCenter, labelMuted, labelSecondary, maxWidthCenter, stTextTertiary, trackingBg, trackingColor, velocityColor } from '@/lib/styles';
 const mbSpace2 = { marginBottom: 'var(--space-2)' } as const;
+const tierBadgeBase: React.CSSProperties = { width: '20px', height: '20px', fontSize: 'var(--font-size-xs)', flexShrink: 0 };
+const tierBadgeHigh: React.CSSProperties = { ...tierBadgeBase, background: 'var(--accent)', color: 'var(--text-primary)' };
+const tierBadgeLow: React.CSSProperties = { ...tierBadgeBase, background: 'var(--surface-3)', color: 'var(--text-secondary)' };
+const tabNumBase: React.CSSProperties = { fontSize: 'var(--font-size-sm)', fontWeight: 400, fontVariantNumeric: 'tabular-nums' };
+function daysProcessColor(days: number): string { return days > 50 ? 'var(--danger)' : days > 35 ? 'var(--warning)' : 'var(--text-secondary)'; }
+function daysStageColor(days: number): string { return days > 21 ? 'var(--danger)' : days > 14 ? 'var(--warning)' : 'var(--text-tertiary)'; }
 
 interface VelocityInvestor { investor_id: string; investor_name: string; investor_type: string; investor_tier: number; status: string; enthusiasm: number; days_in_process: number; days_in_current_stage: number; projected_close_date: string; days_to_target: number; on_track: boolean; tracking_status: 'on_track' | 'behind' | 'at_risk'; bottleneck: string; velocity_score: number; meeting_count: number; meetings_per_week: number; days_since_last_meeting: number }
 interface VelocitySummary { total_active: number; on_track: number; behind: number; at_risk: number; avg_velocity_score: number; avg_days_in_process: number; raise_days_elapsed: number; raise_target_days: number }
@@ -204,7 +210,7 @@ export default function VelocityPage() {
                         <div className="flex items-center gap-2">
                           <span
                             className="tier-badge"
-                            style={{ ...(inv.investor_tier <= 2 ? { background: 'var(--accent)', color: 'var(--text-primary)' } : { background: 'var(--surface-3)', color: 'var(--text-secondary)' }), width: '20px', height: '20px', fontSize: 'var(--font-size-xs)', flexShrink: 0 }}>
+                            style={inv.investor_tier <= 2 ? tierBadgeHigh : tierBadgeLow}>
                             {inv.investor_tier}</span>
                           <div>
                             <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)' }}>
@@ -227,13 +233,13 @@ export default function VelocityPage() {
                     {/* Days in Process */}
                     <td style={cellCenter}>
                       <span
-                        style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, fontVariantNumeric: 'tabular-nums', color: inv.days_in_process > 50 ? 'var(--danger)' : inv.days_in_process > 35 ? 'var(--warning)' : 'var(--text-secondary)' }}>
+                        style={{ ...tabNumBase, color: daysProcessColor(inv.days_in_process) }}>
                         {inv.days_in_process}d</span></td>
 
                     {/* Days in Stage */}
                     <td style={cellCenter}>
                       <span
-                        style={{ fontSize: 'var(--font-size-sm)', fontVariantNumeric: 'tabular-nums', color: inv.days_in_current_stage > 21 ? 'var(--danger)' : inv.days_in_current_stage > 14 ? 'var(--warning)' : 'var(--text-tertiary)' }}>
+                        style={{ ...tabNumBase, color: daysStageColor(inv.days_in_current_stage) }}>
                         {inv.days_in_current_stage}d</span></td>
 
                     {/* Projected Close */}

@@ -80,15 +80,15 @@ export function Sidebar() {
           if (cancelled || !Array.isArray(data)) return;
           const today = new Date().toISOString().split('T')[0];
           setOverdueCount(data.filter((f: { due_at: string; status: string }) => f.status === 'pending' && f.due_at?.split('T')[0] < today).length);})
-        .catch(() => {});
+        .catch(e => console.warn('[BADGE_FOLLOWUPS]', e instanceof Error ? e.message : e));
       cachedFetch('/api/meetings')
         .then(r => r.ok ? r.json() : [])
         .then(data => {
           if (cancelled || !Array.isArray(data)) return;
           const today = new Date().toISOString().split('T')[0];
           setTodayMeetingCount(data.filter((m: { date: string }) => m.date?.split('T')[0] === today).length);})
-        .catch(() => {});
-      cachedFetch('/api/document-flags?status=open').then(r => r.ok ? r.json() : []).then(data => { if (!cancelled && Array.isArray(data)) setDocFlagCount(data.length); }).catch(() => {});
+        .catch(e => console.warn('[BADGE_MEETINGS]', e instanceof Error ? e.message : e));
+      cachedFetch('/api/document-flags?status=open').then(r => r.ok ? r.json() : []).then(data => { if (!cancelled && Array.isArray(data)) setDocFlagCount(data.length); }).catch(e => console.warn('[BADGE_DOCFLAGS]', e instanceof Error ? e.message : e));
     }
     fetchBadges();
     const interval = setInterval(fetchBadges, 3 * MS_PER_MINUTE);
