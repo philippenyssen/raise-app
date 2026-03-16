@@ -594,3 +594,61 @@ d386638	100	100	0	pass	ceo+strategy	A11y: add scope=col to all 62 th elements ac
 dd920e8	100	100	0	pass	product+design	Add loading skeleton to meetings page + extract pipeline compareBarStyle
 606b9ac	100	100	0	pass	engineering+ai	Perf: extract 6 static styles from forecast (progressBar/legend) and followups (draftBoxes)
 606	9c81b75	100	100	0	pass	workflow+data	Data freshness timestamps: focus, investors, pipeline, win-loss
+607	0fe85ad	100	100	0	pass	copy+competitive	Standardize error copy: Could not→Couldn't, remove Please
+608	7157c56	100	100	0	pass	ops+reliability	Fix silent catch, retry error handling, forecast style extraction
+609	a93a76d	100	100	0	pass	ceo+strategy	R shortcut for meeting forms, momentum style extraction
+610	3fd14cd	100	100	0	pass	product+design	Replace hardcoded px/rem with design tokens: forecast, settings, acceleration
+611	fe38d5a	100	100	0	pass	engineering+ai	Extract skeleton/dot styles from .map() loops, fix console format
+612	7a25c6f	100	100	0	pass	workflow+data	Aria-labels on form controls, fix hardcoded borderRadius in forecast
+613	2f02b56	100	100	0	pass	copy+competitive	Replace hardcoded px with design tokens: velocity, win-loss, fomo, meetings
+9a81f3a	100	100	0	✓	ops+reliability	Design tokens in enrichment/acceleration/intelligence + async safety in investor enrichment
+8e8a793	100	100	0	✓	ceo+strategy	Design tokens: strategic (5 padding + marginTop), focus (2 borderRadius), today (2 borderRadius), velocity (3 borderRadius)
+aefe910	100	100	0	✓	product+design	Design tokens: dashboard (4 borderRadius + 2 margins), meetings (7 badge paddings + 2 margins), focus (marginTop + 2 borderRadius)
+6a4fd92	100	100	0	✓	engineering+ai	Design tokens: objections (3 paddings), win-loss (margin + borderRadius), fomo (4 borderRadius), enrichment (padding + code borderRadius)
+e73ca7c	100	100	0	✓	workflow+data	Design tokens: today (7 paddings), network (5 paddings + margin), deal-heat (padding + margin), competitive (padding), compare (padding + margin)
+192e02f	100	100	0	✓	copy+competitive	Design tokens: forecast (2 paddings), pipeline (2 paddings), terms (padding + margin), compare (padding)
+185b929	100	100	0	✓	ops+reliability	Design tokens: investor detail (5 paddings), global-error (gap + 2 paddings)
+f6ac2c3	100	100	0	✓	ceo+strategy	Design tokens: focus page (13 hardcoded values: margins, paddings)
+bf57a62	100	100	0	✓	product+design	Design tokens: meetings (7 margins + padding), win-loss (8 margins)
+9ffe84e	100	100	0	✓	engineering+ai	Design tokens: fomo (7 margins), dealflow (1 margin), enrichment (3 margins)
+90aef21	100	100	0	✓	workflow+data	Design tokens: focus (8 values), pipeline (margin), intelligence (3 paddings), settings (kbd padding)
+bab2cc7	100	100	0	✓	copy+competitive	Design tokens: today (6 margins), acceleration (marginBottom + padding)
+696f48b	100	100	0	✓	ops+reliability	Design tokens: followups (2 margins), competitive (6 margins), deal-heat (2 margins)
+72dc603	100	100	0	pass	ceo+strategy	Convert 20 hardcoded spacing values to design tokens in today + network pages
+693c660	100	100	0	pass	product+design	Convert 22 hardcoded rem/px spacing values to design tokens in pipeline + followups + data-room
+4ed93ee	100	100	0	pass	engineering	Convert 30+ hardcoded spacing values to design tokens across 18 files (margins + rem paddings + error pages)
+ebd8374	100	100	0	pass	ai+intelligence	Convert remaining rem padding/margin values in pipeline + investors pages (11 values)
+77e0cb6	100	100	0	pass	data+enrichment	Convert hardcoded borderRadius in 7 loading skeletons (24 values: 9999→radius-full, 3/2→radius-sm)
+2d841b8	100	100	0	pass	workflow+automation	Convert last 5 hardcoded spacing/borderRadius values (stress-test, network, compare)
+e02820e	100	100	0	pass	copywriting	Extract inline dimension styles from .map() to module-level consts in focus/page.tsx
+e02820e	100	100	0	pass	competitive	Audit: codebase clean — zero any types, zero unhandled promises, zero debug console.logs
+378c858	100	100	0	pass	CEO+Strategy	a11y: ARIA attributes, label-input linkage (15 inputs), keyboard nav overlay, aria-expanded toggles
+022bbf3	100	100	0	pass	Product+Design	perf: extract 12+ inline style objects from map loops to module-level constants (intelligence, meetings/prep)
+06950ba	100	100	0	pass	Engineering	a11y: aria-expanded on all expandable sections (6 pages), keyboard nav on data-room rows
+3963186	100	100	0	pass	AI+Intelligence	perf: 14 inline ternary styles extracted to module-level constants (dealflow, momentum)
+818df07	100	100	0	pass	Data+Enrichment	perf: extract inline ternary styles from map loops (compare tier badges, acceleration urgency)
+dd86525	100	100	0	pass	Workflow+Automation	perf: extract static inline styles from map loops (4 files, 8 constants)
+3567d8a	100	100	0	pass	Copywriting	a11y: aria-label on icon-only links (momentum, forecast)
+7b74270	100	100	0	pass	Competitive	a11y: scope=col on all table headers (WCAG 1.3.1), aria-label on comparison table
+76e978f	100	100	0	✓	ops	a11y: aria-label on 14 tables + scope=col on 4 headers + 7 inline style extractions
+b9784b7	100	100	0	✓	ceo+strategy	feat: last-updated timestamps on timeline+skills; perf: 12 inline style extractions deal-heat+today
+b44665f	100	100	0	✓	product+design	perf: extract 5 inline styles pipeline+skills
+c7cb13e	100	100	0	✓	engineering	perf: 2 term-compare style extractions; a11y: 4 backlog aria-labels
+0179e71	100	100	0	✓	ai+intelligence	perf: 9 inline style extractions velocity+strategic
+dccad20	100	100	0	✓	data+enrichment	a11y: role=alert on 7 error displays; perf: 5 followups skeleton extractions
+0bbc662	100	100	0	pass	Workflow+Automation	a11y: aria-label on all 31 select elements across 13 pages (WCAG 2.1 complete)
+07975a5	100	100	0	pass	Copy+Messaging	perf: 14 inline style extractions in focus/page.tsx + copy: meetings/analysis empty state improvements
+3b2ab85	100	100	0	pass	Competitive	perf: 13 inline style extractions in dealflow/page.tsx (header, table, legend, states)
+9ac5791	100	100	0	pass	Ops+Reliability	ux: data freshness timestamps on intelligence, enrichment, analysis (15 pages now have loadedAt)
+1fcb0d3	100	100	0	pass	CEO+Strategy	perf: 15 inline style extractions in network/page.tsx + a11y: aria-expanded on 2 collapsibles
+37ce598	100	100	0	pass	Product+Design	perf: extract 11 module-level style constants from model + workspace pages (4 model, 7 workspace incl .map() callbacks)
+870d295	100	100	0	pass	Engineering	perf: extract 10 module-level style constants from reports + objections (.map() GC reduction)
+425f1d5	100	100	0	pass	AI+Intelligence	perf: extract 13 module-level style constants from data-room + timeline (5x input dedup)
+f5c50d2	100	100	0	pass	Data+Enrichment	perf: extract 10 style constants from meetings/new+prep+investor detail (5x form dedup, 9-prop CTA)
+db4500e	100	100	0	pass	Workflow+Automation	perf: extract 6 style constants from intelligence + stress-test (6-prop link styles in .map())
+4a38159	100	100	0	pass	Copy+Messaging	copy: 3 actionable empty states (stress-test, data-room) + perf: 5 win-loss style constants
+658cae0	100	100	0	✓	Competitive	Extract 4 module-level constants in fomo page: filterTabActive/filterTabInactive, pressureCardStyle, eventCardStyle
+52d6c02	100	100	0	✓	Ops	Add res.ok guard on documents version history fetch to prevent silent JSON parse failure
+8909886	100	100	0	✓	CEO/Strategy	Fix misleading compare empty state title, add error description to acceleration error state
+664	2026-03-16T12:04:57Z	fix	fix: React error #310 — moved useMemo before early returns in momentum/forecast/acceleration	100	618297e	Performance+Stability
+665	2026-03-16T12:07:12Z	fix	fix: React error #310 — moved useMemo before early returns in today/focus/fomo	100	10c78e2	Performance+Stability
