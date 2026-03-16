@@ -161,12 +161,12 @@ function TermSheetReadyCard({ investor }: { investor: InvestorSummary }) {
         <span style={{ fontSize: 'var(--font-size-xs)', ...(MOMENTUM_STYLES[investor.momentum] ?? {}) }}>
           {MOMENTUM_LABELS[investor.momentum]}</span>
         <EnthusiasmDots value={investor.enthusiasm} /></div>
-      <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginBottom: '12px' }}>{investor.reason}</p>
+      <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', marginBottom: 'var(--space-3)' }}>{investor.reason}</p>
       <Link
         href={`/investors/${investor.investorId}`}
         className="inline-flex items-center gap-1.5 btn-surface"
         style={{
-          padding: '6px 12px',
+          padding: 'var(--space-1) var(--space-3)',
           background: 'var(--accent-muted)',
           border: '1px solid var(--accent-muted)',
           borderRadius: 'var(--radius-md)',

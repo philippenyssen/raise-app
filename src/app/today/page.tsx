@@ -21,16 +21,16 @@ const linkCardPad = { padding: 'var(--space-4)', textDecoration: 'none' as const
 const emptyStatePad = { padding: 'var(--space-6)', textAlign: 'center' as const } as const;
 const emptyStateIcon = { display: 'flex', justifyContent: 'center', marginBottom: 'var(--space-3)' } as const;
 const textBodySm = { ...stFontSm, fontWeight: 400, color: 'var(--text-primary)', lineHeight: 1.4 } as const;
-const labelTertiaryLine = { ...labelTertiary, marginTop: '2px', lineHeight: 1.5 } as const;
+const labelTertiaryLine = { ...labelTertiary, marginTop: 'var(--space-0)', lineHeight: 1.5 } as const;
 const flexIcon = { display: 'flex' } as const;
 const gridGap3 = { gap: 'var(--space-3)' } as const;
 const metricCardPad: React.CSSProperties = { padding: 'var(--space-3) var(--space-4)' };
-const metricValue: React.CSSProperties = { fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)', marginTop: 4 };
+const metricValue: React.CSSProperties = { fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)', marginTop: 'var(--space-1)' };
 const overdueInvLink = { fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, textDecoration: 'none' } as const;
 const overdueBadge = { fontSize: 'var(--font-size-xs)', padding: 'var(--space-0) var(--space-1)', borderRadius: 'var(--radius-sm)', background: 'var(--surface-1)', color: 'var(--text-tertiary)' } as const;
 const overdueDanger = { fontSize: 'var(--font-size-xs)', color: 'var(--danger)', fontWeight: 400 } as const;
 const enthusiasmDotBase = { width: '5px', height: '5px', borderRadius: '50%', display: 'inline-block' } as const;
-const overdueDesc = { fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', marginTop: '1px' } as const;
+const overdueDesc = { fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', marginTop: 'var(--space-0)' } as const;
 const overdueDoneBtn = { background: 'var(--surface-0)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)', fontSize: 'var(--font-size-xs)', padding: 'var(--space-1) var(--space-2)' } as const;
 const emptyStateText = { ...stFontSm, color: 'var(--text-secondary)', fontWeight: 400 } as const;
 
@@ -553,9 +553,9 @@ export default function TodayPage() {
         <div>
           <h1 className="page-title">
             {data.greeting}</h1>
-          <p style={{ ...stFontSm, color: 'var(--text-tertiary)', marginTop: '2px' }}>{fmtDateFull(new Date())}</p>
+          <p style={{ ...stFontSm, color: 'var(--text-tertiary)', marginTop: 'var(--space-0)' }}>{fmtDateFull(new Date())}</p>
 
-          <div className="flex items-center gap-2" style={{ marginTop: '6px' }}>
+          <div className="flex items-center gap-2" style={{ marginTop: 'var(--space-1)' }}>
             <span style={{ ...stFontXs, color: stalenessMinutes >= 5 ? 'var(--warning)' : 'var(--text-muted)', transition: 'color 300ms ease' }}>{stalenessMinutes < 1 ? 'Updated just now' : `Updated ${stalenessMinutes}m ago`}</span>
             <button onClick={() => fetchBriefing(true)} disabled={refreshing} aria-label="Refresh briefing" title="Refresh briefing" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '20px', height: '20px', borderRadius: 'var(--radius-sm)', border: 'none', background: 'transparent', cursor: refreshing ? 'default' : 'pointer', color: stalenessMinutes >= 5 ? 'var(--warning)' : 'var(--text-muted)', opacity: refreshing ? 0.5 : 1, transition: 'color 300ms ease, opacity 150ms ease', padding: 0 }}>
               <span style={{ ...flexIcon, animation: refreshing ? 'spin 1s linear infinite' : 'none' }}>
@@ -836,7 +836,7 @@ export default function TodayPage() {
                 {momentumConfig.label}</p>
               <span style={{ ...stFontXs, padding: 'var(--space-0) var(--space-1)', borderRadius: 'var(--radius-sm)', background: momentumConfig.bg, border: `1px solid ${momentumConfig.border}`, color: momentumConfig.color, fontWeight: 400 }}>Raise Momentum</span>
             </div>
-            <p style={{ ...stFontXs, color: 'var(--text-secondary)', marginTop: '2px', lineHeight: 1.5 }}>{data.momentumChange}</p>
+            <p style={{ ...stFontXs, color: 'var(--text-secondary)', marginTop: 'var(--space-0)', lineHeight: 1.5 }}>{data.momentumChange}</p>
           </div>
 
           <Link
