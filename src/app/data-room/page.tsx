@@ -554,9 +554,13 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
       className="transition-colors"
       style={{ borderRadius: 'var(--radius-md)', transition: 'border-color 150ms ease' }}>
       <div
+        role="button"
+        tabIndex={0}
+        aria-expanded={expanded}
         className="flex items-center gap-3 cursor-pointer"
         style={{ padding: 'var(--space-3) var(--space-4)' }}
-        onClick={onToggle}>
+        onClick={onToggle}
+        onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onToggle(); } }}>
         {expanded
           ? <ChevronDown className="w-4 h-4 shrink-0" style={stTextMuted} />
           : <ChevronRight className="w-4 h-4 shrink-0" style={stTextMuted} />
@@ -704,7 +708,7 @@ function FileRow({ file, expanded, onToggle, onDelete }: {
   return (
     <div
       style={{ borderRadius: 'var(--radius-md)' }}>
-      <div className="flex items-center cursor-pointer" style={{ padding: 'var(--space-3) var(--space-4)' }} onClick={onToggle}>
+      <div role="button" tabIndex={0} aria-expanded={expanded} className="flex items-center cursor-pointer" style={{ padding: 'var(--space-3) var(--space-4)' }} onClick={onToggle} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onToggle(); } }}>
         {expanded
           ? <ChevronDown className="w-4 h-4 shrink-0" style={stTextMuted} />
           : <ChevronRight className="w-4 h-4 shrink-0" style={stTextMuted} />

@@ -668,6 +668,7 @@ function FollowupsContent() {
       <div>
         <button
           onClick={() => setExpanded(!expanded)}
+          aria-expanded={expanded}
           className="w-full flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             {accent === 'red' && <AlertTriangle className="w-4 h-4" style={stTextPrimary} />}

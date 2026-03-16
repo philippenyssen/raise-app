@@ -202,6 +202,7 @@ export default function NetworkPage() {
               <button
                 className="w-full flex items-center justify-between p-4"
                 onClick={() => toggleCard(cascade.keystoneId)}
+                aria-expanded={expandedCards.has(cascade.keystoneId)}
                 style={{ cursor: 'pointer', background: 'transparent', border: 'none', textAlign: 'left' }}>
                 <div className="flex items-center gap-3 min-w-0">
                   <div style={keystoneAvatar}>

@@ -215,6 +215,7 @@ function DeprioritizeSection({ investors }: { investors: InvestorSummary[] }) {
       style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
       <button
         onClick={() => setExpanded(!expanded)}
+        aria-expanded={expanded}
         className="w-full flex items-center justify-between p-3 text-left hover-row"
         style={{
           border: 'none',

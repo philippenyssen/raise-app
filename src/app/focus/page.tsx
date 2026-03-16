@@ -100,6 +100,8 @@ function ScoringBreakdown({ dimensions }: { dimensions: ScoreDimension[] }) {
       <div className="flex items-center gap-1">
         <button
           onClick={e => { e.stopPropagation(); setExpanded(!expanded); }}
+          aria-expanded={expanded}
+          aria-label="Toggle scoring breakdown"
           className="flex items-center gap-1.5 shrink-0"
           style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
           <span style={stTextMuted}><BarChart3 className="w-3 h-3" /></span>

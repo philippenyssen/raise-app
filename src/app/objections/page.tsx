@@ -390,6 +390,7 @@ export default function ObjectionsPage() {
                     {/* Topic header */}
                     <button
                       onClick={() => toggleTopic(group.topic)}
+                      aria-expanded={isExpanded}
                       className="w-full flex items-center justify-between p-4 transition-all"
                       style={{ ...color.bg }}>
                       <div className="flex items-center gap-3">
