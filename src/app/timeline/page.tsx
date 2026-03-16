@@ -11,6 +11,27 @@ import { useToast } from '@/components/toast';
 import Link from 'next/link';
 import { stAccent, stTextMuted, stTextPrimary, stTextSecondary } from '@/lib/styles';
 
+function taskRowStyle(status: string, isOverdue: boolean): React.CSSProperties {
+  if (status === 'done') return {
+    border: '1px solid color-mix(in srgb, var(--border-subtle) 30%, transparent)',
+    backgroundColor: 'color-mix(in srgb, var(--surface-1) 20%, transparent)',
+    opacity: 0.6,
+  };
+  if (isOverdue) return {
+    border: '1px solid color-mix(in srgb, var(--danger) 30%, transparent)',
+    backgroundColor: 'color-mix(in srgb, var(--danger) 5%, transparent)',
+    opacity: 1,
+  };
+  return { border: '1px solid var(--border-subtle)', backgroundColor: 'transparent', opacity: 1 };
+}
+
+function statusIconColor(status: string): string {
+  if (status === 'done') return 'var(--success)';
+  if (status === 'blocked') return 'var(--danger)';
+  if (status === 'in_progress') return 'var(--accent)';
+  return 'var(--text-muted)';
+}
+
 const PHASE_LABELS: Record<RaisePhase, string> = {
   preparation: 'Preparation',
   outreach: 'Outreach',
@@ -309,27 +330,11 @@ export default function TimelinePage() {
                       <div
                         key={task.id}
                         className={`flex items-center gap-3 px-3 py-2.5 rounded-lg ${task.status !== 'done' && !isOverdue ? 'task-row-hover' : ''}`}
-                        style={{
-                          border: task.status === 'done'
-                            ? '1px solid color-mix(in srgb, var(--border-subtle) 30%, transparent)'
-                            : isOverdue
-                            ? '1px solid color-mix(in srgb, var(--danger) 30%, transparent)'
-                            : '1px solid var(--border-subtle)',
-                          backgroundColor: task.status === 'done'
-                            ? 'color-mix(in srgb, var(--surface-1) 20%, transparent)'
-                            : isOverdue
-                            ? 'color-mix(in srgb, var(--danger) 5%, transparent)'
-                            : 'transparent',
-                          opacity: task.status === 'done' ? 0.6 : 1, }}>
+                        style={taskRowStyle(task.status, !!isOverdue)}>
                         <button onClick={() => toggleTask(task)} className="shrink-0">
                           <StatusIcon
                             className="w-4 h-4"
-                            style={{
-                              color: task.status === 'done' ? 'var(--success)'
-                                : task.status === 'blocked' ? 'var(--danger)'
-                                : task.status === 'in_progress' ? 'var(--accent)'
-                                : 'var(--text-muted)',
-                            }} /></button>
+                            style={{ color: statusIconColor(task.status) }} /></button>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
                             <span
