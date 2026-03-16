@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
 import { Shield, ChevronDown, ChevronRight, Calendar, Users, Hash } from 'lucide-react';
 import { useToast } from '@/components/toast';
@@ -54,9 +54,11 @@ export default function CompetitivePage() {
 
   const handleFilter = () => { fetchData(); };
 
-  const totalMentions = data?.competitors.reduce((s, c) => s + c.mention_count, 0) ?? 0;
-  const uniqueCompetitors = data?.competitors.length ?? 0;
-  const topCompetitor = data?.competitors[0]?.name ?? '-';
+  const { totalMentions, uniqueCompetitors, topCompetitor } = useMemo(() => ({
+    totalMentions: data?.competitors.reduce((s, c) => s + c.mention_count, 0) ?? 0,
+    uniqueCompetitors: data?.competitors.length ?? 0,
+    topCompetitor: data?.competitors[0]?.name ?? '-',
+  }), [data?.competitors]);
 
   return (
     <div className="page-content space-y-6">
