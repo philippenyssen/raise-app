@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { cachedFetch } from '@/lib/cache';
 import {
   CheckCircle2, AlertTriangle, XCircle, Shield, RefreshCw,
@@ -80,6 +80,10 @@ export default function HealthPage() {
   }, []);
 
   const score = Object.values(convergence).filter(Boolean).length;
+  const stageOrder = ['identified', 'contacted', 'nda_signed', 'meeting_scheduled', 'met', 'engaged', 'in_dd', 'term_sheet', 'closed'];
+  const sortedTimeInStage = useMemo(() =>
+    data?.timeInStage ? Object.entries(data.timeInStage).filter(([s]) => !['passed', 'dropped'].includes(s)).sort((a, b) => stageOrder.indexOf(a[0]) - stageOrder.indexOf(b[0])) : [],
+    [data?.timeInStage]);
 
   if (healthError) return (
     <div className="page-content space-y-6 text-center py-12">
@@ -180,13 +184,7 @@ export default function HealthPage() {
         <div className="rounded-xl p-6">
           <h2 className="text-sm font-normal mb-4" style={stTextTertiary}>Avg time in stage (days)</h2>
           <div className="grid grid-cols-3 md:grid-cols-5 gap-3">
-            {Object.entries(data.timeInStage)
-              .filter(([s]) => !['passed', 'dropped'].includes(s))
-              .sort((a, b) => {
-                const order = ['identified', 'contacted', 'nda_signed', 'meeting_scheduled', 'met', 'engaged', 'in_dd', 'term_sheet', 'closed'];
-                return order.indexOf(a[0]) - order.indexOf(b[0]);
-              })
-              .map(([status, { avg, count }]) => {
+            {sortedTimeInStage.map(([status, { avg, count }]) => {
                 const isBottleneck = avg >= 14 && count >= 2;
                 return (
                   <div key={status} className="rounded-lg p-3 text-center" style={{ backgroundColor: isBottleneck ? 'var(--warning-muted)' : 'var(--surface-1)' }}>

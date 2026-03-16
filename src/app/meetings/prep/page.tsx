@@ -320,6 +320,17 @@ function MeetingPrepContent() {
     return points;
   }, [latestMeeting, unresolvedObjections, engagementSignals, portfolioConflicts, pendingTasks, enthusiasmTrend, investor]);
 
+  const sortedTalkingPoints = useMemo(() => {
+    const order: Record<string, number> = { high: 0, medium: 1, low: 2 };
+    return [...talkingPoints].sort((a, b) => order[a.priority] - order[b.priority]);
+  }, [talkingPoints]);
+
+  const activeInvestors = useMemo(() => {
+    const active = investors.filter(i => !['passed', 'dropped', 'closed', 'identified'].includes(i.status));
+    return [...active].sort((a, b) => { if (a.tier !== b.tier) return a.tier - b.tier; return (b.enthusiasm ?? 0) - (a.enthusiasm ?? 0); });
+  }, [investors]);
+  const suggestedInvestors = useMemo(() => activeInvestors.slice(0, 6), [activeInvestors]);
+
   // ---- print handler ----
   function handlePrint() {
     window.print();
@@ -394,13 +405,7 @@ function MeetingPrepContent() {
 
         {/* No investor selected — smart suggestions */}
         {!selectedId && !loading && investors.length > 0 && (() => {
-          // Prioritize: active investors sorted by tier then enthusiasm descending
-          const active = investors.filter(i =>
-            !['passed', 'dropped', 'closed', 'identified'].includes(i.status));
-          const byPriority = [...active].sort((a, b) => {
-            if (a.tier !== b.tier) return a.tier - b.tier;
-            return (b.enthusiasm ?? 0) - (a.enthusiasm ?? 0);});
-          const suggested = byPriority.slice(0, 6);
+          const suggested = suggestedInvestors;
 
           return (
             <div className="space-y-4">
@@ -447,9 +452,9 @@ function MeetingPrepContent() {
                         <ChevronRight className="w-3.5 h-3.5 shrink-0" style={stTextMuted} />
                       </button>);
                   })}</div>
-                {active.length > 6 && (
+                {activeInvestors.length > 6 && (
                   <p className="text-xs mt-3 text-center" style={stTextMuted}>
-                    + {active.length - 6} more in pipeline — use the dropdown above to search</p>
+                    + {activeInvestors.length - 6} more in pipeline — use the dropdown above to search</p>
                 )}</div>
             </div>);
         })()}
@@ -729,11 +734,7 @@ function MeetingPrepContent() {
                   <span style={stTextTertiary}><Zap className="w-4 h-4" /></span>
                   Suggested Talking Points</h2>
                 <div className="space-y-2.5">
-                  {talkingPoints
-                    .sort((a, b) => {
-                      const order = { high: 0, medium: 1, low: 2 };
-                      return order[a.priority] - order[b.priority];})
-                    .map((tp, i) => (
+                  {sortedTalkingPoints.map((tp, i) => (
                     <div key={i} className="flex items-start gap-3 text-sm">
                       <span className="shrink-0 mt-0.5 w-2 h-2 rounded-full" style={{
                         background: tp.priority === 'high' ? 'var(--danger)' :

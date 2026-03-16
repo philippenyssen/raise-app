@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 import {
   Globe, TrendingUp, Shield, Search, Plus, Trash2, RefreshCw,
   Building2, DollarSign, Target, ChevronDown, ChevronRight, Loader2, BookOpen,
@@ -54,6 +54,9 @@ export default function IntelligencePage() {
     } catch { toast('Couldn\'t load intelligence data — refresh to retry', 'error'); }
     setLoading(false);
   }, []);
+
+  const highThreatCount = useMemo(() => competitors.filter(c => c.threat_level === 'high' || c.threat_level === 'critical').length, [competitors]);
+  const sectorCount = useMemo(() => new Set(deals.map(d => d.sector).filter(Boolean)).size, [deals]);
 
   useEffect(() => { document.title = 'Raise | Intelligence'; }, []);
   useEffect(() => { fetchAll(); }, [fetchAll]);
@@ -432,10 +435,8 @@ export default function IntelligencePage() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 card-stagger">
         <StatCard icon={TrendingUp} label="Avg. Round Size" value={avgRoundSize(deals)} />
         <StatCard icon={DollarSign} label="Avg. Valuation" value={avgValuation(deals)} />
-        <StatCard icon={Shield} label="High Threats" value={competitors.filter(c => c.threat_level === 'high' || c.threat_level === 'critical').length}
-          />
-        <StatCard icon={Target} label="Sector Coverage" value={new Set(deals.map(d => d.sector).filter(Boolean)).size + ' sectors'}
-          /></div>
+        <StatCard icon={Shield} label="High Threats" value={highThreatCount} />
+        <StatCard icon={Target} label="Sector Coverage" value={sectorCount + ' sectors'} /></div>
 
       <ConfirmModal
         open={!!deleteTarget}
