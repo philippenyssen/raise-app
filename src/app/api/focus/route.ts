@@ -320,5 +320,5 @@ export async function GET() {
       generatedAt: new Date().toISOString(),}, { headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=30' } });
   } catch (error) {
     console.error('[FOCUS_GET]', error instanceof Error ? error.message : error);
-    return NextResponse.json({ error: 'Failed to compute focus data' }, { status: 500 });
+    return NextResponse.json({ error: 'Couldn\'t analyze your investor data — check your connection and refresh' }, { status: 500 });
   }}

@@ -320,7 +320,7 @@ export default function PipelinePage() {
   if (fetchError && investors.length === 0) {
     return (
       <div className="page-content flex items-center justify-center" style={{ minHeight: '400px' }}>
-        <EmptyState icon={Users} title="Couldn\'t load pipeline" description={fetchError} action={{ label: 'Retry', onClick: fetchInvestors }} />
+        <EmptyState icon={Users} title="Pipeline temporarily unavailable" description="Check your connection and try again. If this persists, the database may be warming up." action={{ label: 'Reload Pipeline', onClick: fetchInvestors }} />
       </div>);
   }
 
