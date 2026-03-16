@@ -51,7 +51,7 @@ export default function IntelligencePage() {
       setDeals(data.deals || []);
       setCompetitors(data.competitors || []);
       setBriefs(data.briefs || []);
-    } catch { toast('Couldn\'t load intelligence data — refresh to retry', 'error'); }
+    } catch (e) { console.warn('[INTEL_FETCH]', e instanceof Error ? e.message : e); toast('Couldn\'t load intelligence data — refresh to retry', 'error'); }
     setLoading(false);
   }, []);
 
@@ -110,7 +110,8 @@ export default function IntelligencePage() {
       const res = await fetch(`/api/intelligence?type=${target.type}&id=${target.id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Failed');
       toast(`Deleted ${target.name}`, 'warning');
-    } catch {
+    } catch (e) {
+      console.warn('[INTEL_DELETE]', e instanceof Error ? e.message : e);
       toast('Couldn\'t delete — restoring item', 'error');
       fetchAll();
     } finally { setDeleting(false); }
@@ -131,7 +132,7 @@ export default function IntelligencePage() {
       toast('Deal added');
       setShowAddDeal(false);
       fetchAll();
-    } catch { toast('Couldn\'t add deal — company name and amount are required', 'error'); }
+    } catch (e) { console.warn('[INTEL_ADD_DEAL]', e instanceof Error ? e.message : e); toast('Couldn\'t add deal — company name and amount are required', 'error'); }
     setSubmitting(false);
   }
 
@@ -150,7 +151,7 @@ export default function IntelligencePage() {
       toast('Competitor added');
       setShowAddComp(false);
       fetchAll();
-    } catch { toast('Couldn\'t add competitor — name is required', 'error'); }
+    } catch (e) { console.warn('[INTEL_ADD_COMP]', e instanceof Error ? e.message : e); toast('Couldn\'t add competitor — name is required', 'error'); }
     setSubmitting(false);
   }
 
@@ -266,7 +267,7 @@ export default function IntelligencePage() {
           )}
 
           {deals.length === 0 ? (
-            <EmptyState message="No market deals tracked yet. Add manually or use AI Research to scan the market." />
+            <EmptyState message="Track competing fundraises to benchmark valuations, timelines, and investor overlap. Add manually or use AI Research above." />
           ) : (
             <div className="rounded-xl overflow-hidden">
               <table className="w-full text-sm">
@@ -334,7 +335,7 @@ export default function IntelligencePage() {
           )}
 
           {competitors.length === 0 ? (
-            <EmptyState message="No competitors tracked yet. Add manually or use AI Research." />
+            <EmptyState message="Monitor competitors to anticipate investor questions. Add key players or use AI Research above." />
           ) : (
             <div className="space-y-3">
               {competitors.map(c => {
@@ -380,7 +381,7 @@ export default function IntelligencePage() {
       {tab === 'briefs' && (
         <div className="space-y-3">
           {briefs.length === 0 ? (
-            <EmptyState message="No research briefs yet. Use the AI Research bar above to generate intelligence." />
+            <EmptyState message="Generate investor dossiers, market analysis, and competitive briefs. Type a company or topic in the Research bar above." />
           ) : (
             briefs.map(b => {
               const briefStyle = BRIEF_TYPE_STYLES[b.brief_type] || { background: 'var(--surface-2)', color: 'var(--text-tertiary)' };

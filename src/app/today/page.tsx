@@ -26,6 +26,11 @@ const flexIcon = { display: 'flex' } as const;
 const gridGap3 = { gap: 'var(--space-3)' } as const;
 const metricCardPad: React.CSSProperties = { padding: 'var(--space-3) var(--space-4)' };
 const metricValue: React.CSSProperties = { fontSize: 'var(--font-size-xl)', fontWeight: 300, color: 'var(--text-primary)', marginTop: 4 };
+const overdueInvLink = { fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, textDecoration: 'none' } as const;
+const overdueBadge = { fontSize: 'var(--font-size-xs)', padding: '1px 5px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-1)', color: 'var(--text-tertiary)' } as const;
+const overdueDanger = { fontSize: 'var(--font-size-xs)', color: 'var(--danger)', fontWeight: 400 } as const;
+const overdueDesc = { fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', marginTop: '1px' } as const;
+const overdueDoneBtn = { background: 'var(--surface-0)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)', fontSize: 'var(--font-size-xs)', padding: '3px 10px' } as const;
 
 // ---------------------------------------------------------------------------
 // Types — match the updated /api/briefing response
@@ -635,12 +640,12 @@ export default function TodayPage() {
                 <div key={fu.id} className="flex items-center gap-3" style={{ padding: 'var(--space-2) 0', opacity: isProcessing ? 0.5 : 1, transition: 'opacity 150ms' }}>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <Link href={`/investors/${fu.investor_id}`} style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, textDecoration: 'none' }}>{fu.investor_name}</Link>
-                      <span style={{ fontSize: 'var(--font-size-xs)', padding: '1px 5px', borderRadius: 'var(--radius-sm)', background: 'var(--surface-1)', color: 'var(--text-tertiary)' }}>{fu.action_type.replace(/_/g, ' ')}</span>
-                      <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', fontWeight: 400 }}>{daysOver}d overdue</span></div>
-                    <p className="truncate" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', marginTop: '1px' }}>{fu.description}</p>
+                      <Link href={`/investors/${fu.investor_id}`} style={overdueInvLink}>{fu.investor_name}</Link>
+                      <span style={overdueBadge}>{fu.action_type.replace(/_/g, ' ')}</span>
+                      <span style={overdueDanger}>{daysOver}d overdue</span></div>
+                    <p className="truncate" style={overdueDesc}>{fu.description}</p>
                   </div>
-                  <button onClick={() => handleQuickComplete(fu.id)} disabled={isProcessing} className="btn btn-sm shrink-0" style={{ background: 'var(--surface-0)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)', fontSize: 'var(--font-size-xs)', padding: '3px 10px' }}>
+                  <button onClick={() => handleQuickComplete(fu.id)} disabled={isProcessing} className="btn btn-sm shrink-0" style={overdueDoneBtn}>
                     Mark Done</button>
                 </div>);
             })}</div></div>
