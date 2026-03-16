@@ -312,7 +312,7 @@ export default function ComparePage() {
           style={{ borderRadius: 'var(--radius-xl)' }}>
           <BarChart3 className="w-10 h-10 mx-auto mb-3" style={stTextMuted} />
           <div style={{ ...stTextMuted, fontSize: 'var(--font-size-sm)' }}>
-            {selectedIds.length < 2 ? 'Select at least 2 investors from the dropdown above, then click Compare.' : 'Ready. Compare will show decision likelihood, momentum, risk profile, and a clear recommendation.'}
+            {selectedIds.length < 2 ? 'Select 2-4 investors above, then Compare to see decision likelihood, momentum, risk, and recommendation.' : `${selectedIds.length} investors selected — click Compare to analyze across 8 dimensions.`}
           </div></div>
       )}
 

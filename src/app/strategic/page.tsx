@@ -173,6 +173,7 @@ export default function StrategicPage() {
     return (
       <div className="space-y-6 page-content">
         <div className="skeleton" style={{ height: '28px', width: '250px' }} />
+        <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Loading strategic intelligence...</p>
         <div className="skeleton" style={{ height: '120px', borderRadius: 'var(--radius-lg)' }} />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[1,2,3,4].map(i => (
