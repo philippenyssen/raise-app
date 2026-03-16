@@ -13,6 +13,7 @@ import { cachedFetch } from '@/lib/cache';
 
 const fontSmPrimary = { ...stFontSm, fontWeight: 400, color: 'var(--text-primary)' } as const;
 const labelXsTertiary = { ...stFontXs, ...stTextTertiary } as const;
+const sectionHeading: React.CSSProperties = { ...stFontXs, fontWeight: 400, ...stTextSecondary, marginBottom: 'var(--space-2)' } as const;
 
 interface DataRoomFile {
   id: string;
@@ -579,7 +580,7 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
           {/* Accessed documents */}
           {investor.accessed_documents.length > 0 && (
             <div className="mb-3">
-              <h4 style={{ ...stFontXs, fontWeight: 400, ...stTextSecondary, marginBottom: 'var(--space-2)' }}>Documents Accessed</h4>
+              <h4 style={sectionHeading}>Documents Accessed</h4>
               <div className="flex flex-wrap gap-2">
                 {investor.accessed_documents.map(doc => (
                   <span key={doc.document_id} style={{ ...stFontXs, ...stTextSecondary, background: 'var(--success-muted)', padding: '0.125rem var(--space-2)', borderRadius: 'var(--radius-sm)' }}>{doc.document_title}</span>
@@ -589,7 +590,7 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
           {/* Recommended documents */}
           {investor.recommended_documents.length > 0 && (
             <div className="mb-3">
-              <h4 style={{ ...stFontXs, fontWeight: 400, ...stTextSecondary, marginBottom: 'var(--space-2)' }}>Recommended to Share</h4>
+              <h4 style={sectionHeading}>Recommended to Share</h4>
               <div className="space-y-1">
                 {investor.recommended_documents.map(doc => (
                   <RecommendedDocRow
@@ -602,7 +603,7 @@ function InvestorAccessRow({ investor, expanded, onToggle, onLogAccess, files }:
 
           {/* Log access manually */}
           <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-3)', marginTop: 'var(--space-2)' }}>
-            <h4 style={{ ...stFontXs, fontWeight: 400, ...stTextSecondary, marginBottom: 'var(--space-2)' }}>Log Access</h4>
+            <h4 style={sectionHeading}>Log Access</h4>
             <div className="flex gap-2">
               <select
                 value={logDocId}

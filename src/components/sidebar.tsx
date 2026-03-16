@@ -172,6 +172,7 @@ export function Sidebar() {
               }}>R</span></div>
           )}
           <button
+            aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             onClick={() => mobileOpen ? setMobileOpen(false) : setCollapsed(!collapsed)}
             className="hidden md:flex items-center justify-center shrink-0 rounded-md transition-colors"
             style={{ width: '24px', height: '24px', color: SB.muted }}
@@ -179,6 +180,7 @@ export function Sidebar() {
             onMouseLeave={e => { (e.target as HTMLElement).style.color = SB.muted; (e.target as HTMLElement).style.background = 'transparent'; }}>
             {collapsed ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronLeft className="w-3.5 h-3.5" />}</button>
           <button
+            aria-label="Close navigation"
             onClick={() => setMobileOpen(false)}
             className="md:hidden p-1"
             style={{ color: SB.textHover }}>

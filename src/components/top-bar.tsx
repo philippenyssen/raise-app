@@ -116,6 +116,7 @@ export function TopBar() {
 
       <div ref={ref} className="relative">
         <button
+          aria-label="Notifications"
           onClick={() => setOpen(!open)}
           className="relative flex items-center justify-center rounded-md transition-colors"
           style={{ width: '32px', height: '32px', color: 'var(--text-tertiary)' }}

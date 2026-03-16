@@ -12,7 +12,7 @@ import {
 import { STATUS_LABELS as STAGE_LABELS } from '@/lib/constants';
 import { fmtDate, fmtDateShort } from '@/lib/format';
 import { relativeTime } from '@/lib/time';
-import { cellPad, confidenceBg, confidenceColor, labelMuted, labelMuted10, maxWidthCenter, cellCenter, stAccent, stFontSm, stFontXs, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
+import { cellPad, confidenceBg, confidenceColor, labelMuted, labelMuted10, labelSecondary, maxWidthCenter, cellCenter, stAccent, stFontSm, stFontXs, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 
 const mbSpace3 = { marginBottom: 'var(--space-3)' } as const;
 const mbSpace6 = { marginBottom: 'var(--space-6)' } as const;
@@ -264,7 +264,7 @@ export default function ForecastPage() {
           ].map(({ label, count, color, bg }) => (
             <div key={label} style={mbSpace3}>
               <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-1)' }}>
-                <span style={{ ...stFontXs, ...stTextSecondary }}>{label}</span>
+                <span style={labelSecondary}>{label}</span>
                 <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color, fontVariantNumeric: 'tabular-nums' }}>
                   {count}</span></div>
               <div style={{ height: '6px', background: 'var(--surface-3)', borderRadius: '3px', overflow: 'hidden' }}>
@@ -330,7 +330,7 @@ export default function ForecastPage() {
           {forecast.riskFactors.length === 0 ? (
             <div className="flex items-center gap-2" style={{ padding: 'var(--space-3)', background: 'var(--success-muted)', borderRadius: 'var(--radius-sm)' }}>
               <span style={stTextSecondary}><CheckCircle2 className="w-3.5 h-3.5" /></span>
-              <span style={{ ...stFontXs, ...stTextSecondary }}>On track — no major risk factors identified</span></div>
+              <span style={labelSecondary}>On track — no major risk factors identified</span></div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
               {forecast.riskFactors.map((risk, i) => {
@@ -477,7 +477,7 @@ export default function ForecastPage() {
 
                       {/* Stage */}
                       <td style={cellPad34}>
-                        <span style={{ ...stFontXs, ...stTextSecondary }}>
+                        <span style={labelSecondary}>
                           {STAGE_LABELS[inv.currentStage] || inv.currentStage}</span></td>
 
                       {/* Days in Stage */}
