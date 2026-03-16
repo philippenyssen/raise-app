@@ -281,14 +281,14 @@ export default function PipelinePage() {
         <div className="skeleton" style={{ height: '2rem', width: '16rem' }} />
         <div className="flex gap-3">
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="skeleton" style={{ height: '5rem', width: '9rem', borderRadius: 'var(--radius-lg)' }} />
+            <div key={i} className="skeleton" style={skelTile} />
           ))}</div>
         <div className="flex gap-4 overflow-hidden">
           {[...Array(5)].map((_, i) => (
-            <div key={i} className="space-y-3" style={{ minWidth: '260px' }}>
-              <div className="skeleton" style={{ height: '2.5rem', borderRadius: 'var(--radius-lg)' }} />
+            <div key={i} className="space-y-3" style={skelCol}>
+              <div className="skeleton" style={skelHeader} />
               {[...Array(Math.max(0, 3 - i))].map((_, j) => (
-                <div key={j} className="skeleton" style={{ height: '7rem', borderRadius: 'var(--radius-lg)' }} />
+                <div key={j} className="skeleton" style={skelCard} />
               ))}</div>
           ))}</div>
       </div>);
@@ -696,11 +696,15 @@ function enthusiasmDotBg(n: number, enthusiasm: number): string {
 }
 
 const urgencyBadgeBase: React.CSSProperties = { fontSize: 'var(--font-size-xs)', fontWeight: 400, padding: '1px 5px', borderRadius: 'var(--radius-sm)' };
-const noteStyle: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontStyle: 'italic', flex: 1 };
+const noteStyle: React.CSSProperties = { ...labelMuted, fontStyle: 'italic', flex: 1 };
 const lastMeetingBase: React.CSSProperties = { fontSize: 'var(--font-size-xs)', fontWeight: 400 };
 const metricLabelStyle: React.CSSProperties = { ...labelMuted, fontWeight: 400, whiteSpace: 'nowrap' };
 const metricColStyle: React.CSSProperties = { minWidth: '4rem' };
-const quickActionLink: React.CSSProperties = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', padding: '2px 0', borderRadius: 'var(--radius-sm)', textDecoration: 'none' };
+const quickActionLink: React.CSSProperties = { ...labelMuted, padding: '2px 0', borderRadius: 'var(--radius-sm)', textDecoration: 'none' };
+const skelTile: React.CSSProperties = { height: '5rem', width: '9rem', borderRadius: 'var(--radius-lg)' };
+const skelCol: React.CSSProperties = { minWidth: '260px' };
+const skelHeader: React.CSSProperties = { height: '2.5rem', borderRadius: 'var(--radius-lg)' };
+const skelCard: React.CSSProperties = { height: '7rem', borderRadius: 'var(--radius-lg)' };
 
 function computeUrgency(lastMeetingDate: string | null | undefined, tier: number, status: string): { label: string; color: string; bg: string } {
   const days = lastMeetingDate ? Math.floor((Date.now() - new Date(lastMeetingDate).getTime()) / 864e5) : 999;

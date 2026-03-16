@@ -22,6 +22,7 @@ const filterTabBase: React.CSSProperties = { ...filterBtnBase, padding: '0.375re
 import { MS_PER_HOUR, MS_PER_DAY } from '@/lib/time';
 
 const textSecSm = { fontSize: 'var(--font-size-sm)', color: 'var(--text-secondary)' } as const;
+const skelItemStyle = { height: '52px', borderRadius: 'var(--radius-md)' } as const;
 const completedOutcomeBox = { background: 'var(--surface-2)', borderRadius: 'var(--radius-sm)', padding: '0.375rem 0.5rem', fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)' } as const;
 const completingFormBox = { background: 'var(--surface-2)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-3)' } as const;
 const VEL_CONFIG: Record<string, { color: string; bg: string; icon: typeof ArrowUpRight; label: string }> = {
@@ -170,7 +171,7 @@ export default function FollowupsPage() {
         <div className="skeleton" style={{ height: '28px', width: '200px' }} />
         <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Loading your action items...</p>
         <div className="space-y-2">
-          {[1,2,3,4].map(i => <div key={i} className="skeleton" style={{ height: '52px', borderRadius: 'var(--radius-md)' }} />)}
+          {[1,2,3,4].map(i => <div key={i} className="skeleton" style={skelItemStyle} />)}
         </div>
       </div>}>
       <FollowupsContent />

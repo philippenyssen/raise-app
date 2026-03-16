@@ -20,7 +20,8 @@ import {
 import { cardPad4, dimensionBg, dimensionColor, inlineBadgeStyle, labelMuted, labelMuted10, labelSecondary, labelTertiary, scoreBgStyle as focusScoreBgStyle, scoreColor as focusScoreColor, stAccent, stBorderTop, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, INVESTOR_TYPE_STYLES } from '@/lib/styles';
 import { TierBadge, EnthusiasmDots } from '@/components/shared';
 const mt10 = { marginTop: '10px' } as const;
-const dimLabel = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', fontWeight: 400, letterSpacing: '0.01em' } as const;
+const dimLabel = { ...labelMuted, fontWeight: 400, letterSpacing: '0.01em' } as const;
+const objItemStyle = { fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', opacity: 0.85 } as const;
 
 interface FocusItem {
   investorId: string;
@@ -418,7 +419,7 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
               <p style={{ ...labelMuted, letterSpacing: '0.08em', marginBottom: '4px' }}>Unresolved Objections</p>
               <div className="space-y-1">
                 {item.unresolvedObjections.map((obj) => (
-                  <div key={obj} className="flex items-start gap-1.5" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-primary)', opacity: 0.85 }}>
+                  <div key={obj} className="flex items-start gap-1.5" style={objItemStyle}>
                     <AlertTriangle className="w-3 h-3 shrink-0 mt-0.5" />
                     {obj}</div>
                 ))}</div></div>
