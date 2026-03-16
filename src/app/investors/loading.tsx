@@ -11,7 +11,7 @@ export default function InvestorsLoading() {
       <div className="flex items-center gap-3">
         <div className="skeleton" style={{ width: 240, height: 36, borderRadius: 'var(--radius-md)' }} />
         {[72, 64, 56].map((w, i) => (
-          <div key={i} className="skeleton" style={{ width: w, height: 32, borderRadius: 9999 }} />
+          <div key={i} className="skeleton" style={{ width: w, height: 32, borderRadius: 'var(--radius-full)' }} />
         ))}
       </div>
 
@@ -19,7 +19,7 @@ export default function InvestorsLoading() {
       <div style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-lg)', overflow: 'hidden' }}>
         {/* Header row */}
         <div className="flex items-center gap-4 p-4" style={{ borderBottom: '1px solid var(--border-default)' }}>
-          <div className="skeleton" style={{ width: 16, height: 16, borderRadius: 3 }} />
+          <div className="skeleton" style={{ width: 16, height: 16, borderRadius: 'var(--radius-sm)' }} />
           {[160, 64, 48, 80, 100, 72, 60].map((w, i) => (
             <div key={i} className="skeleton" style={{ width: w, height: 11 }} />
           ))}
@@ -27,14 +27,14 @@ export default function InvestorsLoading() {
         {/* Body rows */}
         {Array.from({ length: 8 }).map((_, i) => (
           <div key={i} className="flex items-center gap-4 p-4" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-            <div className="skeleton" style={{ width: 16, height: 16, borderRadius: 3 }} />
+            <div className="skeleton" style={{ width: 16, height: 16, borderRadius: 'var(--radius-sm)' }} />
             <div className="skeleton" style={{ width: 160, height: 14 }} />
-            <div className="skeleton" style={{ width: 64, height: 20, borderRadius: 9999 }} />
+            <div className="skeleton" style={{ width: 64, height: 20, borderRadius: 'var(--radius-full)' }} />
             <div className="skeleton" style={{ width: 22, height: 22, borderRadius: '50%' }} />
-            <div className="skeleton" style={{ width: 80, height: 20, borderRadius: 9999 }} />
+            <div className="skeleton" style={{ width: 80, height: 20, borderRadius: 'var(--radius-full)' }} />
             <div className="skeleton" style={{ width: 100, height: 14 }} />
             <div className="skeleton" style={{ width: 72, height: 14 }} />
-            <div className="skeleton" style={{ width: 60, height: 4, borderRadius: 2 }} />
+            <div className="skeleton" style={{ width: 60, height: 4, borderRadius: 'var(--radius-sm)' }} />
           </div>
         ))}
       </div>

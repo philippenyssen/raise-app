@@ -30,15 +30,15 @@ export default function FocusLoading() {
             <div className="flex flex-col gap-2" style={{ minWidth: 160 }}>
               <div className="skeleton" style={{ width: 140, height: 14 }} />
               <div className="flex items-center gap-2">
-                <div className="skeleton" style={{ width: 48, height: 18, borderRadius: 9999 }} />
+                <div className="skeleton" style={{ width: 48, height: 18, borderRadius: 'var(--radius-full)' }} />
                 <div className="skeleton" style={{ width: 22, height: 22, borderRadius: '50%' }} />
               </div>
             </div>
             {/* Score bar */}
             <div className="flex flex-col gap-1 flex-1">
               <div className="skeleton" style={{ width: 60, height: 10 }} />
-              <div style={{ height: 6, background: 'var(--surface-2)', borderRadius: 3, width: '100%' }}>
-                <div className="skeleton" style={{ width: `${85 - i * 8}%`, height: 6, borderRadius: 3 }} />
+              <div style={{ height: 6, background: 'var(--surface-2)', borderRadius: 'var(--radius-sm)', width: '100%' }}>
+                <div className="skeleton" style={{ width: `${85 - i * 8}%`, height: 6, borderRadius: 'var(--radius-sm)' }} />
               </div>
             </div>
             {/* Action */}

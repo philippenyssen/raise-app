@@ -3,7 +3,7 @@ export default function ObjectionsLoading() {
     <div className="p-6 max-w-[1400px] mx-auto">
       {/* Header */}
       <div className="mb-6">
-        <div className="skeleton rounded" style={{ width: '200px', height: '28px', marginBottom: '6px' }} />
+        <div className="skeleton rounded" style={{ width: '200px', height: '28px', marginBottom: 'var(--space-1)' }} />
         <div className="skeleton rounded" style={{ width: '300px', height: '16px' }} />
       </div>
 
@@ -18,7 +18,7 @@ export default function ObjectionsLoading() {
       <div className="space-y-4">
         {Array.from({ length: 5 }).map((_, i) => (
           <div key={i} className="rounded-xl">
-            <div className="skeleton" style={{ height: '52px', borderRadius: '12px 12px 0 0' }} />
+            <div className="skeleton" style={{ height: '52px', borderRadius: 'var(--radius-lg) var(--radius-lg) 0 0' }} />
             <div className="p-4 space-y-3">
               <div className="skeleton rounded" style={{ height: '40px' }} />
               <div className="skeleton rounded" style={{ height: '40px', opacity: 0.7 }} />

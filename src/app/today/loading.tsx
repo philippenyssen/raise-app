@@ -13,7 +13,7 @@ export default function TodayLoading() {
       {/* Momentum strip */}
       <div className="flex gap-3">
         {[120, 100, 90, 110].map((w, i) => (
-          <div key={i} className="skeleton" style={{ width: w, height: 32, borderRadius: 9999 }} />
+          <div key={i} className="skeleton" style={{ width: w, height: 32, borderRadius: 'var(--radius-full)' }} />
         ))}
       </div>
 
@@ -27,7 +27,7 @@ export default function TodayLoading() {
             </div>
             <div className="skeleton" style={{ width: '100%', height: 12 }} />
             <div className="skeleton" style={{ width: '70%', height: 12 }} />
-            <div className="skeleton" style={{ width: 80, height: 28, borderRadius: 'var(--radius-md)', marginTop: 4 }} />
+            <div className="skeleton" style={{ width: 80, height: 28, borderRadius: 'var(--radius-md)', marginTop: 'var(--space-1)' }} />
           </div>
         ))}
       </div>
@@ -42,7 +42,7 @@ export default function TodayLoading() {
               <div className="skeleton" style={{ width: 200, height: 14 }} />
               <div className="skeleton" style={{ width: 120, height: 12 }} />
             </div>
-            <div className="skeleton" style={{ width: 64, height: 24, borderRadius: 9999 }} />
+            <div className="skeleton" style={{ width: 64, height: 24, borderRadius: 'var(--radius-full)' }} />
           </div>
         ))}
       </div>

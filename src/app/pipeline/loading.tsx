@@ -29,7 +29,7 @@ export default function PipelineLoading() {
             {/* Column header */}
             <div className="flex items-center justify-between p-3" style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-md)' }}>
               <div className="skeleton" style={{ width: col.label, height: 12 }} />
-              <div className="skeleton" style={{ width: 24, height: 20, borderRadius: 9999 }} />
+              <div className="skeleton" style={{ width: 24, height: 20, borderRadius: 'var(--radius-full)' }} />
             </div>
             {/* Cards */}
             <div className="flex flex-col gap-2">
@@ -37,8 +37,8 @@ export default function PipelineLoading() {
                 <div key={ki} className="flex flex-col gap-2 p-3" style={{ background: 'var(--surface-1)', borderRadius: 'var(--radius-md)' }}>
                   <div className="skeleton" style={{ width: '80%', height: 14 }} />
                   <div className="flex items-center gap-2">
-                    <div className="skeleton" style={{ width: 52, height: 18, borderRadius: 9999 }} />
-                    <div className="skeleton" style={{ width: 36, height: 18, borderRadius: 9999 }} />
+                    <div className="skeleton" style={{ width: 52, height: 18, borderRadius: 'var(--radius-full)' }} />
+                    <div className="skeleton" style={{ width: 36, height: 18, borderRadius: 'var(--radius-full)' }} />
                   </div>
                   <div className="skeleton" style={{ width: '60%', height: 11 }} />
                 </div>
