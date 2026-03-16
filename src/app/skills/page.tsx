@@ -5,6 +5,7 @@ import { Activity, AlertTriangle, CheckCircle2, XCircle, ChevronDown, ChevronRig
 import { useToast } from '@/components/toast';
 import { cachedFetch } from '@/lib/cache';
 import { fmtDateTime } from '@/lib/format';
+import { relativeTime } from '@/lib/time';
 import { getHealthBg, getHealthColor, skelCardSm, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary } from '@/lib/styles';
 import { EmptyState } from '@/components/ui/empty-state';
 
@@ -60,6 +61,7 @@ export default function SkillsPage() {
   const [executions, setExecutions] = useState<SkillExecution[]>([]);
   const [expanded, setExpanded] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadedAt, setLoadedAt] = useState<string | null>(null);
 
   useEffect(() => { document.title = 'Raise | Skill Health'; }, []);
   const fetchData = useCallback(() => {
@@ -71,7 +73,8 @@ export default function SkillsPage() {
     ])
       .then(([h, e]) => {
         setHealth(Array.isArray(h) ? h : []);
-        setExecutions(Array.isArray(e) ? e : []);})
+        setExecutions(Array.isArray(e) ? e : []);
+        setLoadedAt(new Date().toISOString());})
       .catch(() => { setHealth([]); setExecutions([]); toast('Couldn\'t load skill health data — refresh to retry', 'error'); })
       .finally(() => setLoading(false));
   }, [toast]);
@@ -119,7 +122,7 @@ export default function SkillsPage() {
       <div>
         <h1 className="page-title">Skill Health</h1>
         <p className="text-sm mt-1" style={stTextMuted}>
-          Monitor and evolve product AI skills — observe, inspect, amend, evaluate</p></div>
+          Monitor and evolve product AI skills{loadedAt && <> &middot; {relativeTime(loadedAt)}</>}</p></div>
 
       {/* Overview metrics */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

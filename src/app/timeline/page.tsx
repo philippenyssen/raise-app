@@ -10,6 +10,7 @@ import type { Task, ActivityEvent, TaskStatus, TaskPriority, RaisePhase } from '
 import { useToast } from '@/components/toast';
 import Link from 'next/link';
 import { skelRowSm, stAccent, stTextMuted, stTextPrimary, stTextSecondary } from '@/lib/styles';
+import { relativeTime } from '@/lib/time';
 import { EmptyState } from '@/components/ui/empty-state';
 
 const progressTrackBg = { backgroundColor: 'var(--surface-2)' } as const;
@@ -76,6 +77,7 @@ export default function TimelinePage() {
   const [creating, setCreating] = useState(false);
   const [filterPhase, setFilterPhase] = useState<string>('');
   const [filterStatus, setFilterStatus] = useState<string>('');
+  const [loadedAt, setLoadedAt] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -84,6 +86,7 @@ export default function TimelinePage() {
       cachedFetch('/api/tasks?type=activity&limit=30').then(r => r.json()).catch(() => []),]);
     setTasks(Array.isArray(taskRes) ? taskRes : []);
     setActivity(Array.isArray(actRes) ? actRes : []);
+    setLoadedAt(new Date().toISOString());
     setLoading(false);
   }, []);
 
@@ -195,7 +198,7 @@ export default function TimelinePage() {
         <div>
           <h1 className="page-title">Timeline & Tasks</h1>
           <p className="text-sm mt-1" style={stTextMuted}>
-            {pendingCount} pending, {doneCount} done{criticalCount > 0 ? `, ${criticalCount} critical` : ''}</p></div>
+            {pendingCount} pending, {doneCount} done{criticalCount > 0 ? `, ${criticalCount} critical` : ''}{loadedAt && <> &middot; {relativeTime(loadedAt)}</>}</p></div>
         <button
           onClick={() => setShowAdd(!showAdd)}
           className="px-4 py-2 rounded-lg text-sm font-normal flex items-center gap-2 btn-accent-hover"

@@ -36,6 +36,11 @@ const heatBarBase: React.CSSProperties = { position: 'absolute', top: 0, left: 0
 const heatCircleBase: React.CSSProperties = { width: '44px', height: '44px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', flexShrink: 0 };
 const heatLabelBase: React.CSSProperties = { fontSize: 'var(--font-size-xs)', fontWeight: 400, letterSpacing: '0.01em' };
 const heatScoreText: React.CSSProperties = { fontSize: 'var(--font-size-sm)', fontWeight: 300, lineHeight: 1 };
+const linkNoDecor: React.CSSProperties = { textDecoration: 'none' };
+const mtSpace1: React.CSSProperties = { marginTop: 'var(--space-1)' };
+const mtSpace3: React.CSSProperties = { marginTop: 'var(--space-3)' };
+const driverStyleMt2: React.CSSProperties = { ...driverStyle, marginTop: 'var(--space-2)' };
+const cardFooterBorder: React.CSSProperties = { marginTop: 'var(--space-3)', paddingTop: 'var(--space-2)', borderTop: '1px solid var(--border-subtle)' };
 
 const HEAT_CONFIG: Record<string, { bg: string; border: string; text: string; glow: string; label: string }> = {
   hot:    { bg: 'var(--accent-8)', border: 'var(--accent-15)',  text: 'var(--text-primary)', glow: 'none', label: 'Hot' },
@@ -188,7 +193,7 @@ export default function DealHeatPage() {
                 key={inv.id}
                 href={`/investors/${inv.id}`}
                 className="block"
-                style={{ textDecoration: 'none' }}>
+                style={linkNoDecor}>
                 <div
                   className="card deal-card-hover"
                   style={{ ...heatCardBase, border: `1px solid ${cfg.border}` }}>
@@ -196,11 +201,11 @@ export default function DealHeatPage() {
                   <div style={{ ...heatBarBase, background: `linear-gradient(90deg, ${cfg.text} ${inv.dealHeat.heat}%, transparent ${inv.dealHeat.heat}%)` }} />
 
                   {/* Header row */}
-                  <div className="flex items-start justify-between" style={{ marginTop: 'var(--space-1)' }}>
+                  <div className="flex items-start justify-between" style={mtSpace1}>
                     <div className="min-w-0 flex-1">
                       <div style={invNameStyle}>
                         {inv.name}</div>
-                      <div className="flex items-center gap-2" style={{ marginTop: 'var(--space-1)' }}>
+                      <div className="flex items-center gap-2" style={mtSpace1}>
                         <span style={typeBadgeStyle}>
                           {TYPE_LABELS[inv.type] || inv.type}</span>
                         <span style={labelMuted}>
@@ -211,7 +216,7 @@ export default function DealHeatPage() {
                         {inv.dealHeat.heat}</span></div></div>
 
                   {/* Heat label */}
-                  <div className="flex items-center gap-2" style={{ marginTop: 'var(--space-3)' }}>
+                  <div className="flex items-center gap-2" style={mtSpace3}>
                     <span style={{ ...heatLabelBase, color: cfg.text }}>
                       {cfg.label}</span>
                     <span style={labelMuted}>
@@ -219,12 +224,12 @@ export default function DealHeatPage() {
 
                   {/* Top driver */}
                   {topDriver && (
-                    <div style={{ ...driverStyle, marginTop: 'var(--space-2)' }}>
+                    <div style={driverStyleMt2}>
                       {topDriver}</div>
                   )}
 
                   {/* Footer: enthusiasm + last meeting */}
-                  <div className="flex items-center justify-between" style={{ marginTop: 'var(--space-3)', paddingTop: 'var(--space-2)', borderTop: '1px solid var(--border-subtle)' }}>
+                  <div className="flex items-center justify-between" style={cardFooterBorder}>
                     <div className="flex items-center gap-1" style={labelMuted}>
                       <TrendingUp className="w-3 h-3" />
                       <span>{inv.enthusiasm}/5</span></div>

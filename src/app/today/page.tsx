@@ -33,6 +33,12 @@ const enthusiasmDotBase = { width: '5px', height: '5px', borderRadius: '50%', di
 const overdueDesc = { fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', marginTop: 'var(--space-0)' } as const;
 const overdueDoneBtn = { background: 'var(--surface-0)', color: 'var(--text-secondary)', border: '1px solid var(--border-default)', fontSize: 'var(--font-size-xs)', padding: 'var(--space-1) var(--space-2)' } as const;
 const emptyStateText = { ...stFontSm, color: 'var(--text-secondary)', fontWeight: 400 } as const;
+const investorLinkAccent = { color: 'var(--accent)', fontWeight: 400, textDecoration: 'none' } as const;
+const fontSmPrimary = { fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' } as const;
+const mtSpace0 = { marginTop: 'var(--space-0)' } as const;
+const investorLinkXs = { fontSize: 'var(--font-size-xs)', color: 'var(--accent)', textDecoration: 'none' } as const;
+const doneButtonStyle: React.CSSProperties = { background: 'var(--success-muted)', color: 'var(--text-secondary)', border: '1px solid var(--accent-8)', fontSize: 'var(--font-size-xs)', padding: 'var(--space-1) var(--space-2)' };
+const skipButtonStyle: React.CSSProperties = { background: 'var(--surface-2)', color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)', padding: 'var(--space-1) var(--space-2)' };
 
 // ---------------------------------------------------------------------------
 // Types — match the updated /api/briefing response
@@ -606,7 +612,7 @@ export default function TodayPage() {
                 <Link
                   href={`/investors/${sc.investorId}`}
                   className="investor-link"
-                  style={{ color: 'var(--accent)', fontWeight: 400, textDecoration: 'none' }}>
+                  style={investorLinkAccent}>
                   {sc.investorName}</Link>
                 <span style={stTextMuted}>{sc.from.replace(/_/g, ' ')} → {sc.to.replace(/_/g, ' ')}</span></div>
             ))}
@@ -718,23 +724,23 @@ export default function TodayPage() {
                     <span className="text-xs px-2 py-0.5 rounded shrink-0" style={{ background: tc.bg, color: tc.color, fontWeight: 400 }}>
                       {tc.label}</span>
                     <div className="flex-1 min-w-0">
-                      <p className="truncate" style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)' }}>
+                      <p className="truncate" style={fontSmPrimary}>
                         {fu.description}</p>
-                      <div className="flex items-center gap-2" style={{ marginTop: 'var(--space-0)' }}>
-                        <Link href={`/investors/${fu.investor_id}`} style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)', textDecoration: 'none' }}>
+                      <div className="flex items-center gap-2" style={mtSpace0}>
+                        <Link href={`/investors/${fu.investor_id}`} style={investorLinkXs}>
                           {fu.investor_name}</Link></div></div>
                     <div className="flex items-center gap-1 shrink-0">
                       <button
                         onClick={() => handleQuickComplete(fu.id)}
                         disabled={isProcessing}
                         className="btn btn-sm"
-                        style={{ background: 'var(--success-muted)', color: 'var(--text-secondary)', border: '1px solid var(--accent-8)', fontSize: 'var(--font-size-xs)', padding: 'var(--space-1) var(--space-2)' }}>
+                        style={doneButtonStyle}>
                         Done</button>
                       <button
                         onClick={() => handleQuickSkip(fu.id)}
                         disabled={isProcessing}
                         className="btn btn-sm"
-                        style={{ background: 'var(--surface-2)', color: 'var(--text-muted)', fontSize: 'var(--font-size-xs)', padding: 'var(--space-1) var(--space-2)' }}>
+                        style={skipButtonStyle}>
                         Skip</button></div></div>
                 </div>);
             })}</div></div>
