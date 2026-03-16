@@ -114,6 +114,10 @@ export async function GET() {
     const activeInvestors = investors.filter(i => !['passed', 'dropped'].includes(i.status));
     const inDDCount = investors.filter(i => i.status === 'in_dd').length;
     const termSheetCount = investors.filter(i => i.status === 'term_sheet').length;
+    const closedCount = investors.filter(i => i.status === 'closed').length;
+    const committedCapitalM = investors
+      .filter(i => i.status === 'closed' || i.status === 'term_sheet')
+      .reduce((sum, i) => sum + ((i as unknown as Record<string, number>).committed_amount || 0), 0);
     const totalTarget = config
       ? parseInt(config.equity_amount.replace(/[^0-9]/g, '')) || 250
       : 250;
@@ -141,6 +145,8 @@ export async function GET() {
       totalActive: activeInvestors.length,
       inDD: inDDCount,
       termSheets: termSheetCount,
+      closed: closedCount,
+      committedCapitalM: Math.round(committedCapitalM * 10) / 10,
       totalTarget,
       forecast: forecastStr,};
 

@@ -70,6 +70,8 @@ interface PipelineSnapshot {
   totalActive: number;
   inDD: number;
   termSheets: number;
+  closed?: number;
+  committedCapitalM?: number;
   totalTarget: number;
   forecast: string;
 }
@@ -625,7 +627,7 @@ export default function TodayPage() {
       {/* ----------------------------------------------------------------- */}
       <div>
         <div className="section-title">Pipeline Pulse</div>
-        <div className="grid grid-cols-2 lg:grid-cols-4" style={gridGap3}>
+        <div className="grid grid-cols-2 lg:grid-cols-5" style={gridGap3}>
           <Link href="/pipeline" className="card hover-border" style={linkCardPad}>
             <div className="metric-label">Active</div>
             <div className="metric-value" style={{ fontSize: 'var(--font-size-xl)', marginTop: 'var(--space-1)', color: 'var(--text-primary)' }}>{data.pipelineSnapshot.totalActive}</div></Link>
@@ -635,6 +637,16 @@ export default function TodayPage() {
           <Link href="/pipeline?stage=term_sheet" className="card hover-border" style={linkCardPad}>
             <div className="metric-label">Term Sheets</div>
             <div className="metric-value" style={{ fontSize: 'var(--font-size-xl)', marginTop: 'var(--space-1)', color: data.pipelineSnapshot.termSheets > 0 ? 'var(--success)' : 'var(--text-muted)' }}>{data.pipelineSnapshot.termSheets}</div></Link>
+          <Link href="/targeting" className="card hover-border" style={linkCardPad}>
+            <div className="metric-label">Committed</div>
+            <div className="metric-value" style={{ fontSize: 'var(--font-size-xl)', marginTop: 'var(--space-1)', color: (data.pipelineSnapshot.committedCapitalM || 0) > 0 ? 'var(--success)' : 'var(--text-muted)' }}>
+              {(data.pipelineSnapshot.committedCapitalM || 0) > 0 ? `€${data.pipelineSnapshot.committedCapitalM}M` : '—'}
+            </div>
+            {data.pipelineSnapshot.totalTarget > 0 && (data.pipelineSnapshot.committedCapitalM || 0) > 0 && (
+              <div style={{ ...stFontXs, color: 'var(--text-muted)', marginTop: '2px' }}>
+                {Math.round(((data.pipelineSnapshot.committedCapitalM || 0) / data.pipelineSnapshot.totalTarget) * 100)}% of €{data.pipelineSnapshot.totalTarget}M
+              </div>
+            )}</Link>
           <div className="card" style={cardPad4}>
             <div className="flex items-center gap-1.5">
               <div className={forecastDotClass} style={{ width: '6px', height: '6px' }} />

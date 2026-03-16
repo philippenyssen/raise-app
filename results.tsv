@@ -795,3 +795,4 @@ b4a0052	100	100	0	keep	product	Dashboard strategic overhaul: AI narrative brief 
 807	2026-03-16T19:30:38Z	Copywriting	copy: actionable error messages + clearer button labels + contextual placeholder on targeting/reports pages	src/app/targeting/page.tsx,src/app/reports/page.tsx	pass
 808	2026-03-16T19:33:58Z	Competitive Edge	today: surface momentum anomalies (investors diverging from cohort) in daily command center	src/app/today/page.tsx	pass
 809	2026-03-16T19:37:12Z	Reliability & Ops	pulse: graceful fallbacks on parallel query failures + objections: cache invalidation on PUT	src/app/api/pulse/route.ts,src/app/api/objections/route.ts	pass
+810	2026-03-16T19:40:52Z	CEO & Strategy	today: add committed capital card to Pipeline Pulse with % of target progress	src/app/today/page.tsx,src/app/api/briefing/route.ts	pass
