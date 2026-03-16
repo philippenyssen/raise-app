@@ -11,7 +11,7 @@ const AIChat = dynamic(() => import('@/components/workspace/ai-chat').then(m => 
 import { useToast } from '@/components/toast';
 import { ConfirmModal } from '@/components/ui/confirm-modal';
 import { DocSummaryRecord as Doc } from '@/lib/types';
-import { FileText, Plus, ChevronRight, Wand2, Loader2, FilePlus, FileSpreadsheet, Presentation } from 'lucide-react';
+import { FileText, Plus, ChevronRight, Wand2, Loader2, FilePlus, FileSpreadsheet, Presentation, BarChart3 } from 'lucide-react';
 import { labelMuted, stAccent, stTextMuted } from '@/lib/styles';
 import { EmptyState } from '@/components/ui/empty-state';
 
@@ -424,6 +424,7 @@ export default function WorkspacePage() {
                   {TYPE_LABELS[type] || type}</div>
                 {typeDocs.map(doc => {
                   const isSelected = selectedDoc?.id === doc.id;
+                  const DocIcon = doc.type === 'model' || doc.type === 'spreadsheet' ? BarChart3 : doc.type === 'presentation' || doc.type === 'deck' ? Presentation : FileText;
                   return (
                     <button
                       key={doc.id}
@@ -431,6 +432,7 @@ export default function WorkspacePage() {
                       className={`w-full text-left ${isSelected ? '' : 'sidebar-link'}`}
                       style={isSelected ? docBtnActive : docBtnBase}>
                       <div className="flex items-center gap-2">
+                        <DocIcon className="w-3.5 h-3.5 shrink-0" style={{ opacity: 0.6 }} />
                         <div className="truncate flex-1">{doc.title}</div>
                         {isSelected && dirty && <span className="w-2 h-2 rounded-full shrink-0" style={{ background: 'var(--warning)' }} title="Unsaved changes" />}
                       </div>
