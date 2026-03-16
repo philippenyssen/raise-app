@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 import { cachedFetch } from '@/lib/cache';
 import { MS_PER_MINUTE } from '@/lib/time';
 import {
-  LayoutDashboard, Users, Calendar, FileText,
+  LayoutDashboard, Users, Calendar, CalendarDays, FileText,
   BookOpen, Settings,
   Columns3,
   SendHorizonal, Menu, X, LogOut,
@@ -30,6 +30,7 @@ const nav: NavItem[] = [
   { href: '/pipeline', label: 'Pipeline', icon: Columns3, section: 'CORE' },
   { href: '/investors', label: 'Investors', icon: Users, section: 'CORE' },
   // Execute — running the fundraise
+  { href: '/calendar', label: 'Calendar', icon: CalendarDays, section: 'EXECUTE' },
   { href: '/meetings', label: 'Meetings', icon: Calendar, section: 'EXECUTE' },
   { href: '/followups', label: 'Follow-ups', icon: SendHorizonal, section: 'EXECUTE' },
   { href: '/focus', label: 'Focus', icon: Target, section: 'EXECUTE' },
