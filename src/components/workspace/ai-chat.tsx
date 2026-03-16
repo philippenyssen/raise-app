@@ -17,6 +17,7 @@ interface AIChatProps {
 }
 
 interface PendingChange { content: string; messageIdx: number; summary?: string; }
+interface SuggestedFollowUp { text: string; }
 
 function computeChangeSummary(oldContent: string, newContent: string, docType?: string): string {
   if (docType === 'model' || docType === 'spreadsheet') {
@@ -196,6 +197,30 @@ function inlineFormat(text: string): React.ReactNode {
   return parts.length === 1 ? parts[0] : <>{parts}</>;
 }
 
+function generateFollowUps(responseText: string, docType?: string): SuggestedFollowUp[] {
+  const suggestions: SuggestedFollowUp[] = [];
+  const lower = responseText.toLowerCase();
+
+  if (docType === 'model' || docType === 'spreadsheet') {
+    if (lower.includes('formula') || lower.includes('calculation')) suggestions.push({ text: 'Verify all formulas are consistent' });
+    if (lower.includes('revenue') || lower.includes('growth')) suggestions.push({ text: 'Add sensitivity analysis for key assumptions' });
+    if (lower.includes('added') || lower.includes('updated')) suggestions.push({ text: 'Add totals and summary row' });
+    if (suggestions.length === 0) suggestions.push({ text: 'Add a chart-ready summary' }, { text: 'Check for circular references' });
+  } else if (docType === 'presentation' || docType === 'deck') {
+    if (lower.includes('slide')) suggestions.push({ text: 'Add transition between these slides' });
+    if (lower.includes('data') || lower.includes('number')) suggestions.push({ text: 'Add a data visualization slide' });
+    if (suggestions.length === 0) suggestions.push({ text: 'Add speaker notes' }, { text: 'Improve visual hierarchy' });
+  } else {
+    if (lower.includes('risk') || lower.includes('weak')) suggestions.push({ text: 'Now strengthen the mitigants' });
+    if (lower.includes('rewrite') || lower.includes('rewrote')) suggestions.push({ text: 'Make it even more concise' });
+    if (lower.includes('section') || lower.includes('paragraph')) suggestions.push({ text: 'Now do the same for the next section' });
+    if (lower.includes('number') || lower.includes('metric')) suggestions.push({ text: 'Cross-check numbers against the model' });
+    if (suggestions.length === 0) suggestions.push({ text: 'Find more inconsistencies' }, { text: 'Strengthen the conclusion' });
+  }
+
+  return suggestions.slice(0, 3);
+}
+
 // Per-document message history (persists across document switches)
 const docMessageCache = new Map<string, Message[]>();
 
@@ -205,6 +230,7 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
   const [loading, setLoading] = useState(false);
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
   const [pendingChange, setPendingChange] = useState<PendingChange | null>(null);
+  const [followUps, setFollowUps] = useState<SuggestedFollowUp[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -244,6 +270,7 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
     setMessages(newMessages);
     setInput('');
     setLoading(true);
+    setFollowUps([]);
 
     try {
       abortControllerRef.current = new AbortController();
@@ -367,6 +394,10 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
           console.warn('[AICHAT] Failed to parse slide_updates');
         }
       }
+
+      // Generate contextual follow-up suggestions
+      const followUpSuggestions = generateFollowUps(fullText, documentType);
+      if (followUpSuggestions.length > 0) setFollowUps(followUpSuggestions);
     } catch (e) {
       console.warn('[AICHAT_SEND]', e instanceof Error ? e.message : e);
       setMessages(prev => {
@@ -534,6 +565,30 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
                 <Square style={{ width: '12px', height: '12px', fill: 'currentColor' }} />
               </button>
             </div>
+          </div>
+        )}
+        {/* Follow-up suggestions */}
+        {followUps.length > 0 && !loading && messages.length > 0 && (
+          <div className="flex flex-wrap" style={{ gap: 'var(--space-2)', padding: '4px 0' }}>
+            {followUps.map((fu, i) => (
+              <button
+                key={i}
+                onClick={() => { setFollowUps([]); sendMessage(fu.text); }}
+                style={{
+                  fontSize: 'var(--font-size-xs)',
+                  padding: '4px 10px',
+                  borderRadius: 'var(--radius-md)',
+                  background: 'var(--surface-1)',
+                  color: 'var(--text-tertiary)',
+                  border: '1px solid var(--border-subtle)',
+                  cursor: 'pointer',
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--accent)'; (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'var(--border-subtle)'; (e.currentTarget as HTMLElement).style.color = 'var(--text-tertiary)'; }}
+              >
+                {fu.text}
+              </button>
+            ))}
           </div>
         )}
         <div ref={messagesEndRef} /></div>

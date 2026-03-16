@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Plus, Trash2, Type, StickyNote, Copy, Play, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, Trash2, Type, StickyNote, Copy, Play, X, Palette } from 'lucide-react';
 
 export interface SlideElement {
   id: string;
@@ -80,9 +80,26 @@ function getElementStyle(el: SlideElement): React.CSSProperties {
   }
 }
 
+function isDarkBg(bg?: string): boolean {
+  if (!bg) return false;
+  const hex = bg.replace('#', '');
+  if (hex.length !== 6) return false;
+  const r = parseInt(hex.slice(0, 2), 16);
+  const g = parseInt(hex.slice(2, 4), 16);
+  const b = parseInt(hex.slice(4, 6), 16);
+  return (r * 0.299 + g * 0.587 + b * 0.114) < 128;
+}
+
 function renderSlideContent(slide: Slide, scale: number = 1): React.ReactNode {
+  const dark = isDarkBg(slide.background);
   return slide.elements.map(el => {
     const style = getElementStyle(el);
+    // Invert colors on dark backgrounds
+    if (dark) {
+      if (el.type === 'title') style.color = '#f1f5f9';
+      else if (el.type === 'subtitle') style.color = '#94a3b8';
+      else style.color = '#cbd5e1';
+    }
     if (scale !== 1) {
       const fontSize = style.fontSize;
       if (typeof fontSize === 'string' && fontSize.endsWith('em')) {
@@ -130,6 +147,7 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
   const [dragOverIdx, setDragOverIdx] = useState<number | null>(null);
   const [presenting, setPresenting] = useState(false);
   const [presentIdx, setPresentIdx] = useState(0);
+  const [showBgPicker, setShowBgPicker] = useState(false);
   const presentRef = useRef<HTMLDivElement>(null);
 
   const activeSlide = slides[activeIdx] || null;
@@ -241,6 +259,15 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
       return { ...slide, notes };
     });
     onChange(updated);
+  }, [slides, activeIdx, onChange]);
+
+  const setSlideBackground = useCallback((bg: string) => {
+    const updated = slides.map((slide, i) => {
+      if (i !== activeIdx) return slide;
+      return { ...slide, background: bg };
+    });
+    onChange(updated);
+    setShowBgPicker(false);
   }, [slides, activeIdx, onChange]);
 
   const addElement = useCallback((type: SlideElement['type']) => {
@@ -385,6 +412,53 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
               >
                 <StickyNote className="w-3.5 h-3.5" /> Notes
               </button>
+              <div className="relative">
+                <button
+                  onClick={() => setShowBgPicker(!showBgPicker)}
+                  className="btn btn-ghost btn-sm"
+                  style={{ fontSize: 'var(--font-size-xs)', ...(showBgPicker ? { background: 'var(--accent-muted)', color: 'var(--accent)' } : {}) }}
+                  title="Slide Background"
+                >
+                  <Palette className="w-3.5 h-3.5" />
+                </button>
+                {showBgPicker && (
+                  <div
+                    className="absolute z-50"
+                    style={{
+                      top: '100%',
+                      left: 0,
+                      marginTop: '4px',
+                      background: 'var(--surface-1)',
+                      border: '1px solid var(--border-default)',
+                      borderRadius: 'var(--radius-lg)',
+                      boxShadow: 'var(--shadow-lg)',
+                      padding: 'var(--space-2)',
+                      display: 'flex',
+                      gap: '4px',
+                      flexWrap: 'wrap',
+                      width: '160px',
+                    }}
+                  >
+                    {['#ffffff', '#f8fafc', '#f1f5f9', '#1e293b', '#0f172a', '#000000', '#1e3a5f', '#1a1a2e', '#fef3c7', '#ecfdf5'].map(color => (
+                      <button
+                        key={color}
+                        onClick={() => setSlideBackground(color)}
+                        style={{
+                          width: '24px',
+                          height: '24px',
+                          borderRadius: 'var(--radius-sm)',
+                          background: color,
+                          border: `1px solid ${color === '#ffffff' || color === '#f8fafc' ? 'var(--border-default)' : color}`,
+                          cursor: 'pointer',
+                          outline: activeSlide?.background === color ? '2px solid var(--accent)' : 'none',
+                          outlineOffset: '1px',
+                        }}
+                        title={color}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
               <div style={{ width: '1px', height: '16px', background: 'var(--border-subtle)' }} />
               <button
                 onClick={startPresentation}
@@ -407,7 +481,7 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
 
         {/* Slide canvas */}
         <div className="flex-1 flex items-center justify-center overflow-auto" style={{ padding: 'var(--space-6)' }}>
-          <div style={slideCanvasStyle}>
+          <div style={{ ...slideCanvasStyle, background: activeSlide?.background || 'white' }}>
             {activeSlide && activeSlide.elements.map(el => {
               const style = getElementStyle(el);
               const isEditing = editingElement === el.id;
@@ -543,7 +617,7 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
           {/* Slide content */}
           <div style={{
             aspectRatio: '16/9',
-            background: 'white',
+            background: slides[presentIdx]?.background || 'white',
             width: '100vw',
             maxHeight: '100vh',
             position: 'relative',

@@ -136,6 +136,7 @@ export function DocumentViewer({ document, onContentChange, onSave, onDelete, on
   const [fullscreen, setFullscreen] = useState(false);
   const [showShortcuts, setShowShortcuts] = useState(false);
   const [showOutline, setShowOutline] = useState(false);
+  const [activeSheet, setActiveSheet] = useState<string>('Sheet1');
   const findInputRef = useRef<HTMLInputElement>(null);
   const versionDropdownRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -334,12 +335,20 @@ export function DocumentViewer({ document, onContentChange, onSave, onDelete, on
 
   // Parse content for structured formats
   let spreadsheetCells: Record<string, import('./excel-viewer').CellData> = {};
+  let allSheets: import('./excel-viewer').SheetData[] = [];
   let slides: import('./slide-editor').Slide[] = [];
 
   if (format === 'spreadsheet') {
     try {
       const parsed = JSON.parse(document.content);
-      spreadsheetCells = parsed.cells || parsed;
+      if (parsed.sheets && Array.isArray(parsed.sheets)) {
+        // Multi-sheet format: { sheets: [{ name, cells }] }
+        allSheets = parsed.sheets;
+        const current = allSheets.find(s => s.name === activeSheet) || allSheets[0];
+        spreadsheetCells = current?.cells || {};
+      } else {
+        spreadsheetCells = parsed.cells || parsed;
+      }
     } catch { /* empty */ }
   } else if (format === 'slides') {
     try {
@@ -851,6 +860,9 @@ export function DocumentViewer({ document, onContentChange, onSave, onDelete, on
           <ExcelViewer
             cells={spreadsheetCells}
             onCellChange={handleSpreadsheetCellChange}
+            allSheets={allSheets.length > 0 ? allSheets : undefined}
+            activeSheetName={allSheets.length > 0 ? activeSheet : undefined}
+            onSheetChange={setActiveSheet}
           />
         ) : format === 'slides' ? (
           <SlideEditor

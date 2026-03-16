@@ -51,7 +51,11 @@ function parseCellRef(ref: string): { row: number; col: number } | null {
   return { col: colIndex(match[1]), row: parseInt(match[2]) - 1 };
 }
 
-export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allSheets, activeSheetName }: ExcelViewerProps) {
+interface ExcelViewerPropsWithSheets extends ExcelViewerProps {
+  onSheetChange?: (sheetName: string) => void;
+}
+
+export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allSheets, activeSheetName, onSheetChange }: ExcelViewerPropsWithSheets) {
   const [selectedCell, setSelectedCell] = useState<string | null>(null);
   const [editingCell, setEditingCell] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
@@ -146,6 +150,17 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
     setEditValue('');
   }, [editingCell, editValue, onCellChange]);
 
+  const navigateCell = useCallback((ref: string, direction: 'up' | 'down' | 'left' | 'right') => {
+    const parsed = parseCellRef(ref);
+    if (!parsed) return;
+    let { row, col } = parsed;
+    if (direction === 'up') row = Math.max(0, row - 1);
+    else if (direction === 'down') row = Math.min(rows - 1, row + 1);
+    else if (direction === 'left') col = Math.max(0, col - 1);
+    else if (direction === 'right') col = Math.min(cols - 1, col + 1);
+    setSelectedCell(cellRefStr(row, col));
+  }, [rows, cols]);
+
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       if (editingCell) {
@@ -168,11 +183,27 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
         const match = selectedCell.match(/^([A-Z]+)(\d+)$/);
         if (match) {
           const ci = colIndex(match[1]);
-          const nextRef = `${colLabel(ci + 1)}${match[2]}`;
+          const nextRef = e.shiftKey ? `${colLabel(Math.max(0, ci - 1))}${match[2]}` : `${colLabel(ci + 1)}${match[2]}`;
           setSelectedCell(nextRef);
         }}
+    } else if (!editingCell && selectedCell) {
+      // Arrow key navigation when not editing
+      if (e.key === 'ArrowUp') { e.preventDefault(); navigateCell(selectedCell, 'up'); }
+      else if (e.key === 'ArrowDown') { e.preventDefault(); navigateCell(selectedCell, 'down'); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); navigateCell(selectedCell, 'left'); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); navigateCell(selectedCell, 'right'); }
+      // Type to start editing (alphanumeric, =, +, -)
+      else if (e.key.length === 1 && !e.metaKey && !e.ctrlKey) {
+        setEditingCell(selectedCell);
+        setEditValue(e.key);
+      }
+      // Delete/Backspace to clear cell
+      else if (e.key === 'Delete' || e.key === 'Backspace') {
+        e.preventDefault();
+        onCellChange(selectedCell, '');
+      }
     }
-  }, [editingCell, selectedCell, handleEditComplete, handleCellDoubleClick]);
+  }, [editingCell, selectedCell, handleEditComplete, handleCellDoubleClick, navigateCell, onCellChange]);
 
   const formatValue = (cell: CellData | undefined, ref: string): string => {
     if (cell?.f) {
@@ -335,5 +366,50 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
                     </td>);
                 })}</tr>
             ))}</tbody></table></div>
+
+      {/* Sheet tabs */}
+      {allSheets && allSheets.length > 1 && (
+        <div
+          className="shrink-0 flex items-center overflow-x-auto"
+          style={{
+            borderTop: '1px solid var(--border-subtle)',
+            backgroundColor: 'var(--surface-1)',
+            padding: '0 var(--space-2)',
+            minHeight: '30px',
+            gap: '1px',
+          }}>
+          {allSheets.map(sheet => (
+            <button
+              key={sheet.name}
+              onClick={() => onSheetChange?.(sheet.name)}
+              className="shrink-0"
+              style={{
+                padding: '4px 12px',
+                fontSize: 'var(--font-size-xs)',
+                background: sheet.name === displaySheetName ? 'var(--surface-0)' : 'transparent',
+                color: sheet.name === displaySheetName ? 'var(--text-primary)' : 'var(--text-muted)',
+                border: 'none',
+                borderBottom: sheet.name === displaySheetName ? '2px solid var(--accent)' : '2px solid transparent',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+              }}
+              onMouseEnter={e => {
+                if (sheet.name !== displaySheetName) {
+                  (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)';
+                  (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)';
+                }
+              }}
+              onMouseLeave={e => {
+                if (sheet.name !== displaySheetName) {
+                  (e.currentTarget as HTMLElement).style.background = 'transparent';
+                  (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)';
+                }
+              }}
+            >
+              {sheet.name}
+            </button>
+          ))}
+        </div>
+      )}
     </div>);
 }
