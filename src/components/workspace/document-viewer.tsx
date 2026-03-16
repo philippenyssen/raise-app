@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
-import { FileText, Eye, Edit3, Save, Clock, Download, FileSpreadsheet, Presentation, FileType, History, Trash2 } from 'lucide-react';
+import { FileText, Eye, Edit3, Save, Clock, Download, FileSpreadsheet, Presentation, FileType, History, Trash2, Search, X, Copy } from 'lucide-react';
 import { labelMuted, textSmSecondary } from '@/lib/styles';
 
 // Dynamically import heavy editor components
@@ -33,6 +33,7 @@ interface DocumentViewerProps {
   onContentChange: (content: string) => void;
   onSave: () => void;
   onDelete?: () => void;
+  onDuplicate?: () => void;
   onTitleChange?: (title: string) => void;
   onStatusChange?: (status: string) => void;
   saving: boolean;
@@ -120,7 +121,7 @@ interface DocVersion {
 
 const STATUS_CYCLE = ['draft', 'review', 'final'];
 
-export function DocumentViewer({ document, onContentChange, onSave, onDelete, onTitleChange, onStatusChange, saving, dirty }: DocumentViewerProps) {
+export function DocumentViewer({ document, onContentChange, onSave, onDelete, onDuplicate, onTitleChange, onStatusChange, saving, dirty }: DocumentViewerProps) {
   const [mode, setMode] = useState<'visual' | 'source'>('visual');
   const [exporting, setExporting] = useState(false);
   const [editingTitle, setEditingTitle] = useState(false);
@@ -128,7 +129,47 @@ export function DocumentViewer({ document, onContentChange, onSave, onDelete, on
   const [showVersions, setShowVersions] = useState(false);
   const [versions, setVersions] = useState<DocVersion[]>([]);
   const [loadingVersions, setLoadingVersions] = useState(false);
+  const [showFind, setShowFind] = useState(false);
+  const [findQuery, setFindQuery] = useState('');
+  const [replaceQuery, setReplaceQuery] = useState('');
+  const [findCount, setFindCount] = useState(0);
+  const findInputRef = useRef<HTMLInputElement>(null);
   const versionDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Keyboard shortcut: Cmd/Ctrl+F to open find
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
+        e.preventDefault();
+        setShowFind(true);
+        setTimeout(() => findInputRef.current?.focus(), 50);
+      }
+      if (e.key === 'Escape' && showFind) {
+        setShowFind(false);
+        setFindQuery('');
+        setReplaceQuery('');
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [showFind]);
+
+  // Count matches when find query changes
+  useEffect(() => {
+    if (!findQuery || !document) { setFindCount(0); return; }
+    const text = document.content.replace(/<[^>]+>/g, '');
+    const regex = new RegExp(findQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+    const matches = text.match(regex);
+    setFindCount(matches ? matches.length : 0);
+  }, [findQuery, document]);
+
+  const handleReplaceAll = useCallback(() => {
+    if (!document || !findQuery) return;
+    const regex = new RegExp(findQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+    const newContent = document.content.replace(regex, replaceQuery);
+    onContentChange(newContent);
+    setFindCount(0);
+  }, [document, findQuery, replaceQuery, onContentChange]);
 
   // Close version dropdown on outside click
   useEffect(() => {
@@ -545,6 +586,49 @@ export function DocumentViewer({ document, onContentChange, onSave, onDelete, on
             </button>
           ))}
 
+          {/* Find/Replace toggle */}
+          {(format === 'richtext' || format === 'markdown') && (
+            <button
+              onClick={() => {
+                setShowFind(!showFind);
+                if (!showFind) setTimeout(() => findInputRef.current?.focus(), 50);
+              }}
+              className="rounded transition-colors"
+              style={{
+                padding: '6px',
+                background: showFind ? 'var(--accent-muted)' : 'transparent',
+                color: showFind ? 'var(--accent)' : 'var(--text-muted)',
+                border: 'none',
+                cursor: 'pointer',
+              }}
+              onMouseEnter={e => { if (!showFind) { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}}
+              onMouseLeave={e => { if (!showFind) { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}}
+              title="Find & Replace (Cmd+F)"
+            >
+              <Search style={{ width: '14px', height: '14px' }} />
+            </button>
+          )}
+
+          {/* Duplicate button */}
+          {onDuplicate && (
+            <button
+              onClick={onDuplicate}
+              className="rounded transition-colors"
+              style={{
+                padding: '6px',
+                background: 'transparent',
+                color: 'var(--text-muted)',
+                border: 'none',
+                cursor: 'pointer',
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; (e.currentTarget as HTMLElement).style.background = 'var(--surface-2)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; (e.currentTarget as HTMLElement).style.background = 'transparent'; }}
+              title="Duplicate document"
+            >
+              <Copy style={{ width: '14px', height: '14px' }} />
+            </button>
+          )}
+
           {/* Delete button */}
           {onDelete && (
             <>
@@ -575,6 +659,57 @@ export function DocumentViewer({ document, onContentChange, onSave, onDelete, on
           )}
         </div>
       </div>
+
+      {/* Find & Replace bar */}
+      {showFind && (
+        <div
+          className="shrink-0 flex items-center gap-2"
+          style={{
+            padding: 'var(--space-2) var(--space-3)',
+            borderBottom: '1px solid var(--border-subtle)',
+            background: 'var(--surface-1)',
+          }}
+        >
+          <div className="flex items-center gap-2 flex-1">
+            <input
+              ref={findInputRef}
+              value={findQuery}
+              onChange={e => setFindQuery(e.target.value)}
+              placeholder="Find..."
+              className="input"
+              style={{ fontSize: 'var(--font-size-xs)', padding: '4px 8px', minWidth: '120px', maxWidth: '200px' }}
+              onKeyDown={e => { if (e.key === 'Escape') { setShowFind(false); setFindQuery(''); setReplaceQuery(''); } }}
+            />
+            {findQuery && (
+              <span style={{ fontSize: 'var(--font-size-xs)', color: findCount > 0 ? 'var(--text-muted)' : 'var(--danger)', whiteSpace: 'nowrap' }}>
+                {findCount} {findCount === 1 ? 'match' : 'matches'}
+              </span>
+            )}
+            <input
+              value={replaceQuery}
+              onChange={e => setReplaceQuery(e.target.value)}
+              placeholder="Replace with..."
+              className="input"
+              style={{ fontSize: 'var(--font-size-xs)', padding: '4px 8px', minWidth: '120px', maxWidth: '200px' }}
+              onKeyDown={e => { if (e.key === 'Enter') handleReplaceAll(); }}
+            />
+            <button
+              onClick={handleReplaceAll}
+              disabled={!findQuery || findCount === 0}
+              className="btn btn-sm"
+              style={{ fontSize: 'var(--font-size-xs)', opacity: !findQuery || findCount === 0 ? 0.4 : 1 }}
+            >
+              Replace All
+            </button>
+          </div>
+          <button
+            onClick={() => { setShowFind(false); setFindQuery(''); setReplaceQuery(''); }}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: '4px' }}
+          >
+            <X style={{ width: '14px', height: '14px' }} />
+          </button>
+        </div>
+      )}
 
       {/* Content area */}
       <div className="flex-1 overflow-hidden">

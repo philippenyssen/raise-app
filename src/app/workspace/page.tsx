@@ -287,6 +287,30 @@ export default function WorkspacePage() {
     }
   }, [selectedDoc, toast, fetchDocs]);
 
+  const handleDuplicate = useCallback(async () => {
+    if (!selectedDoc) return;
+    try {
+      const res = await fetch('/api/documents', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: `${selectedDoc.title} (copy)`,
+          type: selectedDoc.type,
+          content: editedContent,
+        }),
+      });
+      if (!res.ok) throw new Error('Failed to duplicate');
+      const doc = await res.json();
+      toast('Document duplicated');
+      const refreshed = await fetchDocs();
+      const created = refreshed.find((d: Doc) => d.id === doc.id);
+      if (created) selectDoc(created);
+    } catch (e) {
+      console.warn('[WORKSPACE_DUPLICATE]', e instanceof Error ? e.message : e);
+      toast('Failed to duplicate document', 'error');
+    }
+  }, [selectedDoc, editedContent, toast, fetchDocs, selectDoc]);
+
   const handleDelete = useCallback(async () => {
     if (!selectedDoc) return;
     try {
@@ -516,6 +540,7 @@ export default function WorkspacePage() {
               onContentChange={handleContentChange}
               onSave={handleSave}
               onDelete={() => setDeleteConfirm(true)}
+              onDuplicate={handleDuplicate}
               onTitleChange={handleTitleChange}
               onStatusChange={handleStatusChange}
               saving={saving}
