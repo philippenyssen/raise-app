@@ -9,6 +9,7 @@ import {
   createObjectionRecord,
   updateObjectionEnthusiasmDelta,
   extractAndStoreQuestionPatterns,
+  getObjectionsByInvestor,
 } from '@/lib/db';
 import { analyzeMeetingNotes } from '@/lib/ai';
 import { emitContextChange } from '@/lib/context-bus';
@@ -44,7 +45,24 @@ export async function POST(req: NextRequest) {
     const inferredType = meetingType || 'intro';
     let aiData: Record<string, unknown> = {};
     try {
-      aiData = await analyzeMeetingNotes(rawNotes, investorName, inferredType);
+      let investorContext: Parameters<typeof analyzeMeetingNotes>[3];
+      try {
+        const [inv, priorMeetings, objections] = await Promise.all([
+          getInvestor(investorId),
+          getMeetings(investorId, 5),
+          getObjectionsByInvestor(investorId),
+        ]);
+        if (inv) {
+          const sorted = [...priorMeetings].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+          investorContext = {
+            currentStage: inv.status,
+            priorEnthusiasm: sorted.slice(0, 3).map(m => m.enthusiasm_score).filter((s): s is number => s != null).reverse(),
+            daysSinceLastMeeting: sorted[0]?.date ? Math.floor((Date.now() - new Date(sorted[0].date).getTime()) / 864e5) : null,
+            openObjections: objections.filter(o => o.effectiveness !== 'effective').map(o => o.objection_text).slice(0, 5),
+          };
+        }
+      } catch { /* context is optional */ }
+      aiData = await analyzeMeetingNotes(rawNotes, investorName, inferredType, investorContext);
     } catch (err) { console.error('[QUICK_CAPTURE_AI]', err instanceof Error ? err.message : err); }
 
     // Apply user overrides — explicit values take precedence over AI inference

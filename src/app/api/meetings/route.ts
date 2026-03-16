@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getMeetings, getMeeting, createMeeting, updateMeeting, getInvestor, processPostMeetingIntelligence, logActivity, createObjectionRecordsBatch, updateObjectionEnthusiasmDelta, generateFollowupChoreography, extractAndStoreQuestionPatterns, createTask } from '@/lib/db';
+import { getMeetings, getMeeting, createMeeting, updateMeeting, getInvestor, processPostMeetingIntelligence, logActivity, createObjectionRecordsBatch, updateObjectionEnthusiasmDelta, generateFollowupChoreography, extractAndStoreQuestionPatterns, createTask, getObjectionsByInvestor } from '@/lib/db';
 import { analyzeMeetingNotes } from '@/lib/ai';
 import { emitContextChange } from '@/lib/context-bus';
 
@@ -47,7 +47,27 @@ export async function POST(req: NextRequest) {
   let aiData: Record<string, unknown> = {};
   if (analyze && raw_notes) {
     try {
-      aiData = await analyzeMeetingNotes(raw_notes as string, investor_name as string, (type as string) || 'intro');
+      // Build investor context for better enthusiasm calibration
+      let investorContext: { currentStage: string; priorEnthusiasm: number[]; daysSinceLastMeeting: number | null; openObjections: string[] } | undefined;
+      try {
+        const [inv, priorMeetings, objections] = await Promise.all([
+          getInvestor(investor_id as string),
+          getMeetings(investor_id as string, 5),
+          getObjectionsByInvestor(investor_id as string),
+        ]);
+        if (inv) {
+          const sorted = [...priorMeetings].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+          const priorEnthusiasm = sorted.slice(0, 3).map(m => m.enthusiasm_score).filter((s): s is number => s != null).reverse();
+          const lastDate = sorted[0]?.date;
+          investorContext = {
+            currentStage: inv.status,
+            priorEnthusiasm,
+            daysSinceLastMeeting: lastDate ? Math.floor((Date.now() - new Date(lastDate).getTime()) / 864e5) : null,
+            openObjections: objections.filter(o => o.effectiveness !== 'effective').map(o => o.objection_text).slice(0, 5),
+          };
+        }
+      } catch { /* context is optional — continue without it */ }
+      aiData = await analyzeMeetingNotes(raw_notes as string, investor_name as string, (type as string) || 'intro', investorContext);
     } catch (err) {
       console.error('[MEETING_AI_ANALYSIS]', err instanceof Error ? err.message : err);
     }}

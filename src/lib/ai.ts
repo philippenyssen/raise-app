@@ -60,7 +60,12 @@ function safeParseJSON<T>(text: string, fallback: T): { parsed: T; success: bool
     return { parsed: fallback, success: false };
   }}
 
-export async function analyzeMeetingNotes(rawNotes: string, investorName: string, meetingType: string): Promise<{
+export async function analyzeMeetingNotes(rawNotes: string, investorName: string, meetingType: string, investorContext?: {
+  currentStage: string;
+  priorEnthusiasm: number[];
+  daysSinceLastMeeting: number | null;
+  openObjections: string[];
+}): Promise<{
   questions_asked: { text: string; topic: string }[];
   objections: { text: string; severity: string; topic: string }[];
   engagement_signals: {
@@ -117,7 +122,13 @@ export async function analyzeMeetingNotes(rawNotes: string, investorName: string
 
 INVESTOR: ${investorName}
 MEETING TYPE: ${meetingType}
-
+${investorContext ? `
+INVESTOR CONTEXT (use this to calibrate enthusiasm relative to trajectory):
+- Current stage: ${investorContext.currentStage}
+- Prior enthusiasm scores: ${investorContext.priorEnthusiasm.length > 0 ? investorContext.priorEnthusiasm.join(' → ') : 'no prior meetings'}
+- Days since last meeting: ${investorContext.daysSinceLastMeeting ?? 'first meeting'}
+- Open objections from prior meetings: ${investorContext.openObjections.length > 0 ? investorContext.openObjections.join('; ') : 'none'}
+` : ''}
 RAW NOTES:
 ${rawNotes.length > 15000 ? rawNotes.substring(0, 15000) + '\n[...truncated — notes exceeded 15,000 chars]' : rawNotes}
 
@@ -159,6 +170,8 @@ Extract structured data in this exact JSON format (no markdown, just pure JSON):
 }
 
 Enthusiasm scale: 1=Cold/polite 2=Lukewarm 3=Interested 4=Excited 5=Ready to term sheet
+
+CALIBRATION: If prior enthusiasm scores are provided, calibrate relative to trajectory. A "neutral" response from someone who was previously at 4 is declining (score 2-3). A "neutral" response on a first meeting is standard (score 3). If open objections from prior meetings are addressed in this meeting, that's a positive signal. If they're repeated without resolution, that's a warning.
 
 Be rigorous. Don't infer enthusiasm that isn't there. If notes are sparse, flag what's missing. Empty arrays and empty strings are preferred over fabricated data.
 Only count explicit objections (pushback, concern, disagreement), not questions or requests for information.
