@@ -15,7 +15,7 @@ import {
   Target, Clock, AlertTriangle, Zap, RefreshCw,
   Calendar, CheckCircle, ArrowUpRight, TrendingDown, Timer,
   Rocket, Shield, XCircle, ChevronDown, Play, Ban, BarChart3,
-  Star, Eye, Flame, Flag, MessageSquare,
+  Star, Eye, Flame, Flag, MessageSquare, Sparkles,
 } from 'lucide-react';
 import { cardPad4, dimensionBg, dimensionColor, inlineBadgeStyle, labelMuted, labelMuted10, labelMutedTight, labelMutedWide, labelSecondary, labelTertiary, scoreBgStyle as focusScoreBgStyle, scoreColor as focusScoreColor, skelCardSm, stAccent, stBorderTop, stTextMuted, stTextPrimary, stTextSecondary, stTextTertiary, INVESTOR_TYPE_STYLES } from '@/lib/styles';
 import { TierBadge, EnthusiasmDots } from '@/components/shared';
@@ -61,6 +61,8 @@ interface FocusItem {
   timeEstimate: string;
   expectedImpact: string;
   riskIfIgnored: string;
+  whyNow?: string;
+  topDriver?: string;
   daysSinceLastMeeting: number | null;
   lastMeetingDate: string | null;
   lastMeetingType: string | null;
@@ -304,6 +306,14 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
               <span style={inlineBadgeStyle(PIPELINE_STATUS_STYLES[item.status] ?? PIPELINE_STATUS_STYLES.identified)}>
                 {STATUS_LABELS[item.status] ?? item.status}</span></div>
 
+            {/* Why Now — intelligence explanation */}
+            {item.whyNow && (
+              <div className="flex items-start gap-1.5" style={{ marginTop: 'var(--space-1)' }}>
+                <span style={{ color: 'var(--accent)', display: 'flex', marginTop: '2px', flexShrink: 0 }}><Sparkles className="w-3 h-3" /></span>
+                <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--accent)', fontWeight: 400, lineHeight: 1.5, fontStyle: 'italic' }}>
+                  {item.whyNow}</p></div>
+            )}
+
             {/* Recommended action */}
             <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, lineHeight: 1.4, marginTop: 'var(--space-1)' }}>
               {item.recommendedAction}</p>
@@ -420,12 +430,18 @@ function PriorityQueueItem({ item, rank }: { item: FocusItem; rank: number }) {
           <div>
             <p style={{ ...labelMutedWide, marginBottom: 'var(--space-2)' }}>Score Breakdown</p>
             <div className="grid grid-cols-5 gap-2">
-              {SCORE_COMPONENTS.map(comp => (
-                <div key={comp.key} className="text-center">
-                  <div className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: 300, color: focusScoreColor(item.components[comp.key]) }}>{item.components[comp.key]}</div>
-                  <div style={{ ...labelMuted, marginTop: 'var(--space-0)' }}>{comp.label}</div>
-                  <div style={labelMuted}>{comp.weight}</div></div>
-              ))}</div></div>
+              {SCORE_COMPONENTS.map(comp => {
+                const isDriver = item.topDriver === comp.key;
+                return (
+                  <div key={comp.key} className="text-center" style={isDriver ? { background: 'var(--accent-muted)', borderRadius: 'var(--radius-md)', padding: 'var(--space-1)' } : { padding: 'var(--space-1)' }}>
+                    <div className="tabular-nums" style={{ fontSize: 'var(--font-size-sm)', fontWeight: isDriver ? 400 : 300, color: isDriver ? 'var(--accent)' : focusScoreColor(item.components[comp.key]) }}>{item.components[comp.key]}</div>
+                    <div style={{ ...labelMuted, marginTop: 'var(--space-0)', ...(isDriver ? { color: 'var(--accent)' } : {}) }}>{comp.label}{isDriver ? ' *' : ''}</div>
+                    <div style={labelMuted}>{comp.weight}</div></div>
+                );
+              })}</div>
+            {item.topDriver && (
+              <p style={{ ...labelMuted, marginTop: 'var(--space-1)', fontStyle: 'italic' }}>* Primary driver of this ranking</p>
+            )}</div>
 
           {/* Unresolved objections */}
           {item.unresolvedObjections.length > 0 && (

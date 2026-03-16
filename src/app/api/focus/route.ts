@@ -13,6 +13,7 @@ interface FocusItem {
   components: { investorScore: number; urgency: number; momentumRisk: number; opportunitySize: number; actionReadiness: number };
   scoringDimensions: ScoreDimension[];
   recommendedAction: string; timeEstimate: string; expectedImpact: string; riskIfIgnored: string;
+  whyNow: string; topDriver: string;
   daysSinceLastMeeting: number | null; lastMeetingDate: string | null; lastMeetingType: string | null;
   momentum: string; pendingTaskCount: number; openFlagCount: number;
   unresolvedObjections: string[]; topObjectionTopic: string | null;
@@ -133,6 +134,95 @@ function determineRecommendedAction(
   }}
 
 // ---------------------------------------------------------------------------
+// "Why Now" Intelligence Explanation
+// ---------------------------------------------------------------------------
+
+function generateWhyNow(
+  investor: Investor, components: FocusItem['components'], momentum: string,
+  daysSince: number | null, unresolvedObjections: string[], enthusiasm: number,
+): { whyNow: string; topDriver: string } {
+  // Determine dominant component
+  const ranked = [
+    { key: 'urgency', score: components.urgency, weight: 0.25 },
+    { key: 'momentumRisk', score: components.momentumRisk, weight: 0.20 },
+    { key: 'investorScore', score: components.investorScore, weight: 0.30 },
+    { key: 'opportunitySize', score: components.opportunitySize, weight: 0.15 },
+    { key: 'actionReadiness', score: components.actionReadiness, weight: 0.10 },
+  ].sort((a, b) => (b.score * b.weight) - (a.score * a.weight));
+  const topDriver = ranked[0].key;
+  const name = investor.partner || investor.name;
+
+  // Term sheet — always highest urgency narrative
+  if (investor.status === 'term_sheet') {
+    return { whyNow: `${name} has a term sheet on the table — every day without response risks losing the anchor commitment`, topDriver: 'urgency' };
+  }
+
+  // In DD with high enthusiasm — close window
+  if (investor.status === 'in_dd' && enthusiasm >= 4) {
+    return { whyNow: `${name} is deep in DD with ${enthusiasm}/5 conviction — this is the moment to push for IC submission`, topDriver: 'momentumRisk' };
+  }
+
+  // Stalled — re-engagement urgency
+  if (momentum === 'stalled') {
+    const days = daysSince ?? 14;
+    return { whyNow: `${name} hasn't been contacted in ${days}+ days — silence at this stage typically means the deal is dying`, topDriver: 'urgency' };
+  }
+
+  // Decelerating with unresolved objections — risk of loss
+  if (momentum === 'decelerating' && unresolvedObjections.length > 0) {
+    return { whyNow: `${name} is losing interest with "${unresolvedObjections[0].substring(0, 60)}" unresolved — intervene before the narrative solidifies at IC`, topDriver: 'momentumRisk' };
+  }
+
+  // Decelerating without objections — cadence issue
+  if (momentum === 'decelerating') {
+    return { whyNow: `Meeting cadence with ${name} is slowing — investors rarely re-accelerate without proactive outreach`, topDriver: 'momentumRisk' };
+  }
+
+  // High urgency score (stale high-tier investor)
+  if (components.urgency >= 70 && daysSince !== null && daysSince > 14) {
+    return { whyNow: `T${investor.tier} investor ${name} hasn't met in ${daysSince} days — high-tier investors need consistent cadence to stay engaged`, topDriver: 'urgency' };
+  }
+
+  // Accelerating with high enthusiasm — capitalize
+  if (momentum === 'accelerating' && enthusiasm >= 4) {
+    return { whyNow: `${name} momentum is accelerating at ${enthusiasm}/5 enthusiasm — strike while conviction is peaking`, topDriver: 'investorScore' };
+  }
+
+  // High investor score — strong fit
+  if (components.investorScore >= 70) {
+    const fitReason = investor.type === 'sovereign' ? 'sovereign mandate alignment' :
+      investor.type === 'growth' ? 'growth equity thesis match' :
+      investor.type === 'strategic' ? 'strategic synergy potential' :
+      investor.type === 'debt' ? 'credit profile fit' :
+      investor.type === 'family_office' ? 'tangible asset thesis' :
+      'strong thesis alignment';
+    return { whyNow: `${name} scores high on ${fitReason} — one of the best-fit investors in the pipeline`, topDriver: 'investorScore' };
+  }
+
+  // High opportunity size — big check potential
+  if (components.opportunitySize >= 75) {
+    return { whyNow: `${name} is a T${investor.tier} ${investor.type} — potential anchor check that would de-risk the entire round`, topDriver: 'opportunitySize' };
+  }
+
+  // Action readiness — pending items need attention
+  if (components.actionReadiness >= 60) {
+    return { whyNow: `${name} has outstanding items requiring response — completing these demonstrates execution quality`, topDriver: 'actionReadiness' };
+  }
+
+  // Default: status-based narrative
+  const statusNarratives: Record<string, string> = {
+    identified: `${name} matches the target profile — initiate outreach before a competing deal captures their attention`,
+    contacted: `${name} has been contacted — follow-up timing is critical, response rates drop sharply after 7 days`,
+    nda_signed: `${name} signed the NDA — they're ready for the full presentation, don't let the momentum stall`,
+    meeting_scheduled: `Upcoming meeting with ${name} — preparation now directly impacts first-meeting conversion`,
+    met: `Post-meeting window with ${name} — fast follow-up within 48 hours converts at 2-3x the rate of delayed response`,
+    engaged: `${name} is engaged but not yet in DD — deepen the relationship to move toward formal diligence`,
+    in_dd: `${name} is in active DD — responsiveness and data quality now determine the outcome`,
+  };
+  return { whyNow: statusNarratives[investor.status] || `${name} needs attention based on current pipeline position`, topDriver };
+}
+
+// ---------------------------------------------------------------------------
 // Main GET handler
 // ---------------------------------------------------------------------------
 
@@ -180,16 +270,20 @@ export async function GET() {
       const actionReadiness = computeActionReadinessScore(pendingTaskCount, openFlagCount, unresolvedObjections.length, investor.status);
       const focusScore = clamp(investorScoreComponent * 0.30 + urgency * 0.25 + momentumRisk * 0.20 + opportunitySize * 0.15 + actionReadiness * 0.10);
       const actionResult = determineRecommendedAction(investor, meetings, daysSinceLastMeeting, unresolvedObjections, pendingTaskCount, momentum, topObjectionTopic);
+      const enthVal = investor.enthusiasm || (latestMeeting?.enthusiasm_score ?? 0);
+      const comps = { investorScore: investorScoreComponent, urgency, momentumRisk, opportunitySize, actionReadiness };
+      const { whyNow, topDriver } = generateWhyNow(investor, comps, momentum, daysSinceLastMeeting, unresolvedObjections, enthVal);
 
       focusItems.push({
         investorId: investor.id, investorName: investor.name, investorType: investor.type,
         investorTier: investor.tier, status: investor.status,
-        enthusiasm: investor.enthusiasm || (latestMeeting?.enthusiasm_score ?? 0),
+        enthusiasm: enthVal,
         focusScore,
-        components: { investorScore: investorScoreComponent, urgency, momentumRisk, opportunitySize, actionReadiness },
+        components: comps,
         scoringDimensions: investorScore.dimensions.map(d => ({ name: d.name, score: d.score, signal: d.signal, evidence: d.evidence })),
         recommendedAction: actionResult.action, timeEstimate: actionResult.timeEstimate,
         expectedImpact: actionResult.expectedImpact, riskIfIgnored: actionResult.riskIfIgnored,
+        whyNow, topDriver,
         daysSinceLastMeeting, lastMeetingDate: latestMeeting?.date ?? null,
         lastMeetingType: latestMeeting?.type ?? null, momentum,
         pendingTaskCount, openFlagCount, unresolvedObjections: unresolvedObjections.slice(0, 3), topObjectionTopic,});
