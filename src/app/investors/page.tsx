@@ -89,7 +89,7 @@ export default function InvestorsPage() {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
   const [deleting, setDeleting] = useState(false);
-  const [sortKey, setSortKey] = useState<'name' | 'tier' | 'last_meeting_date' | 'enthusiasm' | null>(null);
+  const [sortKey, setSortKey] = useState<'name' | 'tier' | 'status' | 'last_meeting_date' | 'enthusiasm' | null>(null);
   const [sortAsc, setSortAsc] = useState(true);
   const [bulkUpdating, setBulkUpdating] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -209,7 +209,7 @@ export default function InvestorsPage() {
       if (!i.name.toLowerCase().includes(q) && !i.partner.toLowerCase().includes(q) && !(i.notes || '').toLowerCase().includes(q)) return false;
     }
     return true;
-  }).sort((a, b) => { if (!sortKey) return 0; const dir = sortAsc ? 1 : -1; if (sortKey === 'name') return dir * a.name.localeCompare(b.name); if (sortKey === 'tier') return dir * (a.tier - b.tier); if (sortKey === 'enthusiasm') return dir * ((a.enthusiasm || 0) - (b.enthusiasm || 0)); return dir * ((a.last_meeting_date || '').localeCompare(b.last_meeting_date || '')); }),
+  }).sort((a, b) => { if (!sortKey) return 0; const dir = sortAsc ? 1 : -1; if (sortKey === 'name') return dir * a.name.localeCompare(b.name); if (sortKey === 'tier') return dir * (a.tier - b.tier); if (sortKey === 'enthusiasm') return dir * ((a.enthusiasm || 0) - (b.enthusiasm || 0)); if (sortKey === 'status') { const SO = ['identified','contacted','nda_signed','meeting_scheduled','met','engaged','in_dd','term_sheet','closed','passed','dropped']; return dir * (SO.indexOf(a.status) - SO.indexOf(b.status)); } return dir * ((a.last_meeting_date || '').localeCompare(b.last_meeting_date || '')); }),
   [investors, filter, searchQuery, sortKey, sortAsc]);
 
   async function bulkUpdateStatus(newStatus: string) {
@@ -380,7 +380,7 @@ export default function InvestorsPage() {
                 <input type="checkbox" checked={selected.size === filtered.length && filtered.length > 0} onChange={toggleSelectAll}
                   aria-label="Select all investors"
                   style={{ accentColor: 'var(--accent)' }} /></th>
-              {([['name','Investor'],['',''],['','Type'],['tier','Tier'],['','Partner'],['','Status'],['','Check Size'],['last_meeting_date','Last Contact'],['enthusiasm','Enthusiasm'],['','Actions']] as const).map(([k, label], i) => <th scope="col" key={i} style={k ? { cursor: 'pointer', userSelect: 'none', ...(i === 1 ? { width: '2rem', padding: 'var(--space-3) var(--space-2)' } : {}) } : (i === 1 ? { width: '2rem', padding: 'var(--space-3) var(--space-2)' } : {})} title={i === 1 ? 'Data completeness' : undefined} onClick={k ? () => { if (sortKey === k) setSortAsc(!sortAsc); else { setSortKey(k as typeof sortKey); setSortAsc(k === 'name'); } } : undefined}>{label}{sortKey === k ? (sortAsc ? ' \u25B2' : ' \u25BC') : ''}</th>)}</tr></thead>
+              {([['name','Investor'],['',''],['','Type'],['tier','Tier'],['','Partner'],['status','Status'],['','Check Size'],['last_meeting_date','Last Contact'],['enthusiasm','Enthusiasm'],['','Actions']] as const).map(([k, label], i) => <th scope="col" key={i} style={k ? { cursor: 'pointer', userSelect: 'none', ...(i === 1 ? { width: '2rem', padding: 'var(--space-3) var(--space-2)' } : {}) } : (i === 1 ? { width: '2rem', padding: 'var(--space-3) var(--space-2)' } : {})} title={i === 1 ? 'Data completeness' : undefined} onClick={k ? () => { if (sortKey === k) setSortAsc(!sortAsc); else { setSortKey(k as typeof sortKey); setSortAsc(k === 'name'); } } : undefined}>{label}{sortKey === k ? (sortAsc ? ' \u25B2' : ' \u25BC') : ''}</th>)}</tr></thead>
           <tbody>
             {filtered.map(inv => {
               const isSelected = selected.has(inv.id);
