@@ -773,7 +773,7 @@ function InvestorCard({
         className="pipeline-card"
         style={{ ...cardBaseStyle, padding: '0.5rem 0.75rem' }}>
         <Link href={`/investors/${investor.id}`} className="flex items-center gap-2">
-          {onToggleCompare && <span role="checkbox" aria-checked={isCompareSelected} aria-label={`Compare ${investor.name}`} className={`card-compare${isCompareSelected ? ' selected' : ''}`} onClick={e => { e.preventDefault(); e.stopPropagation(); onToggleCompare(investor.id); }} style={{ width: 12, height: 12, borderRadius: 'var(--radius-sm)', border: `1.5px solid ${isCompareSelected ? 'var(--accent)' : 'var(--border-default)'}`, background: isCompareSelected ? 'var(--accent)' : 'transparent', cursor: 'pointer', flexShrink: 0 }} />}
+          {onToggleCompare && <span role="checkbox" aria-checked={isCompareSelected} aria-label={`Compare ${investor.name}`} className={`card-compare${isCompareSelected ? ' selected' : ''}`} tabIndex={0} onClick={e => { e.preventDefault(); e.stopPropagation(); onToggleCompare(investor.id); }} onKeyDown={e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); onToggleCompare(investor.id); } }} style={{ width: 12, height: 12, borderRadius: 'var(--radius-sm)', border: `1.5px solid ${isCompareSelected ? 'var(--accent)' : 'var(--border-default)'}`, background: isCompareSelected ? 'var(--accent)' : 'transparent', cursor: 'pointer', flexShrink: 0 }} />}
           <GripVertical className="w-3 h-3 flex-shrink-0 card-grip" aria-hidden="true" />
           <span className="truncate" title={investor.name} style={{ ...stFontXs, fontWeight: 400, color: 'var(--text-secondary)' }}>{investor.name}</span>
           <span style={{ ...badgeSmall, ...TIER_STYLES[investor.tier] }}>T{investor.tier}</span>
@@ -797,7 +797,7 @@ function InvestorCard({
             {completeness < 100 && <span title={`Profile ${completeness}% complete`} style={{ fontSize: 'var(--font-size-xs)', color: complColor, marginLeft: '4px', fontWeight: 400 }}>{completeness}%</span>}
           </div>
           <div className="flex items-center gap-1 flex-shrink-0 mt-0.5">
-            {onToggleCompare && <span role="checkbox" aria-checked={isCompareSelected} aria-label={`Compare ${investor.name}`} className={`card-compare${isCompareSelected ? ' selected' : ''}`} onClick={e => { e.preventDefault(); e.stopPropagation(); onToggleCompare(investor.id); }} style={{ width: 14, height: 14, borderRadius: 'var(--radius-sm)', border: `1.5px solid ${isCompareSelected ? 'var(--accent)' : 'var(--border-default)'}`, background: isCompareSelected ? 'var(--accent)' : 'transparent', cursor: 'pointer' }} />}
+            {onToggleCompare && <span role="checkbox" aria-checked={isCompareSelected} aria-label={`Compare ${investor.name}`} className={`card-compare${isCompareSelected ? ' selected' : ''}`} tabIndex={0} onClick={e => { e.preventDefault(); e.stopPropagation(); onToggleCompare(investor.id); }} onKeyDown={e => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); e.stopPropagation(); onToggleCompare(investor.id); } }} style={{ width: 14, height: 14, borderRadius: 'var(--radius-sm)', border: `1.5px solid ${isCompareSelected ? 'var(--accent)' : 'var(--border-default)'}`, background: isCompareSelected ? 'var(--accent)' : 'transparent', cursor: 'pointer' }} />}
             <GripVertical className="w-3.5 h-3.5 card-grip" aria-hidden="true" />
           </div></div>
 

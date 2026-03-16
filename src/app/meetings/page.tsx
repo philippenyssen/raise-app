@@ -70,6 +70,8 @@ function RatingDots({ value, onChange, label }: { value: number | null; onChange
             onClick={() => onChange?.(n)}
             onMouseEnter={() => setHovered(n)}
             onMouseLeave={() => setHovered(null)}
+            onFocus={() => setHovered(n)}
+            onBlur={() => setHovered(null)}
             disabled={!onChange}
             aria-label={`Rate ${n} star${n > 1 ? 's' : ''}`}
             style={{ ...ratingBtnBase, cursor: onChange ? 'pointer' : 'default' }}>
