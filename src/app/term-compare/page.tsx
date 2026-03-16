@@ -408,7 +408,7 @@ export default function TermComparePage() {
 
           {/* Comparison Table */}
           <div className="rounded-xl overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm" aria-label="Term sheet comparison">
               <thead className="table-header">
                 <tr>
                   <th scope="col" className="text-left px-4 py-3 text-xs font-normal w-44" style={stTextMuted}>

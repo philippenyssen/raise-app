@@ -282,13 +282,13 @@ export default function IntelligencePage() {
               <table className="w-full text-sm">
                 <thead className="table-header">
                   <tr>
-                    <th>Company</th>
-                    <th>Round</th>
-                    <th>Amount</th>
-                    <th>Valuation</th>
-                    <th>Lead</th>
-                    <th>Date</th>
-                    <th>Sector</th>
+                    <th scope="col">Company</th>
+                    <th scope="col">Round</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Valuation</th>
+                    <th scope="col">Lead</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Sector</th>
                     <th scope="col" className="w-8"></th></tr></thead>
                 <tbody>
                   {deals.map(d => (
