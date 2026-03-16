@@ -546,7 +546,7 @@ export default function ObjectionsPage() {
                               fontSize: 'var(--font-size-xs)',
                               fontWeight: 400,
                               color: 'var(--accent)',
-                              padding: '1px 4px',
+                              padding: 'var(--space-0) var(--space-1)',
                               borderRadius: 'var(--radius-sm)',
                               whiteSpace: 'nowrap', }}
                             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.textDecoration = 'underline'; }}
@@ -622,7 +622,7 @@ export default function ObjectionsPage() {
                           fontWeight: 400,
                           color: 'var(--accent)',
                           textDecoration: 'none',
-                          padding: '2px 6px',
+                          padding: 'var(--space-0) var(--space-1)',
                           borderRadius: 'var(--radius-sm)',
                           background: 'var(--accent-muted)', }}
                         onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--accent-8)'; }}
@@ -637,7 +637,7 @@ export default function ObjectionsPage() {
                           fontWeight: 400,
                           color: 'var(--text-muted)',
                           textDecoration: 'none',
-                          padding: '2px 6px',
+                          padding: 'var(--space-0) var(--space-1)',
                           borderRadius: 'var(--radius-sm)',
                           background: 'var(--surface-2)', }}
                         onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; }}

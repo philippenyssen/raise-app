@@ -18,7 +18,7 @@ const textSmSecNormal = { ...textSmSecondary, fontWeight: 400 } as const;
 const mbSpace3 = { marginBottom: 'var(--space-3)' } as const;
 const funnelBarContainer: React.CSSProperties = { height: '24px', background: 'var(--surface-1)', borderRadius: 'var(--radius-sm)', overflow: 'hidden', position: 'relative' };
 const funnelStageName = { fontSize: 'var(--font-size-sm)', color: 'var(--text-primary)', fontWeight: 400, minWidth: '120px' } as const;
-const mb4 = { marginBottom: '4px' } as const;
+const mb4 = { marginBottom: 'var(--space-1)' } as const;
 const typeCardStyle: React.CSSProperties = { padding: 'var(--space-2) var(--space-3)', borderRadius: 'var(--radius-sm)', background: 'var(--surface-1)' };
 const insightCardStyle: React.CSSProperties = { padding: 'var(--space-2) var(--space-3)', borderRadius: 'var(--radius-sm)', background: 'var(--surface-1)', ...textSmSecondary };
 const closeRateLabel = { fontSize: 'var(--font-size-xs)', color: 'var(--text-secondary)', fontWeight: 400 } as const;
@@ -341,7 +341,7 @@ export default function WinLossPage() {
                       <span style={countBadgeStyle}>
                         {pr.count}x</span></div>
                     <div style={barTrack}>
-                      <div style={{ height: '100%', width: `${barPct}%`, background: 'var(--danger)', borderRadius: '2px', opacity: 0.7 }} />
+                      <div style={{ height: '100%', width: `${barPct}%`, background: 'var(--danger)', borderRadius: 'var(--radius-sm)', opacity: 0.7 }} />
                     </div>
                   </div>);
               })}</div>

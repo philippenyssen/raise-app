@@ -333,7 +333,7 @@ export default function EnrichmentPage() {
                           {provider.name}</span>
                         <span style={{
                           fontSize: 'var(--font-size-xs)',
-                          padding: '1px 6px',
+                          padding: 'var(--space-0) var(--space-1)',
                           borderRadius: 'var(--radius-sm)',
                           background: typeStyle.bg,
                           color: typeStyle.color,
@@ -370,7 +370,7 @@ export default function EnrichmentPage() {
                       ))}</div>
                     {provider.requires_api_key && !provider.configured && (
                       <div style={apiKeyWarn}>
-                        Requires API key: set <code style={{ background: 'var(--surface-3)', padding: '0 4px', borderRadius: '3px' }}>{provider.api_key_env}</code> in your environment
+                        Requires API key: set <code style={{ background: 'var(--surface-3)', padding: '0 var(--space-1)', borderRadius: 'var(--radius-sm)' }}>{provider.api_key_env}</code> in your environment
                       </div>
                     )}</div>
                 )}

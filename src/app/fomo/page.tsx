@@ -156,14 +156,14 @@ function IntensityMeter({ intensity, description }: { intensity: number; descrip
         style={{
           width: '100%', height: '8px',
           background: 'var(--surface-2)',
-          borderRadius: '4px',
+          borderRadius: 'var(--radius-sm)',
           overflow: 'hidden',
           marginBottom: 'var(--space-3)', }}>
         <div
           style={{
             width: `${intensity}%`, height: '100%',
             background: color,
-            borderRadius: '4px',
+            borderRadius: 'var(--radius-sm)',
             transition: 'width 0.6s ease-out',
           }} /></div>
 
@@ -208,7 +208,7 @@ function PressureCard({ inv }: { inv: InvestorFomo }) {
       {/* Header row */}
       <div className="flex items-center gap-3">
         {/* Intensity bar */}
-        <div style={{ width: '4px', height: '40px', borderRadius: '2px', background: color, flexShrink: 0 }} />
+        <div style={{ width: '4px', height: '40px', borderRadius: 'var(--radius-sm)', background: color, flexShrink: 0 }} />
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
