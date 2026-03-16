@@ -20,6 +20,10 @@ import { labelMuted, labelSecondary, scoreBorderColor, scoreColor4 as scoreColor
 import { cachedFetch, invalidateCache } from '@/lib/cache';
 import { MS_PER_DAY } from '@/lib/time';
 
+const selectCompact = { width: 'auto', padding: '2px 8px', fontSize: 'var(--font-size-xs)' } as const;
+const pipeDivider = { color: 'var(--border-default)' } as const;
+const vDivider = { background: 'var(--border-default)' } as const;
+
 const STATUS_COLORS: Record<string, string> = {
   identified: 'var(--surface-3)',
   contacted: 'var(--surface-2)',
@@ -394,7 +398,7 @@ export default function InvestorDetailPage() {
                 value={editForm.tier}
                 onChange={e => setEditForm(f => ({ ...f, tier: Number(e.target.value) }))}
                 className="input"
-                style={{ width: 'auto', padding: '2px 8px', fontSize: 'var(--font-size-xs)' }}>
+                style={selectCompact}>
                 {[1, 2, 3, 4].map(t => (
                   <option key={t} value={t}>Tier {t}</option>
                 ))}</select>
@@ -415,7 +419,7 @@ export default function InvestorDetailPage() {
                 value={editForm.status}
                 onChange={e => setEditForm(f => ({ ...f, status: e.target.value }))}
                 className="input"
-                style={{ width: 'auto', padding: '2px 8px', fontSize: 'var(--font-size-xs)' }}>
+                style={selectCompact}>
                 {Object.entries(STATUS_LABELS).map(([val, label]) => (
                   <option key={val} value={val}>{label}</option>
                 ))}</select>
@@ -591,7 +595,7 @@ export default function InvestorDetailPage() {
                 'var(--text-muted)'}}>
               {dealIntel.heatLabel}</span></div>
 
-          <span style={{ color: 'var(--border-default)' }}>|</span>
+          <span style={pipeDivider}>|</span>
 
           {/* Tracking */}
           <div className="flex items-center gap-1.5">
@@ -605,7 +609,7 @@ export default function InvestorDetailPage() {
               {dealIntel.trackingStatus === 'on_track' ? 'On Track' :
                 dealIntel.trackingStatus === 'behind' ? 'Behind' : 'At Risk'}</span></div>
 
-          <span style={{ color: 'var(--border-default)' }}>|</span>
+          <span style={pipeDivider}>|</span>
 
           {/* Days + Velocity */}
           <span style={labelMuted}>
@@ -615,7 +619,7 @@ export default function InvestorDetailPage() {
           {/* Bottleneck */}
           {dealIntel.bottleneck && (
             <>
-              <span style={{ color: 'var(--border-default)' }}>|</span>
+              <span style={pipeDivider}>|</span>
               <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', fontStyle: 'italic' }}>
                 {dealIntel.bottleneck}</span>
             </>
@@ -1176,14 +1180,15 @@ function DeleteBtn({ onClick, small }: { onClick: () => void; small?: boolean })
 }
 
 function StatCard({ icon: Icon, label, value, sub, highlight }: { icon: React.ComponentType<{ className?: string }>; label: string; value: string | number; sub: string; highlight?: boolean }) {
+  const mutedOrDanger = highlight ? 'var(--danger)' : 'var(--text-muted)';
   return (
     <div className="rounded-xl p-4" style={{ background: highlight ? 'var(--fg-6)' : undefined }}>
       <div className="flex items-center gap-2 mb-1">
-        <span style={{ color: highlight ? 'var(--danger)' : 'var(--text-muted)' }}><Icon className="w-3.5 h-3.5" /></span>
-        <span className="text-xs truncate" style={{ color: highlight ? 'var(--danger)' : 'var(--text-muted)' }}>{label}</span>
+        <span style={{ color: mutedOrDanger }}><Icon className="w-3.5 h-3.5" /></span>
+        <span className="text-xs truncate" style={{ color: mutedOrDanger }}>{label}</span>
       </div>
       <div className="text-2xl font-normal" style={{ color: highlight ? 'var(--danger)' : 'var(--text-primary)' }}>{value}</div>
-      <div className="text-xs" style={{ color: highlight ? 'var(--danger)' : 'var(--text-muted)' }}>{sub}</div>
+      <div className="text-xs" style={{ color: mutedOrDanger }}>{sub}</div>
     </div>);
 }
 
@@ -1234,7 +1239,7 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
             <span className="text-lg" style={textMuted}>/100</span></div>
 
           {/* Divider */}
-          <div className="w-px h-14" style={{ background: 'var(--border-default)' }} />
+          <div className="w-px h-14" style={vDivider} />
 
           {/* Momentum + Outcome */}
           <div className="flex-1 space-y-2">
@@ -1398,7 +1403,7 @@ function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTraje
               ))}</svg></div>
 
           {/* Divider */}
-          <div className="w-px h-12 hidden md:block" style={{ background: 'var(--border-default)' }} />
+          <div className="w-px h-12 hidden md:block" style={vDivider} />
 
           {/* Trend + Velocity */}
           <div className="space-y-2">
@@ -1421,7 +1426,7 @@ function ConvictionTrajectoryPanel({ trajectory }: { trajectory: ConvictionTraje
                 {trajectory.velocityPerWeek > 0 ? '+' : ''}{trajectory.velocityPerWeek} pts/week</span></div></div>
 
           {/* Divider */}
-          <div className="w-px h-12 hidden md:block" style={{ background: 'var(--border-default)' }} />
+          <div className="w-px h-12 hidden md:block" style={vDivider} />
 
           {/* Prediction */}
           <div className="space-y-1.5 min-w-0">

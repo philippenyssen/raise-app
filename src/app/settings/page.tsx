@@ -29,6 +29,12 @@ const DEFAULT_FOLLOWUP_CADENCE: FollowupCadenceForm = { thank_you_delay_hours: 2
 const DEFAULT_RAISE_CONFIG: RaiseConfigForm = { company_name: '', round_type: 'Series C', equity_amount: 0, debt_amount: 0, pre_money: 0, target_close: '', currency: 'EUR', target_investor_count: 0, minimum_check_size: 0 };
 
 const labelStyle = { ...stFontXs, fontWeight: 400 as const, ...stTextTertiary, marginBottom: '0.375rem' };
+const sectionCardPad = { padding: 'var(--space-6)' } as const;
+const sectionHeaderMb = { marginBottom: 'var(--space-6)' } as const;
+const h2Style = { fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-primary)' } as const;
+const unsavedBadge = { fontSize: 'var(--font-size-xs)', color: 'var(--danger)', fontWeight: 400 } as const;
+const unitLabelWide = { fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '3rem' } as const;
+const cadenceSummaryBox = { background: 'var(--surface-2)', borderRadius: 'var(--radius-md)', padding: '0.5rem 0.75rem' } as const;
 
 const ROUND_TYPES = ['Series A', 'Series B', 'Series C', 'Series D', 'Pre-IPO', 'Bridge'];
 const CURRENCIES = ['EUR', 'USD', 'GBP'];
@@ -245,15 +251,15 @@ export default function SettingsPage() {
       {/* ================================================================= */}
       {/* 1. RAISE PARAMETERS                                               */}
       {/* ================================================================= */}
-      <div className="card" style={{ padding: 'var(--space-6)' }}>
-        <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-6)' }}>
+      <div className="card" style={sectionCardPad}>
+        <div className="flex items-center justify-between" style={sectionHeaderMb}>
           <div className="flex items-center gap-3">
             <Building2 className="w-5 h-5" style={stTextTertiary} />
-            <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-primary)' }}>Raise Parameters</h2>
+            <h2 style={h2Style}>Raise Parameters</h2>
           </div>
           <div className="flex items-center gap-2">
             {raise.dirty && (
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', fontWeight: 400 }}>Unsaved changes</span>
+              <span style={unsavedBadge}>Unsaved changes</span>
             )}
             <button
               onClick={() => raise.save()}
@@ -433,11 +439,11 @@ export default function SettingsPage() {
       {/* ================================================================= */}
       {/* 2. SCORING WEIGHTS                                                */}
       {/* ================================================================= */}
-      <div className="card" style={{ padding: 'var(--space-6)' }}>
-        <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-6)' }}>
+      <div className="card" style={sectionCardPad}>
+        <div className="flex items-center justify-between" style={sectionHeaderMb}>
           <div className="flex items-center gap-3">
             <Sliders className="w-5 h-5" style={stTextTertiary} />
-            <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-primary)' }}>Scoring Weights</h2>
+            <h2 style={h2Style}>Scoring Weights</h2>
           </div>
           <div className="flex items-center gap-2">
             <button
@@ -448,7 +454,7 @@ export default function SettingsPage() {
               Reset to Defaults</button>
             <div className="flex items-center gap-2">
               {scoring.dirty && (
-                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', fontWeight: 400 }}>Unsaved changes</span>
+                <span style={unsavedBadge}>Unsaved changes</span>
               )}
               <button
                 onClick={() => scoring.save(() => {
@@ -504,15 +510,15 @@ export default function SettingsPage() {
       {/* ================================================================= */}
       {/* 3. FOLLOW-UP CADENCE                                              */}
       {/* ================================================================= */}
-      <div className="card" style={{ padding: 'var(--space-6)' }}>
-        <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-6)' }}>
+      <div className="card" style={sectionCardPad}>
+        <div className="flex items-center justify-between" style={sectionHeaderMb}>
           <div className="flex items-center gap-3">
             <Clock className="w-5 h-5" style={stTextTertiary} />
-            <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-primary)' }}>Follow-up Cadence</h2>
+            <h2 style={h2Style}>Follow-up Cadence</h2>
           </div>
           <div className="flex items-center gap-2">
             {followup.dirty && (
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', fontWeight: 400 }}>Unsaved changes</span>
+              <span style={unsavedBadge}>Unsaved changes</span>
             )}
             <button
               onClick={() => followup.save()}
@@ -533,7 +539,7 @@ export default function SettingsPage() {
                 min={0}
                 max={72}
                 className="input flex-1" />
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '3rem' }}>hours</span></div>
+              <span style={unitLabelWide}>hours</span></div>
           </div>
 
           {/* Objection Response Delay */}
@@ -547,7 +553,7 @@ export default function SettingsPage() {
                 min={0}
                 max={168}
                 className="input flex-1" />
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '3rem' }}>hours</span></div>
+              <span style={unitLabelWide}>hours</span></div>
           </div>
 
           {/* Schedule Next Meeting Delay */}
@@ -561,7 +567,7 @@ export default function SettingsPage() {
                 min={0}
                 max={168}
                 className="input flex-1" />
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '3rem' }}>hours</span></div>
+              <span style={unitLabelWide}>hours</span></div>
           </div>
 
           {/* Re-engagement Delay */}
@@ -575,7 +581,7 @@ export default function SettingsPage() {
                 min={1}
                 max={30}
                 className="input flex-1" />
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '3rem' }}>days</span></div></div>
+              <span style={unitLabelWide}>days</span></div></div>
 
           {/* Escalation Delay */}
           <div>
@@ -588,7 +594,7 @@ export default function SettingsPage() {
                 min={1}
                 max={60}
                 className="input flex-1" />
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '3rem' }}>days</span></div></div>
+              <span style={unitLabelWide}>days</span></div></div>
 
           {/* Tier 1 Speed Multiplier */}
           <div>
@@ -601,7 +607,7 @@ export default function SettingsPage() {
                 min={25}
                 max={100}
                 className="input flex-1" />
-              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', width: '3rem' }}>%</span></div>
+              <span style={unitLabelWide}>%</span></div>
             <p style={{ ...stFontXs, ...stTextMuted, marginTop: 'var(--space-1)' }}>
               {followup.data.tier1_speed_multiplier}% means Tier 1 investors get follow-ups {100 - followup.data.tier1_speed_multiplier}% faster
             </p></div></div>
@@ -610,16 +616,16 @@ export default function SettingsPage() {
         <div style={{ marginTop: 'var(--space-5)', paddingTop: 'var(--space-4)', borderTop: '1px solid var(--border-subtle)' }}>
           <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-2)' }}>Effective Tier 1 cadence:</p>
           <div className="grid grid-cols-3 gap-3" style={{ textAlign: 'center' }}>
-            <div style={{ background: 'var(--surface-2)', borderRadius: 'var(--radius-md)', padding: '0.5rem 0.75rem' }}>
+            <div style={cadenceSummaryBox}>
               <div style={{ ...stFontXs, ...stTextMuted }}>Thank you</div>
               <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
                 {Math.round(followup.data.thank_you_delay_hours * followup.data.tier1_speed_multiplier / 100)}h</div></div>
-            <div style={{ background: 'var(--surface-2)', borderRadius: 'var(--radius-md)', padding: '0.5rem 0.75rem' }}>
+            <div style={cadenceSummaryBox}>
               <div style={{ ...stFontXs, ...stTextMuted }}>Objection</div>
               <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
                 {Math.round(followup.data.objection_response_delay_hours * followup.data.tier1_speed_multiplier / 100)}h</div>
             </div>
-            <div style={{ background: 'var(--surface-2)', borderRadius: 'var(--radius-md)', padding: '0.5rem 0.75rem' }}>
+            <div style={cadenceSummaryBox}>
               <div style={{ ...stFontXs, ...stTextMuted }}>Re-engage</div>
               <div style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-secondary)' }}>
                 {Math.round(followup.data.reengagement_delay_days * followup.data.tier1_speed_multiplier / 100)}d</div></div>
@@ -632,7 +638,7 @@ export default function SettingsPage() {
         <div className="flex items-center justify-between" style={{ marginBottom: 'var(--space-4)' }}>
           <div className="flex items-center gap-3">
             <Key className="w-5 h-5" style={stTextTertiary} />
-            <h2 style={{ fontSize: 'var(--font-size-lg)', fontWeight: 400, color: 'var(--text-primary)' }}>Anthropic API Key</h2>
+            <h2 style={h2Style}>Anthropic API Key</h2>
           </div>
           <button
             onClick={testKey}
@@ -676,7 +682,7 @@ export default function SettingsPage() {
         )}</div>
 
       {/* Billing info */}
-      <div className="card" style={{ padding: 'var(--space-6)' }}>
+      <div className="card" style={sectionCardPad}>
         <div className="flex items-center gap-3" style={{ marginBottom: 'var(--space-3)' }}>
           <Settings2 className="w-5 h-5" style={stTextTertiary} />
           <h3 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-tertiary)' }}>IMPORTANT: Claude.ai vs API Credits</h3>
