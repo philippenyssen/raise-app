@@ -20,7 +20,7 @@ import { labelMuted, labelSecondary, scoreBorderColor, scoreColor4 as scoreColor
 import { cachedFetch, invalidateCache } from '@/lib/cache';
 import { MS_PER_DAY } from '@/lib/time';
 
-const selectCompact = { width: 'auto', padding: '2px 8px', fontSize: 'var(--font-size-xs)' } as const;
+const selectCompact = { width: 'auto', padding: 'var(--space-0) var(--space-2)', fontSize: 'var(--font-size-xs)' } as const;
 const pipeDivider = { color: 'var(--border-default)' } as const;
 const vDivider = { background: 'var(--border-default)' } as const;
 const PRIORITY_COLORS: Record<string, string> = { critical: 'var(--danger)', high: 'var(--warning)', medium: 'var(--warning)', low: 'var(--text-muted)' };
@@ -659,7 +659,7 @@ export default function InvestorDetailPage() {
                 href={`/meetings/new?investor=${id}`}
                 className="flex items-center gap-1"
                 style={{
-                  fontSize: 'var(--font-size-xs)', fontWeight: 400, padding: '3px 10px',
+                  fontSize: 'var(--font-size-xs)', fontWeight: 400, padding: 'var(--space-1) var(--space-2)',
                   borderRadius: 'var(--radius-sm)', textDecoration: 'none',
                   background: 'var(--danger-muted)', color: 'var(--text-primary)',
                   border: '1px solid var(--fg-6)', }}>
@@ -669,7 +669,7 @@ export default function InvestorDetailPage() {
                 href={`/followups?investor=${id}`}
                 className="flex items-center gap-1"
                 style={{
-                  fontSize: 'var(--font-size-xs)', fontWeight: 400, padding: '3px 10px',
+                  fontSize: 'var(--font-size-xs)', fontWeight: 400, padding: 'var(--space-1) var(--space-2)',
                   borderRadius: 'var(--radius-sm)', textDecoration: 'none',
                   background: 'var(--warning-muted)', color: 'var(--text-tertiary)',
                   border: '1px solid var(--fg-5)', }}>
@@ -718,7 +718,7 @@ export default function InvestorDetailPage() {
                   <span
                     style={{
                       fontSize: 'var(--font-size-xs)', fontWeight: 400,
-                      padding: '1px 6px', borderRadius: 'var(--radius-full)',
+                      padding: 'var(--space-0) var(--space-1)', borderRadius: 'var(--radius-full)',
                       background: 'var(--danger)', color: 'var(--text-primary)', }}>
                     {overdueItems.length} overdue</span>
                 )}</div>
@@ -1275,7 +1275,7 @@ function InvestorScorePanel({ score, loading, onRefresh, investorId }: { score: 
                       return `/meetings/new?investor=${investorId}`;
                     })()}
                     className="btn btn-sm shrink-0"
-                    style={{ background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid var(--accent-25)', fontSize: 'var(--font-size-xs)', padding: '3px 10px', gap: 'var(--space-1)', display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}>
+                    style={{ background: 'var(--accent-muted)', color: 'var(--accent)', border: '1px solid var(--accent-25)', fontSize: 'var(--font-size-xs)', padding: 'var(--space-1) var(--space-2)', gap: 'var(--space-1)', display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}>
                     Do it <ArrowRight className="w-3 h-3" /></Link></div></div></div></div></div></div>
 
       {/* Score Summary: top & bottom dimensions */}
