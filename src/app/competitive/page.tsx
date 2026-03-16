@@ -69,6 +69,48 @@ export default function CompetitivePage() {
     topCompetitor: data?.competitors[0]?.name ?? '-',
   }), [data?.competitors]);
 
+  // Build investor × competitor cross-reference matrix
+  const heatmapData = useMemo(() => {
+    if (!data?.competitors.length) return null;
+    const allInvestors = new Set<string>();
+    const matrix = new Map<string, Map<string, number>>();
+    for (const c of data.competitors) {
+      const compMap = new Map<string, number>();
+      for (const mtg of c.meetings) {
+        const inv = mtg.investor_name;
+        allInvestors.add(inv);
+        compMap.set(inv, (compMap.get(inv) ?? 0) + 1);
+      }
+      matrix.set(c.name, compMap);
+    }
+    const investors = [...allInvestors].sort();
+    const competitors = data.competitors.map(c => c.name).slice(0, 8);
+    if (investors.length < 2 || competitors.length < 2) return null;
+
+    // Find max for color scaling
+    let maxMentions = 1;
+    for (const [, compMap] of matrix) {
+      for (const [, count] of compMap) {
+        if (count > maxMentions) maxMentions = count;
+      }
+    }
+
+    // Identify at-risk investors (mentioned with 2+ competitors)
+    const atRiskInvestors: { name: string; competitors: string[]; totalMentions: number }[] = [];
+    for (const inv of investors) {
+      const comps: string[] = [];
+      let total = 0;
+      for (const comp of competitors) {
+        const count = matrix.get(comp)?.get(inv) ?? 0;
+        if (count > 0) { comps.push(comp); total += count; }
+      }
+      if (comps.length >= 2) atRiskInvestors.push({ name: inv, competitors: comps, totalMentions: total });
+    }
+    atRiskInvestors.sort((a, b) => b.totalMentions - a.totalMentions);
+
+    return { investors, competitors, matrix, maxMentions, atRiskInvestors };
+  }, [data?.competitors]);
+
   return (
     <div className="page-content space-y-6">
       <div>
@@ -91,6 +133,82 @@ export default function CompetitivePage() {
         <div className="card-metric" style={{ padding: 'var(--space-3)' }}>
           <div className="metric-label">Meetings Scanned</div>
           <div className="metric-value" style={{ marginTop: 'var(--space-0)' }}>{data?.total_meetings_scanned ?? 0}</div></div></div>
+
+      {/* Investor × Competitor Heatmap */}
+      {heatmapData && (
+        <div className="card" style={{ overflow: 'hidden' }}>
+          <div style={{ padding: 'var(--space-4) var(--space-4) var(--space-2)' }}>
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 400, color: 'var(--text-primary)', marginBottom: 'var(--space-0)' }}>
+                  Threat Matrix</h2>
+                <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                  Which investors are evaluating which competitors</p></div>
+              {heatmapData.atRiskInvestors.length > 0 && (
+                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--danger)', fontWeight: 400 }}>
+                  {heatmapData.atRiskInvestors.length} investor{heatmapData.atRiskInvestors.length !== 1 ? 's' : ''} comparing alternatives</span>
+              )}
+            </div>
+          </div>
+          <div style={{ overflowX: 'auto', padding: '0 var(--space-4) var(--space-4)' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 'var(--font-size-xs)' }}>
+              <thead>
+                <tr>
+                  <th style={{ textAlign: 'left', padding: 'var(--space-2)', color: 'var(--text-muted)', fontWeight: 400, borderBottom: '1px solid var(--border-subtle)' }}>Investor</th>
+                  {heatmapData.competitors.map(comp => (
+                    <th key={comp} style={{ textAlign: 'center', padding: 'var(--space-2)', color: 'var(--text-muted)', fontWeight: 400, borderBottom: '1px solid var(--border-subtle)', minWidth: '70px' }}>
+                      {comp}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {heatmapData.investors.map(inv => (
+                  <tr key={inv}>
+                    <td style={{ padding: 'var(--space-2)', color: 'var(--text-primary)', fontWeight: 300, whiteSpace: 'nowrap', borderBottom: '1px solid var(--border-subtle)' }}>
+                      {inv}</td>
+                    {heatmapData.competitors.map(comp => {
+                      const count = heatmapData.matrix.get(comp)?.get(inv) ?? 0;
+                      const intensity = count > 0 ? Math.max(0.15, count / heatmapData.maxMentions) : 0;
+                      return (
+                        <td key={comp} style={{
+                          textAlign: 'center',
+                          padding: 'var(--space-2)',
+                          borderBottom: '1px solid var(--border-subtle)',
+                          background: count > 0 ? `rgba(var(--danger-rgb, 220, 38, 38), ${intensity * 0.25})` : 'transparent',
+                          color: count > 0 ? 'var(--text-primary)' : 'var(--text-muted)',
+                          fontWeight: count > 0 ? 400 : 300,
+                        }}>
+                          {count > 0 ? count : '·'}</td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* At-Risk Investors */}
+          {heatmapData.atRiskInvestors.length > 0 && (
+            <div style={{ padding: 'var(--space-3) var(--space-4)', borderTop: '1px solid var(--border-subtle)', background: 'var(--surface-1)' }}>
+              <div style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color: 'var(--text-secondary)', marginBottom: 'var(--space-2)' }}>
+                At-risk — evaluating multiple alternatives</div>
+              <div className="flex flex-wrap gap-2">
+                {heatmapData.atRiskInvestors.map(inv => (
+                  <span key={inv.name} style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 'var(--space-1)',
+                    fontSize: 'var(--font-size-xs)', padding: 'var(--space-1) var(--space-2)',
+                    borderRadius: 'var(--radius-sm)', background: 'var(--danger-muted)',
+                    color: 'var(--text-primary)', fontWeight: 400,
+                  }}>
+                    {inv.name}
+                    <span style={{ color: 'var(--text-muted)' }}>({inv.competitors.length} competitors, {inv.totalMentions} mentions)</span>
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Date Filters */}
       <div className="flex flex-wrap gap-3 items-end">
