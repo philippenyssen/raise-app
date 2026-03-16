@@ -29,6 +29,9 @@ const confGroupStage = { ...labelMuted, fontVariantNumeric: 'tabular-nums', flex
 const tierBadgeBase: React.CSSProperties = { width: '20px', height: '20px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'var(--font-size-xs)', fontWeight: 300, flexShrink: 0 };
 const tierHighStyle: React.CSSProperties = { ...tierBadgeBase, background: 'var(--accent)', color: 'var(--text-primary)' };
 const tierLowStyle: React.CSSProperties = { ...tierBadgeBase, background: 'var(--surface-3)', color: 'var(--text-secondary)' };
+const scenarioAmount: React.CSSProperties = { fontSize: 'var(--font-size-2xl)', fontWeight: 300, color: 'var(--text-primary)', fontVariantNumeric: 'tabular-nums', marginBottom: 'var(--space-1)' };
+const scenarioFooter: React.CSSProperties = { display: 'flex', justifyContent: 'space-between', fontSize: 'var(--font-size-xs)', color: 'var(--text-tertiary)', borderTop: '1px solid var(--border-subtle)', paddingTop: 'var(--space-2)', marginTop: 'var(--space-2)' };
+const distBarTrack: React.CSSProperties = { height: '6px', background: 'var(--surface-3)', borderRadius: '3px', overflow: 'hidden' };
 
 const DIST_CONFIG = [
   { label: 'High', key: 'high' as const, color: 'var(--text-secondary)', bg: 'var(--success-muted)' },
@@ -246,25 +249,11 @@ export default function ForecastPage() {
                   <Icon className="w-4 h-4" /></span>
                 <span style={fontSmPrimary}>
                   {s.label}</span></div>
-              <div
-                style={{
-                  fontSize: 'var(--font-size-2xl)',
-                  fontWeight: 300,
-                  color: 'var(--text-primary)',
-                  fontVariantNumeric: 'tabular-nums',
-                  marginBottom: 'var(--space-1)', }}>
+              <div style={scenarioAmount}>
                 {formatAmount(s.amount, currency)}</div>
               <div style={{ ...labelMuted, marginBottom: 'var(--space-2)' }}>
                 {s.description}</div>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  fontSize: 'var(--font-size-xs)',
-                  color: 'var(--text-tertiary)',
-                  borderTop: '1px solid var(--border-subtle)',
-                  paddingTop: 'var(--space-2)',
-                  marginTop: 'var(--space-2)', }}>
+              <div style={scenarioFooter}>
                 <span>{s.investorCount} investor{s.investorCount !== 1 ? 's' : ''}</span>
                 <span>{fmtDateShort(s.closeDate)}</span></div>
             </div>);
@@ -285,7 +274,7 @@ export default function ForecastPage() {
                 <span style={labelSecondary}>{label}</span>
                 <span style={{ fontSize: 'var(--font-size-xs)', fontWeight: 400, color, fontVariantNumeric: 'tabular-nums' }}>
                   {count}</span></div>
-              <div style={{ height: '6px', background: 'var(--surface-3)', borderRadius: '3px', overflow: 'hidden' }}>
+              <div style={distBarTrack}>
                 <div
                   style={{
                     width: totalActive > 0 ? `${(count / totalActive) * 100}%` : '0%',
