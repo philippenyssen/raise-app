@@ -458,6 +458,7 @@ export default function MomentumPage() {
                         <Link
                           href={delta < -5 ? `/meetings/new?investor=${inv.investorId}` : `/investors/${inv.investorId}`}
                           title={delta < -5 ? 'Schedule meeting — momentum dropping' : 'View investor'}
+                          aria-label={delta < -5 ? `Schedule meeting with ${inv.investorName}` : `View ${inv.investorName}`}
                           className="inline-flex items-center justify-center w-6 h-6 rounded hover-chevron-action"
                           style={actionCellStyle}>
                           <ChevronRight className="w-3.5 h-3.5" /></Link></td>

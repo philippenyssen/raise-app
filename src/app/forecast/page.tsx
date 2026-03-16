@@ -325,6 +325,7 @@ export default function ForecastPage() {
                       <Link
                         href={`/meetings/new?investor=${inv.investorId}`}
                         title="Schedule meeting"
+                        aria-label={`Schedule meeting with ${name}`}
                         className="flex items-center justify-center shrink-0 hover-bg-fg5"
                         style={critPathAction}>
                         <Calendar className="w-3 h-3" /></Link>
