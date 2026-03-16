@@ -79,6 +79,14 @@ const ACTIONS: ActionItem[] = [
 
 const SHORTCUTS: Record<string, string> = { '/today': '⌘T', '/meetings/new': '⌘N', '/meetings/capture': '⌘J', '/dealflow': '⌘D', '/focus': '⌘F', '/followups': '⌘L' };
 
+// Pre-built row styles — eliminates per-render object allocations in .map() loops
+const rowBase = { padding: '8px 16px', borderRadius: 'var(--radius-md)', margin: '0 8px', transition: 'background 100ms' } as const;
+const rowActive: React.CSSProperties = { ...rowBase, background: 'var(--surface-3)', color: 'var(--text-primary)' };
+const rowInactive: React.CSSProperties = { ...rowBase, background: 'transparent', color: 'var(--text-secondary)' };
+const iconActive: React.CSSProperties = { width: '16px', height: '16px', color: 'var(--accent)' };
+const iconInactive: React.CSSProperties = { width: '16px', height: '16px', color: 'var(--text-muted)' };
+const iconSuccessActive: React.CSSProperties = { width: '16px', height: '16px', color: 'var(--success)' };
+
 export default function CommandPalette() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
@@ -274,9 +282,9 @@ export default function CommandPalette() {
         data-index={idx}
         onClick={() => navigate(item)}
         className="flex items-center gap-3 cursor-pointer"
-        style={{ padding: '8px 16px', background: isActive ? 'var(--surface-3)' : 'transparent', color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)', borderRadius: 'var(--radius-md)', margin: '0 8px', transition: 'background 100ms' }}
+        style={isActive ? rowActive : rowInactive}
         onMouseEnter={() => setActiveIndex(idx)}>
-        <span className="shrink-0 flex items-center justify-center" style={{ width: '16px', height: '16px', color: isActive ? 'var(--accent)' : 'var(--text-muted)' }}>
+        <span className="shrink-0 flex items-center justify-center" style={isActive ? iconActive : iconInactive}>
           <Icon className="w-4 h-4" /></span>
         <span style={{ fontSize: 'var(--font-size-sm)' }}>{item.label}</span>
         {SHORTCUTS[item.href] && <kbd style={{ ...kbdStyle, marginLeft: 'auto', padding: '1px 5px' }}>{SHORTCUTS[item.href]}</kbd>}
@@ -293,9 +301,9 @@ export default function CommandPalette() {
         data-index={idx}
         onClick={() => navigate(item)}
         className="flex items-center gap-3 cursor-pointer"
-        style={{ padding: '8px 16px', background: isActive ? 'var(--surface-3)' : 'transparent', color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)', borderRadius: 'var(--radius-md)', margin: '0 8px', transition: 'background 100ms' }}
+        style={isActive ? rowActive : rowInactive}
         onMouseEnter={() => setActiveIndex(idx)}>
-        <span className="shrink-0 flex items-center justify-center" style={{ width: '16px', height: '16px', color: isActive ? 'var(--accent)' : 'var(--text-muted)' }}>
+        <span className="shrink-0 flex items-center justify-center" style={isActive ? iconActive : iconInactive}>
           <Users className="w-4 h-4" /></span>
         <span style={{ fontSize: 'var(--font-size-sm)' }}>{item.label}</span>
       </div>);
@@ -312,9 +320,9 @@ export default function CommandPalette() {
         data-index={idx}
         onClick={() => navigate(item)}
         className="flex items-center gap-3 cursor-pointer"
-        style={{ padding: '8px 16px', background: isActive ? 'var(--surface-3)' : 'transparent', color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)', borderRadius: 'var(--radius-md)', margin: '0 8px', transition: 'background 100ms' }}
+        style={isActive ? rowActive : rowInactive}
         onMouseEnter={() => setActiveIndex(idx)}>
-        <span className="shrink-0 flex items-center justify-center" style={{ width: '16px', height: '16px', color: isActive ? 'var(--success)' : 'var(--text-muted)' }}>
+        <span className="shrink-0 flex items-center justify-center" style={isActive ? iconSuccessActive : iconInactive}>
           <Icon className="w-4 h-4" /></span>
         <span style={{ fontSize: 'var(--font-size-sm)' }}>{item.label}</span>
       </div>);
@@ -331,13 +339,13 @@ export default function CommandPalette() {
         data-index={idx}
         onClick={() => navigate(item)}
         className="flex items-center gap-3 cursor-pointer"
-        style={{ padding: '8px 16px', background: isActive ? 'var(--surface-3)' : 'transparent', color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)', borderRadius: 'var(--radius-md)', margin: '0 8px', transition: 'background 100ms' }}
+        style={isActive ? rowActive : rowInactive}
         onMouseEnter={() => setActiveIndex(idx)}>
-        <span className="shrink-0 flex items-center justify-center" style={{ width: '16px', height: '16px', color: isActive ? 'var(--accent)' : 'var(--text-muted)' }}>
+        <span className="shrink-0 flex items-center justify-center" style={isActive ? iconActive : iconInactive}>
           <Icon className="w-4 h-4" /></span>
         <span style={{ fontSize: 'var(--font-size-sm)' }}>{item.label}</span>
         {SHORTCUTS[item.href] ? <kbd style={{ ...kbdStyle, marginLeft: 'auto', padding: '1px 5px' }}>{SHORTCUTS[item.href]}</kbd>
-          : item.note ? <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginLeft: 'auto' }}>{item.note}</span> : null}
+          : item.note ? <span style={{ ...labelMuted, marginLeft: 'auto' }}>{item.note}</span> : null}
       </div>);
   }
 
