@@ -601,7 +601,7 @@ export default function Dashboard() {
             <PulseCard label="This week" value={ph?.meetingsThisWeek ?? 0} sub="meetings" />
             <PulseCard label="Meeting streak" value={meetingStreak} sub={`day${meetingStreak === 1 ? '' : 's'}`} />
             <PulseCard label="Follow-ups due" value={ph?.overdueFollowups ?? 0} sub="overdue" />
-            <PulseCard label="Data quality" value={`${ph?.dataQualityPct ?? dataQuality?.overallCompleteness ?? 0}%`} sub="completeness"
+            <PulseCard label="Deal heat" value={`${healthScoreMemo.heatScore}%`} sub={`${dealHeat?.counts.hot ?? 0} hot`}
               /></div>
 
           {/* Pipeline Velocity */}
