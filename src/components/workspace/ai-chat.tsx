@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Send, Loader2, Sparkles, RotateCcw, Copy, Check, CheckCircle, XCircle, Square, Search, X, ThumbsUp, ThumbsDown, Pin } from 'lucide-react';
+import { Send, Loader2, Sparkles, RotateCcw, Copy, Check, CheckCircle, XCircle, Square, Search, X, ThumbsUp, ThumbsDown, Pin, FileDown } from 'lucide-react';
 import { VoiceInput } from './voice-input';
 import { textSmMuted } from '@/lib/styles';
 import { useMemo } from 'react';
@@ -566,6 +566,21 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
               style={{ fontSize: 'var(--font-size-xs)', gap: 'var(--space-1)' }}>
               <Copy style={{ width: '12px', height: '12px' }} /> Copy all</button>
             <button
+              onClick={() => {
+                // Export as downloadable HTML file
+                const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${documentTitle} — AI Chat Export</title><style>body{font-family:system-ui;max-width:800px;margin:40px auto;padding:0 20px;color:#333;line-height:1.6}.msg{margin:16px 0;padding:12px 16px;border-radius:8px}.user{background:#f0f4ff;border-left:3px solid #3b82f6}.ai{background:#f9f9f7;border-left:3px solid #888}.role{font-size:11px;font-weight:600;text-transform:uppercase;color:#888;margin-bottom:4px}hr{border:none;border-top:1px solid #eee;margin:24px 0}</style></head><body><h1>${documentTitle} — Chat Export</h1><p style="color:#888;font-size:13px">Exported ${new Date().toLocaleString()}</p><hr>${messages.map(m => `<div class="msg ${m.role}"><div class="role">${m.role === 'user' ? 'You' : 'AI Assistant'}</div><div>${m.content.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}</div></div>`).join('')}</body></html>`;
+                const blob = new Blob([html], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                const a = window.document.createElement('a');
+                a.href = url;
+                a.download = `${documentTitle.replace(/[^a-zA-Z0-9_-]/g, '_')}_chat_export.html`;
+                a.click();
+                URL.revokeObjectURL(url);
+              }}
+              className="flex items-center transition-colors icon-delete"
+              style={{ fontSize: 'var(--font-size-xs)', gap: 'var(--space-1)' }}>
+              <FileDown style={{ width: '12px', height: '12px' }} /> Export</button>
+            <button
               onClick={clearChat}
               className="flex items-center transition-colors icon-delete"
               style={{ fontSize: 'var(--font-size-xs)', gap: 'var(--space-1)' }}>
@@ -889,7 +904,7 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
                 paddingRight: 'var(--space-10)',
                 opacity: loading || !documentId ? 0.5 : 1,
               }}/>
-            {input.length > 100 && (
+            {input.length > 50 && (
               <span style={{
                 position: 'absolute',
                 bottom: '4px',
@@ -897,7 +912,7 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
                 fontSize: '10px',
                 color: input.length > 4500 ? 'var(--danger)' : 'var(--text-muted)',
               }}>
-                {input.length}/5000
+                {input.length > 100 ? `${input.length}/5000` : `${input.split(/\s+/).filter(Boolean).length}w`}
               </span>
             )}</div>
           {loading ? (

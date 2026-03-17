@@ -67,6 +67,8 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
   const [resizingCol, setResizingCol] = useState<{ col: number; startX: number; startWidth: number } | null>(null);
   const [showShortcuts, setShowShortcuts] = useState(false);
   const [sortCol, setSortCol] = useState<{ col: number; asc: boolean } | null>(null);
+  const [undoStack, setUndoStack] = useState<{ ref: string; old: CellData | undefined; newVal: CellData | undefined }[]>([]);
+  const [redoStack, setRedoStack] = useState<{ ref: string; old: CellData | undefined; newVal: CellData | undefined }[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
@@ -336,11 +338,39 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
         onCellChange(selectedCell, '');
       }
     }
+    // Undo (Cmd/Ctrl+Z)
+    if (e.key === 'z' && (e.metaKey || e.ctrlKey) && !e.shiftKey && !editingCell) {
+      e.preventDefault();
+      if (undoStack.length > 0) {
+        const action = undoStack[undoStack.length - 1];
+        setUndoStack(prev => prev.slice(0, -1));
+        setRedoStack(prev => [...prev, { ref: action.ref, old: cells[action.ref], newVal: action.old }]);
+        if (action.old) {
+          onCellChange(action.ref, String(action.old.v), action.old.f);
+        } else {
+          onCellChange(action.ref, '');
+        }
+      }
+    }
+    // Redo (Cmd/Ctrl+Shift+Z)
+    if (e.key === 'z' && (e.metaKey || e.ctrlKey) && e.shiftKey && !editingCell) {
+      e.preventDefault();
+      if (redoStack.length > 0) {
+        const action = redoStack[redoStack.length - 1];
+        setRedoStack(prev => prev.slice(0, -1));
+        setUndoStack(prev => [...prev, { ref: action.ref, old: cells[action.ref], newVal: action.old }]);
+        if (action.old) {
+          onCellChange(action.ref, String(action.old.v), action.old.f);
+        } else {
+          onCellChange(action.ref, '');
+        }
+      }
+    }
     // Show shortcuts help
     if (e.key === '?' && !editingCell && !e.metaKey && !e.ctrlKey) {
       setShowShortcuts(prev => !prev);
     }
-  }, [editingCell, selectedCell, handleEditComplete, handleCellDoubleClick, navigateCell, onCellChange, cells, clipboard, formatValue]);
+  }, [editingCell, selectedCell, handleEditComplete, handleCellDoubleClick, navigateCell, onCellChange, cells, clipboard, formatValue, selectionRange, selectedRangeCells, undoStack, redoStack]);
 
   // Close context menu on click elsewhere
   useEffect(() => {
@@ -876,6 +906,8 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
                 ['Double-click', 'Edit cell'],
                 ['Right-click', 'Context menu'],
                 ['Click+Drag', 'Select range'],
+                ['Cmd/Ctrl+Z', 'Undo'],
+                ['Cmd/Ctrl+Shift+Z', 'Redo'],
                 ['?', 'Toggle this help'],
               ].map(([key, desc]) => (
                 <div key={key} className="flex items-center" style={{ gap: '8px' }}>
