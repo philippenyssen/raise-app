@@ -201,10 +201,13 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
   const handleEditComplete = useCallback(() => {
     if (!editingCell) return;
     const isFormula = editValue.startsWith('=');
+    // Track undo
+    setUndoStack(prev => [...prev.slice(-50), { ref: editingCell, old: cells[editingCell], newVal: undefined }]);
+    setRedoStack([]);
     onCellChange(editingCell, editValue, isFormula ? editValue : undefined);
     setEditingCell(null);
     setEditValue('');
-  }, [editingCell, editValue, onCellChange]);
+  }, [editingCell, editValue, onCellChange, cells]);
 
   const navigateCell = useCallback((ref: string, direction: 'up' | 'down' | 'left' | 'right') => {
     const parsed = parseCellRef(ref);
@@ -609,6 +612,32 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
           style={{ color: 'var(--text-secondary)', backgroundColor: 'var(--surface-2)' }}>
           {selectedCell || ''}</div>
         <div className="text-xs px-1" style={{ color: editingFormulaBar ? 'var(--accent)' : 'var(--text-muted)' }}>fx</div>
+        {selectedCell && !editingFormulaBar && (
+          <div className="flex items-center shrink-0" style={{ gap: '2px', marginRight: '4px' }}>
+            {['%', '$', '€', '#,##0'].map(fmt => (
+              <button
+                key={fmt}
+                onClick={() => {
+                  const cell = cells[selectedCell];
+                  if (cell) onCellChange(selectedCell, String(cell.v), cell.f);
+                }}
+                style={{
+                  padding: '1px 4px',
+                  fontSize: '10px',
+                  border: '1px solid var(--border-subtle)',
+                  borderRadius: '3px',
+                  background: cells[selectedCell]?.fmt === fmt ? 'var(--accent-muted)' : 'transparent',
+                  color: cells[selectedCell]?.fmt === fmt ? 'var(--accent)' : 'var(--text-muted)',
+                  cursor: 'pointer',
+                  fontFamily: 'monospace',
+                }}
+                title={`Format as ${fmt}`}
+              >
+                {fmt}
+              </button>
+            ))}
+          </div>
+        )}
         <input
           ref={formulaBarRef}
           value={formulaBarValue}
@@ -626,7 +655,13 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
             border: `1px solid ${editingFormulaBar ? 'var(--accent)' : 'var(--border-subtle)'}`,
           }}
           placeholder={selectedCell ? 'Enter value or formula...' : ''}
-        /></div>
+        />
+        {selectedCell && cells[selectedCell] && (
+          <span style={{ fontSize: '9px', color: 'var(--text-muted)', fontFamily: 'monospace', flexShrink: 0, padding: '0 4px' }}>
+            {cells[selectedCell]?.f ? 'f(x)' : cells[selectedCell]?.t === 'n' ? '123' : 'abc'}
+          </span>
+        )}
+        </div>
 
       {/* Grid */}
       <div ref={gridRef} className="flex-1 overflow-auto">
