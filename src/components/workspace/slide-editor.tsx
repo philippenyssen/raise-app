@@ -187,6 +187,7 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
   const [canvasZoom, setCanvasZoom] = useState(100);
   const [draggingElement, setDraggingElement] = useState<{ id: string; startX: number; startY: number; origX: number; origY: number } | null>(null);
   const [resizingElement, setResizingElement] = useState<{ id: string; startX: number; origWidth: number } | null>(null);
+  const [hoveredElement, setHoveredElement] = useState<string | null>(null);
   const presentRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
 
@@ -714,6 +715,8 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
               const isEditing = editingElement === el.id;
               const isDragging = draggingElement?.id === el.id;
 
+              const isHovered = hoveredElement === el.id;
+
               return (
                 <div
                   key={el.id}
@@ -722,7 +725,10 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
                     cursor: isDragging ? 'grabbing' : editable ? (isEditing ? 'text' : 'grab') : 'default',
                     ...(isEditing ? { outline: '2px solid var(--accent)', outlineOffset: '2px', borderRadius: '2px' } : {}),
                     ...(isDragging ? { opacity: 0.8, zIndex: 10 } : {}),
+                    ...(isHovered && !isEditing && !isDragging && editable ? { outline: '1px dashed rgba(59,130,246,0.3)', outlineOffset: '2px', borderRadius: '2px' } : {}),
                   }}
+                  onMouseEnter={() => { if (editable && !draggingElement) setHoveredElement(el.id); }}
+                  onMouseLeave={() => setHoveredElement(null)}
                   onMouseDown={(e) => {
                     if (editable && !isEditing) {
                       handleElementDragStart(e, el);
@@ -904,9 +910,26 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
-          <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
-            {activeIdx + 1} / {slides.length}
-          </span>
+          <div className="flex items-center" style={{ gap: '3px' }}>
+            {slides.length <= 12 ? slides.map((_, idx) => (
+              <div
+                key={idx}
+                onClick={() => goToSlide(idx)}
+                style={{
+                  width: idx === activeIdx ? '16px' : '6px',
+                  height: '6px',
+                  borderRadius: '3px',
+                  background: idx === activeIdx ? 'var(--accent)' : idx < activeIdx ? 'var(--text-muted)' : 'var(--border-subtle)',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                }}
+              />
+            )) : (
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
+                {activeIdx + 1} / {slides.length}
+              </span>
+            )}
+          </div>
           <button
             onClick={() => goToSlide(activeIdx + 1)}
             disabled={activeIdx >= slides.length - 1}

@@ -733,7 +733,12 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
                           style={{ color: 'var(--text-primary)' }}/>
                       ) : (
                         <>
-                          <span className="block truncate">{formatValue(cell, ref)}</span>
+                          <span
+                            className="block truncate"
+                            title={cell?.f ? `Formula: ${cell.f}` : undefined}
+                          >
+                            {formatValue(cell, ref)}
+                          </span>
                           {isSelected && !editingCell && (
                             <div style={{
                               position: 'absolute',
