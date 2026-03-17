@@ -524,7 +524,13 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       sendMessage(input);
-    }};
+    }
+    // Cmd+Enter also sends
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      sendMessage(input);
+    }
+  };
 
   const handleVoiceTranscript = (text: string) => {
     setInput(prev => prev + (prev ? ' ' : '') + text);
@@ -718,7 +724,17 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
                 background: msg.role === 'user' ? 'var(--accent-muted)' : 'var(--surface-1)',
                 color: msg.role === 'user' ? 'var(--accent)' : 'var(--text-secondary)',
                 border: `1px solid ${msg.role === 'user' ? 'var(--accent-10)' : 'var(--border-subtle)'}`,}}>
-              <div className="whitespace-pre-wrap">{msg.role === 'assistant' ? renderMarkdown(msg.content) : msg.content}</div>
+              <div className="whitespace-pre-wrap" style={{ position: 'relative' }}>
+                {msg.role === 'assistant' ? renderMarkdown(msg.content) : msg.content}
+                {pinnedMessages.has(i) && (
+                  <Pin style={{
+                    width: '10px', height: '10px',
+                    position: 'absolute', top: '-2px', right: '-2px',
+                    color: 'var(--accent)',
+                    transform: 'rotate(-45deg)',
+                  }} />
+                )}
+              </div>
               {msg.role === 'assistant' && (
                 <div
                   className="flex items-center"
@@ -884,6 +900,43 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
                 }}
                 className="btn btn-primary btn-sm">
                 <CheckCircle style={{ width: '14px', height: '14px' }} /> Apply Changes</button></div></div></div>
+      )}
+
+      {/* Quick action chips */}
+      {messages.length > 0 && !loading && (
+        <div className="shrink-0 flex items-center overflow-x-auto" style={{
+          padding: '4px var(--space-3)',
+          borderTop: '1px solid var(--border-subtle)',
+          gap: '4px',
+        }}>
+          {(documentType === 'model' || documentType === 'spreadsheet' ? [
+            'Add summary row', 'Check formulas', 'Add chart data',
+          ] : documentType === 'presentation' || documentType === 'deck' ? [
+            'Add conclusion slide', 'Improve layout', 'Add data slide',
+          ] : [
+            'Make it shorter', 'Add sources', 'Fix formatting',
+          ]).map(action => (
+            <button
+              key={action}
+              onClick={() => sendMessage(action)}
+              style={{
+                fontSize: '10px',
+                padding: '2px 8px',
+                borderRadius: 'var(--radius-sm)',
+                background: 'var(--surface-2)',
+                color: 'var(--text-muted)',
+                border: 'none',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                flexShrink: 0,
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-muted)'; }}
+            >
+              {action}
+            </button>
+          ))}
+        </div>
       )}
 
       {/* Input */}
