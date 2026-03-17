@@ -572,7 +572,7 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
     }
     if (nums.length === 0) return null;
     const sum = nums.reduce((a, b) => a + b, 0);
-    return { sum, avg: sum / nums.length, count: nums.length };
+    return { sum, avg: sum / nums.length, count: nums.length, min: Math.min(...nums), max: Math.max(...nums) };
   }, [selectedCell, selectedRangeCells, cells, getComputedValue]);
 
   const selectedCellData = selectedCell ? cells[selectedCell] : null;
@@ -608,9 +608,12 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
         className="shrink-0 px-2 py-1.5 flex items-center gap-2"
         style={{ borderBottom: '1px solid var(--border-subtle)', backgroundColor: 'var(--surface-1)' }}>
         <div
-          className="w-16 text-center text-xs font-mono rounded px-2 py-1 shrink-0"
-          style={{ color: 'var(--text-secondary)', backgroundColor: 'var(--surface-2)' }}>
-          {selectedCell || ''}</div>
+          className="text-center text-xs font-mono rounded px-2 py-1 shrink-0"
+          style={{ color: 'var(--text-secondary)', backgroundColor: 'var(--surface-2)', minWidth: '56px' }}>
+          {selectionRange && selectedRangeCells.length > 1
+            ? `${selectionRange.start}:${selectionRange.end}`
+            : selectedCell || ''
+          }</div>
         <div className="text-xs px-1" style={{ color: editingFormulaBar ? 'var(--accent)' : 'var(--text-muted)' }}>fx</div>
         {selectedCell && !editingFormulaBar && (
           <div className="flex items-center shrink-0" style={{ gap: '2px', marginRight: '4px' }}>
@@ -884,7 +887,12 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
         <div className="flex items-center" style={{ gap: 'var(--space-3)', fontSize: '10px', color: 'var(--text-muted)' }}>
           {selectedStats && (
             <span style={{ color: 'var(--text-secondary)', fontFamily: 'monospace' }}>
-              SUM: {selectedStats.sum.toLocaleString()} · AVG: {selectedStats.avg.toLocaleString(undefined, { maximumFractionDigits: 2 })} · COUNT: {selectedStats.count}
+              SUM: {selectedStats.sum.toLocaleString()} · AVG: {selectedStats.avg.toLocaleString(undefined, { maximumFractionDigits: 2 })} · MIN: {selectedStats.min.toLocaleString()} · MAX: {selectedStats.max.toLocaleString()} · COUNT: {selectedStats.count}
+            </span>
+          )}
+          {selectionRange && selectedRangeCells.length > 1 && (
+            <span style={{ color: 'var(--text-muted)', fontFamily: 'monospace' }}>
+              {selectionRange.start}:{selectionRange.end}
             </span>
           )}
           <span>{editingCell ? 'Enter to confirm · Esc to cancel' : selectedCell ? 'Enter to edit · Arrows to navigate · ? for shortcuts' : 'Click a cell to start'}</span>
