@@ -934,12 +934,17 @@ export function DocumentViewer({ document, onContentChange, onSave, onDelete, on
             minHeight: '22px',
           }}>
           <div className="flex items-center" style={{ gap: 'var(--space-3)' }}>
-            {format === 'richtext' && (
-              <>
-                <span>{document.content.replace(/<[^>]+>/g, '').split(/\s+/).filter(Boolean).length} words</span>
-                <span>{document.content.replace(/<[^>]+>/g, '').length} chars</span>
-              </>
-            )}
+            {format === 'richtext' && (() => {
+              const words = document.content.replace(/<[^>]+>/g, '').split(/\s+/).filter(Boolean).length;
+              const readMin = Math.max(1, Math.ceil(words / 200));
+              return (
+                <>
+                  <span>{words.toLocaleString()} words</span>
+                  <span>{document.content.replace(/<[^>]+>/g, '').length.toLocaleString()} chars</span>
+                  <span>{readMin} min read</span>
+                </>
+              );
+            })()}
             {format === 'spreadsheet' && (
               <span>{Object.keys(spreadsheetCells).length} cells</span>
             )}
@@ -950,10 +955,25 @@ export function DocumentViewer({ document, onContentChange, onSave, onDelete, on
               {format === 'richtext' ? 'Rich Text' : format === 'spreadsheet' ? 'Spreadsheet' : format === 'slides' ? 'Presentation' : 'Markdown'}
             </span>
           </div>
-          <div className="flex items-center" style={{ gap: 'var(--space-3)' }}>
-            {dirty && <span style={{ color: 'var(--warning)' }}>Unsaved</span>}
-            {saving && <span style={{ color: 'var(--accent)' }}>Saving...</span>}
-            {!dirty && !saving && <span>Saved</span>}
+          <div className="flex items-center" style={{ gap: 'var(--space-2)' }}>
+            {dirty && (
+              <span className="flex items-center" style={{ gap: '3px', color: 'var(--warning)' }}>
+                <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'var(--warning)', display: 'inline-block' }} />
+                Unsaved
+              </span>
+            )}
+            {saving && (
+              <span className="flex items-center" style={{ gap: '3px', color: 'var(--accent)' }}>
+                <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'var(--accent)', display: 'inline-block', animation: 'typingBounce 1.5s ease-in-out infinite' }} />
+                Saving
+              </span>
+            )}
+            {!dirty && !saving && (
+              <span className="flex items-center" style={{ gap: '3px' }}>
+                <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'var(--success, #22c55e)', display: 'inline-block' }} />
+                Saved
+              </span>
+            )}
           </div>
         </div>
       )}
