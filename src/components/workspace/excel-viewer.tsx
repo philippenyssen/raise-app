@@ -67,6 +67,8 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
   const [resizingCol, setResizingCol] = useState<{ col: number; startX: number; startWidth: number } | null>(null);
   const [showShortcuts, setShowShortcuts] = useState(false);
   const [sortCol, setSortCol] = useState<{ col: number; asc: boolean } | null>(null);
+  const [frozenRows, setFrozenRows] = useState(0);
+  const [frozenCols, setFrozenCols] = useState(0);
   const [undoStack, setUndoStack] = useState<{ ref: string; old: CellData | undefined; newVal: CellData | undefined }[]>([]);
   const [redoStack, setRedoStack] = useState<{ ref: string; old: CellData | undefined; newVal: CellData | undefined }[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -327,6 +329,11 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
           }
         }).catch(() => {});
       }
+      // Select all (Cmd/Ctrl+A)
+      else if (e.key === 'a' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        setSelectionRange({ start: cellRefStr(0, 0), end: cellRefStr(rows - 1, cols - 1) });
+      }
       // Type to start editing (alphanumeric, =, +, -)
       else if (e.key.length === 1 && !e.metaKey && !e.ctrlKey) {
         setEditingCell(selectedCell);
@@ -491,6 +498,17 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
       }},
       { label: 'Format: #,##0', action: () => {
         if (cell) onCellChange(contextMenu.ref, String(cell.v), cell.f);
+        setContextMenu(null);
+      }},
+      { label: '─────', action: () => setContextMenu(null) },
+      { label: frozenRows > 0 ? 'Unfreeze Top Rows' : 'Freeze Top Row', action: () => {
+        const p = parseCellRef(contextMenu.ref);
+        setFrozenRows(frozenRows > 0 ? 0 : (p ? p.row + 1 : 1));
+        setContextMenu(null);
+      }},
+      { label: frozenCols > 0 ? 'Unfreeze Left Cols' : 'Freeze Left Column', action: () => {
+        const p = parseCellRef(contextMenu.ref);
+        setFrozenCols(frozenCols > 0 ? 0 : (p ? p.col + 1 : 1));
         setContextMenu(null);
       }},
     ];
@@ -666,8 +684,12 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
             {sortedRowIndices.map((ri, visualIdx) => {
               const isRowHighlighted = selectedParsed?.row === ri;
               const isAlternate = visualIdx % 2 === 1;
+              const isFrozenRow = ri < frozenRows;
               return (
-              <tr key={ri} style={{ backgroundColor: isAlternate ? 'var(--fg-3)' : 'transparent' }}>
+              <tr key={ri} style={{
+                backgroundColor: isFrozenRow ? 'var(--surface-1)' : (isAlternate ? 'var(--fg-3)' : 'transparent'),
+                ...(ri === frozenRows - 1 ? { borderBottom: '2px solid var(--accent)' } : {}),
+              }}>
                 <td
                   className="text-center py-0.5 font-normal sticky left-0 z-10 text-xs"
                   style={{
@@ -682,6 +704,7 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
                   const isSelected = ref === selectedCell;
                   const isEditing = ref === editingCell;
                   const inRange = isInRange(ref);
+                  const isFrozenCol = ci < frozenCols;
 
                   // Conditional formatting: negative numbers in red, formulas in accent
                   let cellColor = 'var(--text-muted)';
@@ -713,6 +736,7 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
                       `}
                       style={{
                         border: '1px solid color-mix(in srgb, var(--border-subtle) 50%, transparent)',
+                        ...(ci === frozenCols - 1 ? { borderRight: '2px solid var(--accent)' } : {}),
                         color: cellColor,
                         ...(isSelected ? {
                           ringColor: 'var(--accent)',
@@ -912,6 +936,7 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
                 ['Double-click', 'Edit cell'],
                 ['Right-click', 'Context menu'],
                 ['Click+Drag', 'Select range'],
+                ['Cmd/Ctrl+A', 'Select all'],
                 ['Cmd/Ctrl+Z', 'Undo'],
                 ['Cmd/Ctrl+Shift+Z', 'Redo'],
                 ['?', 'Toggle this help'],
