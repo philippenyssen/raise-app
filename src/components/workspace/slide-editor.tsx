@@ -186,6 +186,7 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
   const [showTemplatePicker, setShowTemplatePicker] = useState(false);
   const [canvasZoom, setCanvasZoom] = useState(100);
   const [draggingElement, setDraggingElement] = useState<{ id: string; startX: number; startY: number; origX: number; origY: number } | null>(null);
+  const [resizingElement, setResizingElement] = useState<{ id: string; startX: number; origWidth: number } | null>(null);
   const presentRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
 
@@ -377,6 +378,33 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
       window.removeEventListener('mouseup', handleMouseUp);
     };
   }, [draggingElement, slides, activeIdx, onChange]);
+
+  // Element width resize via drag
+  useEffect(() => {
+    if (!resizingElement || !canvasRef.current) return;
+    const canvas = canvasRef.current;
+    const rect = canvas.getBoundingClientRect();
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const dx = ((e.clientX - resizingElement.startX) / rect.width) * 100;
+      const newWidth = Math.max(10, Math.min(95, resizingElement.origWidth + dx));
+      const updated = slides.map((slide, i) => {
+        if (i !== activeIdx) return slide;
+        return { ...slide, elements: slide.elements.map(el =>
+          el.id === resizingElement.id ? { ...el, width: Math.round(newWidth) } : el
+        )};
+      });
+      onChange(updated);
+    };
+
+    const handleMouseUp = () => setResizingElement(null);
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [resizingElement, slides, activeIdx, onChange]);
 
   const deleteElement = useCallback((elementId: string) => {
     const updated = slides.map((slide, i) => {
@@ -787,6 +815,28 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
                       >
                         &times;
                       </button>
+                      {/* Width resize handle */}
+                      <div
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setResizingElement({ id: el.id, startX: e.clientX, origWidth: el.width ?? 90 });
+                        }}
+                        style={{
+                          position: 'absolute',
+                          top: '50%',
+                          right: '-6px',
+                          transform: 'translateY(-50%)',
+                          width: '10px',
+                          height: '24px',
+                          borderRadius: '3px',
+                          background: 'var(--accent, #3b82f6)',
+                          cursor: 'ew-resize',
+                          zIndex: 5,
+                          opacity: 0.7,
+                        }}
+                        title="Drag to resize width"
+                      />
                     </div>
                   ) : el.type === 'bullet' ? (
                     <ul style={{ margin: 0, paddingLeft: '1.5em' }}>
@@ -813,8 +863,13 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
               padding: 'var(--space-2) var(--space-4)',
             }}
           >
-            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-1)' }}>
-              Speaker Notes
+            <div className="flex items-center justify-between" style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)', marginBottom: 'var(--space-1)' }}>
+              <span>Speaker Notes</span>
+              {activeSlide.notes && (
+                <span style={{ fontSize: '10px' }}>
+                  {activeSlide.notes.split(/\s+/).filter(Boolean).length} words
+                </span>
+              )}
             </div>
             <textarea
               value={activeSlide.notes || ''}

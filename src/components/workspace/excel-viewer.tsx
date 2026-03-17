@@ -807,14 +807,15 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
         <div className="flex items-center" style={{ gap: 'var(--space-3)', fontSize: '10px', color: 'var(--text-muted)' }}>
           {selectedCell && cells[selectedCell] && (
             <>
-              {cells[selectedCell]?.f && <span>Formula</span>}
+              {cells[selectedCell]?.f && <span style={{ color: 'var(--accent)' }}>Formula</span>}
               {cells[selectedCell]?.t === 'n' && <span>Number</span>}
               {cells[selectedCell]?.t === 's' && <span>Text</span>}
-              {cells[selectedCell]?.bold && <span>Bold</span>}
+              {cells[selectedCell]?.bold && <span style={{ fontWeight: 600 }}>Bold</span>}
               {cells[selectedCell]?.fmt && <span>Fmt: {cells[selectedCell].fmt}</span>}
             </>
           )}
           <span>{Object.keys(cells).length} cells</span>
+          {undoStack.length > 0 && <span style={{ color: 'var(--text-muted)' }}>{undoStack.length} undo{undoStack.length !== 1 ? 's' : ''}</span>}
         </div>
         <div className="flex items-center" style={{ gap: 'var(--space-3)', fontSize: '10px', color: 'var(--text-muted)' }}>
           {selectedStats && (
