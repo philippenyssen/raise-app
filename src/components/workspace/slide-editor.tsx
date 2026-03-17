@@ -191,6 +191,34 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
 
   const activeSlide = slides[activeIdx] || null;
 
+  // Slide navigation keyboard shortcuts (when not presenting or editing)
+  useEffect(() => {
+    if (presenting) return;
+    const handler = (e: KeyboardEvent) => {
+      // Don't intercept when editing text
+      if (editingElement) return;
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') return;
+
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        setActiveIdx(prev => Math.max(0, prev - 1));
+        setEditingElement(null);
+      } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        setActiveIdx(prev => Math.min(slides.length - 1, prev + 1));
+        setEditingElement(null);
+      } else if (e.key === 'Delete' || e.key === 'Backspace') {
+        // Don't delete slides with Backspace (only Delete key when element not editing)
+        if (e.key === 'Delete' && editingElement) {
+          // Delete selected element if any element is focused but not being text-edited
+        }
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [presenting, editingElement, slides.length]);
+
   // Presentation mode keyboard navigation
   useEffect(() => {
     if (!presenting) return;
@@ -537,6 +565,9 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
             <div className="flex items-center" style={{ gap: 'var(--space-2)' }}>
               <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--text-muted)' }}>
                 Slide {activeIdx + 1} of {slides.length}
+              </span>
+              <span style={{ fontSize: '10px', color: 'var(--text-muted)', opacity: 0.6 }}>
+                Arrow keys to navigate
               </span>
             </div>
             <div className="flex items-center" style={{ gap: 'var(--space-1)' }}>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Send, Loader2, Sparkles, RotateCcw, Copy, Check, CheckCircle, XCircle, Square, Search, X, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { Send, Loader2, Sparkles, RotateCcw, Copy, Check, CheckCircle, XCircle, Square, Search, X, ThumbsUp, ThumbsDown, Pin } from 'lucide-react';
 import { VoiceInput } from './voice-input';
 import { textSmMuted } from '@/lib/styles';
 import { useMemo } from 'react';
@@ -315,6 +315,7 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
   const [ratings, setRatings] = useState<Record<number, 'up' | 'down'>>({});
+  const [pinnedMessages, setPinnedMessages] = useState<Set<number>>(new Set());
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -602,6 +603,48 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto" style={{ padding: 'var(--space-4)', display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+        {/* Pinned messages */}
+        {pinnedMessages.size > 0 && (
+          <div style={{
+            borderBottom: '1px solid var(--border-subtle)',
+            paddingBottom: 'var(--space-3)',
+            marginBottom: 'var(--space-2)',
+          }}>
+            <div className="flex items-center" style={{ gap: 'var(--space-1)', marginBottom: 'var(--space-2)' }}>
+              <Pin style={{ width: '10px', height: '10px', color: 'var(--accent)', transform: 'rotate(-45deg)' }} />
+              <span style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 500 }}>Pinned</span>
+            </div>
+            {Array.from(pinnedMessages).sort((a, b) => a - b).map(idx => {
+              const msg = messages[idx];
+              if (!msg) return null;
+              return (
+                <div key={`pin-${idx}`} style={{
+                  padding: '6px 10px',
+                  borderRadius: 'var(--radius-md)',
+                  background: 'var(--surface-1)',
+                  border: '1px solid var(--accent-muted)',
+                  fontSize: 'var(--font-size-xs)',
+                  color: 'var(--text-secondary)',
+                  marginBottom: '4px',
+                  maxHeight: '60px',
+                  overflow: 'hidden',
+                  cursor: 'pointer',
+                  position: 'relative',
+                }}
+                onClick={() => {
+                  // Scroll to original message
+                  const el = document.querySelector(`[data-msg-idx="${idx}"]`);
+                  el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }}
+                >
+                  <span className="line-clamp-2">{msg.content.slice(0, 150)}{msg.content.length > 150 ? '...' : ''}</span>
+                  <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '16px', background: 'linear-gradient(transparent, var(--surface-1))' }} />
+                </div>
+              );
+            })}
+          </div>
+        )}
+
         {messages.length === 0 && (
           <div className="text-center" style={{ padding: 'var(--space-12) 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--space-4)' }}>
             <Sparkles style={{ width: '32px', height: '32px', color: 'var(--text-muted)' }} />
@@ -647,7 +690,7 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
         )}
 
         {filteredMessages.map((msg, i) => (
-          <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+          <div key={i} data-msg-idx={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div
               className="max-w-[85%]"
               style={{
@@ -673,6 +716,20 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
                     style={{ fontSize: 'var(--font-size-xs)', gap: 'var(--space-1)' }}>
                     {copiedIdx === i ? <Check style={{ width: '12px', height: '12px' }} /> : <Copy style={{ width: '12px', height: '12px' }} />}
                     {copiedIdx === i ? 'Copied' : 'Copy'}</button>
+                  <button
+                    onClick={() => setPinnedMessages(prev => {
+                      const next = new Set(prev);
+                      if (next.has(i)) next.delete(i); else next.add(i);
+                      return next;
+                    })}
+                    className="flex items-center transition-colors"
+                    style={{
+                      fontSize: 'var(--font-size-xs)', gap: 'var(--space-1)',
+                      color: pinnedMessages.has(i) ? 'var(--accent)' : 'var(--text-muted)',
+                      background: 'none', border: 'none', cursor: 'pointer', padding: '0',
+                    }}>
+                    <Pin style={{ width: '11px', height: '11px', transform: pinnedMessages.has(i) ? 'rotate(-45deg)' : 'none' }} />
+                  </button>
                   {msg.error && (
                     <button
                       onClick={retryLast}

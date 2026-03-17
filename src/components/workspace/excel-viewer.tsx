@@ -272,23 +272,58 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
       else if (e.key === 'ArrowDown') { e.preventDefault(); navigateCell(selectedCell, 'down'); }
       else if (e.key === 'ArrowLeft') { e.preventDefault(); navigateCell(selectedCell, 'left'); }
       else if (e.key === 'ArrowRight') { e.preventDefault(); navigateCell(selectedCell, 'right'); }
-      // Copy (Cmd/Ctrl+C)
+      // Copy (Cmd/Ctrl+C) — range-aware TSV copy
       else if (e.key === 'c' && (e.metaKey || e.ctrlKey)) {
-        const cell = cells[selectedCell];
-        const displayVal = cell ? formatValue(cell, selectedCell) : '';
-        navigator.clipboard.writeText(displayVal).catch(() => {});
-        setClipboard({ ref: selectedCell, value: String(cell?.v ?? ''), formula: cell?.f });
+        if (selectedRangeCells.length > 1 && selectionRange) {
+          // Copy range as tab-separated values
+          const start = parseCellRef(selectionRange.start);
+          const end = parseCellRef(selectionRange.end);
+          if (start && end) {
+            const minRow = Math.min(start.row, end.row);
+            const maxRow = Math.max(start.row, end.row);
+            const minCol = Math.min(start.col, end.col);
+            const maxCol = Math.max(start.col, end.col);
+            const lines: string[] = [];
+            for (let r = minRow; r <= maxRow; r++) {
+              const rowVals: string[] = [];
+              for (let c = minCol; c <= maxCol; c++) {
+                const ref = cellRefStr(r, c);
+                const cell = cells[ref];
+                rowVals.push(cell ? formatValue(cell, ref) : '');
+              }
+              lines.push(rowVals.join('\t'));
+            }
+            navigator.clipboard.writeText(lines.join('\n')).catch(() => {});
+          }
+        } else {
+          const cell = cells[selectedCell];
+          const displayVal = cell ? formatValue(cell, selectedCell) : '';
+          navigator.clipboard.writeText(displayVal).catch(() => {});
+        }
+        setClipboard({ ref: selectedCell, value: String(cells[selectedCell]?.v ?? ''), formula: cells[selectedCell]?.f });
       }
-      // Paste (Cmd/Ctrl+V)
+      // Paste (Cmd/Ctrl+V) — multi-cell TSV paste
       else if (e.key === 'v' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
-        if (clipboard) {
-          onCellChange(selectedCell, clipboard.value, clipboard.formula);
-        } else {
-          navigator.clipboard.readText().then(text => {
-            if (text) onCellChange(selectedCell, text);
-          }).catch(() => {});
-        }
+        navigator.clipboard.readText().then(text => {
+          if (!text) return;
+          const parsed = parseCellRef(selectedCell);
+          if (!parsed) return;
+          // Check if clipboard contains multi-cell data (TSV)
+          if (text.includes('\t') || (text.includes('\n') && text.split('\n').length > 1)) {
+            const lines = text.split('\n').filter(l => l.length > 0);
+            for (let r = 0; r < lines.length; r++) {
+              const vals = lines[r].split('\t');
+              for (let c = 0; c < vals.length; c++) {
+                const ref = cellRefStr(parsed.row + r, parsed.col + c);
+                const val = vals[c].trim();
+                onCellChange(ref, val);
+              }
+            }
+          } else {
+            onCellChange(selectedCell, text);
+          }
+        }).catch(() => {});
       }
       // Type to start editing (alphanumeric, =, +, -)
       else if (e.key.length === 1 && !e.metaKey && !e.ctrlKey) {
@@ -338,6 +373,81 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
       { label: 'Copy Value', action: () => {
         const val = cell ? formatValue(cell, contextMenu.ref) : '';
         navigator.clipboard.writeText(val).catch(() => {});
+        setContextMenu(null);
+      }},
+      { label: '─────', action: () => setContextMenu(null) },
+      { label: 'Insert Row Above', action: () => {
+        const p = parseCellRef(contextMenu.ref);
+        if (!p) { setContextMenu(null); return; }
+        // Shift all cells at row >= p.row down by 1
+        const updates: [string, string, string?][] = [];
+        const sortedRefs = Object.keys(cells).filter(r => { const pp = parseCellRef(r); return pp && pp.row >= p.row; }).sort((a, b) => {
+          const pa = parseCellRef(a)!; const pb = parseCellRef(b)!;
+          return pb.row - pa.row; // bottom-up to avoid overwrite
+        });
+        for (const ref of sortedRefs) {
+          const pp = parseCellRef(ref)!;
+          const newRef = cellRefStr(pp.row + 1, pp.col);
+          const c = cells[ref];
+          updates.push([newRef, String(c.v), c.f]);
+          updates.push([ref, '']); // clear old position
+        }
+        for (const [ref, val, formula] of updates) onCellChange(ref, val, formula);
+        setContextMenu(null);
+      }},
+      { label: 'Insert Column Left', action: () => {
+        const p = parseCellRef(contextMenu.ref);
+        if (!p) { setContextMenu(null); return; }
+        const sortedRefs = Object.keys(cells).filter(r => { const pp = parseCellRef(r); return pp && pp.col >= p.col; }).sort((a, b) => {
+          const pa = parseCellRef(a)!; const pb = parseCellRef(b)!;
+          return pb.col - pa.col;
+        });
+        for (const ref of sortedRefs) {
+          const pp = parseCellRef(ref)!;
+          const newRef = cellRefStr(pp.row, pp.col + 1);
+          const c = cells[ref];
+          onCellChange(newRef, String(c.v), c.f);
+          onCellChange(ref, '');
+        }
+        setContextMenu(null);
+      }},
+      { label: 'Delete Row', action: () => {
+        const p = parseCellRef(contextMenu.ref);
+        if (!p) { setContextMenu(null); return; }
+        // Clear cells in this row, shift cells below up
+        for (let c = 0; c < cols; c++) {
+          onCellChange(cellRefStr(p.row, c), '');
+        }
+        const belowRefs = Object.keys(cells).filter(r => { const pp = parseCellRef(r); return pp && pp.row > p.row; }).sort((a, b) => {
+          const pa = parseCellRef(a)!; const pb = parseCellRef(b)!;
+          return pa.row - pb.row;
+        });
+        for (const ref of belowRefs) {
+          const pp = parseCellRef(ref)!;
+          const newRef = cellRefStr(pp.row - 1, pp.col);
+          const c = cells[ref];
+          onCellChange(newRef, String(c.v), c.f);
+          onCellChange(ref, '');
+        }
+        setContextMenu(null);
+      }},
+      { label: 'Delete Column', action: () => {
+        const p = parseCellRef(contextMenu.ref);
+        if (!p) { setContextMenu(null); return; }
+        for (let r = 0; r < rows; r++) {
+          onCellChange(cellRefStr(r, p.col), '');
+        }
+        const rightRefs = Object.keys(cells).filter(r => { const pp = parseCellRef(r); return pp && pp.col > p.col; }).sort((a, b) => {
+          const pa = parseCellRef(a)!; const pb = parseCellRef(b)!;
+          return pa.col - pb.col;
+        });
+        for (const ref of rightRefs) {
+          const pp = parseCellRef(ref)!;
+          const newRef = cellRefStr(pp.row, pp.col - 1);
+          const c = cells[ref];
+          onCellChange(newRef, String(c.v), c.f);
+          onCellChange(ref, '');
+        }
         setContextMenu(null);
       }},
       { label: '─────', action: () => setContextMenu(null) },
@@ -473,7 +583,7 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
       {/* Grid */}
       <div ref={gridRef} className="flex-1 overflow-auto">
         <table className="border-collapse text-xs">
-          <thead className="sticky top-0 z-10">
+          <thead className="sticky top-0 z-10" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
             <tr>
               <th
                 className="w-10 min-w-[40px] text-center py-1 sticky left-0 z-20"
@@ -523,10 +633,11 @@ export function ExcelViewer({ cells, onCellChange, rows = 50, cols = 15, allShee
                 );
               })}</tr></thead>
           <tbody>
-            {sortedRowIndices.map((ri) => {
+            {sortedRowIndices.map((ri, visualIdx) => {
               const isRowHighlighted = selectedParsed?.row === ri;
+              const isAlternate = visualIdx % 2 === 1;
               return (
-              <tr key={ri}>
+              <tr key={ri} style={{ backgroundColor: isAlternate ? 'var(--fg-3)' : 'transparent' }}>
                 <td
                   className="text-center py-0.5 font-normal sticky left-0 z-10 text-xs"
                   style={{
