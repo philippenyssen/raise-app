@@ -538,6 +538,8 @@ export function AIChat({ documentId, documentContent, documentTitle, documentTyp
 
   const clearChat = () => {
     setMessages([]);
+    setPinnedMessages(new Set());
+    setRatings({});
   };
 
   return (

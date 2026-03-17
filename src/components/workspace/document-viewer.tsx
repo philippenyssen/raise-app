@@ -921,8 +921,8 @@ export function DocumentViewer({ document, onContentChange, onSave, onDelete, on
         </div>
       </div>
 
-      {/* Word count bar for rich text */}
-      {format === 'richtext' && document && (
+      {/* Status bar for all formats */}
+      {document && (
         <div
           className="shrink-0 flex items-center justify-between"
           style={{
@@ -931,12 +931,30 @@ export function DocumentViewer({ document, onContentChange, onSave, onDelete, on
             background: 'var(--surface-1)',
             fontSize: '10px',
             color: 'var(--text-muted)',
+            minHeight: '22px',
           }}>
           <div className="flex items-center" style={{ gap: 'var(--space-3)' }}>
-            <span>{document.content.replace(/<[^>]+>/g, '').split(/\s+/).filter(Boolean).length} words</span>
-            <span>{document.content.replace(/<[^>]+>/g, '').length} chars</span>
+            {format === 'richtext' && (
+              <>
+                <span>{document.content.replace(/<[^>]+>/g, '').split(/\s+/).filter(Boolean).length} words</span>
+                <span>{document.content.replace(/<[^>]+>/g, '').length} chars</span>
+              </>
+            )}
+            {format === 'spreadsheet' && (
+              <span>{Object.keys(spreadsheetCells).length} cells</span>
+            )}
+            {format === 'slides' && (
+              <span>{slides.length} slide{slides.length !== 1 ? 's' : ''}</span>
+            )}
+            <span style={{ color: 'var(--text-muted)', opacity: 0.6 }}>
+              {format === 'richtext' ? 'Rich Text' : format === 'spreadsheet' ? 'Spreadsheet' : format === 'slides' ? 'Presentation' : 'Markdown'}
+            </span>
           </div>
-          <span>{dirty ? 'Unsaved changes' : saving ? 'Saving...' : 'Saved'}</span>
+          <div className="flex items-center" style={{ gap: 'var(--space-3)' }}>
+            {dirty && <span style={{ color: 'var(--warning)' }}>Unsaved</span>}
+            {saving && <span style={{ color: 'var(--accent)' }}>Saving...</span>}
+            {!dirty && !saving && <span>Saved</span>}
+          </div>
         </div>
       )}
 
