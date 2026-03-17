@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Plus, Trash2, Type, StickyNote, Copy, Play, X, Palette } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, Trash2, Type, StickyNote, Copy, Play, X, Palette, Hash, Image } from 'lucide-react';
 
 export interface SlideElement {
   id: string;
@@ -624,6 +624,14 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
               >
                 Bullets
               </button>
+              <button
+                onClick={() => addElement('number')}
+                className="btn btn-ghost btn-sm"
+                style={{ fontSize: 'var(--font-size-xs)' }}
+                title="Add Big Number"
+              >
+                <Hash className="w-3 h-3" /> Number
+              </button>
               <div style={{ width: '1px', height: '16px', background: 'var(--border-subtle)' }} />
               <button
                 onClick={() => setShowNotes(!showNotes)}
@@ -692,6 +700,40 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
               <div style={{ width: '1px', height: '16px', background: 'var(--border-subtle)' }} />
               <button onClick={duplicateSlide} className="btn btn-ghost btn-sm" title="Duplicate Slide" style={{ fontSize: 'var(--font-size-xs)' }}>
                 <Copy className="w-3.5 h-3.5" />
+              </button>
+              <button
+                onClick={() => {
+                  // Move slide up
+                  if (activeIdx > 0) {
+                    const updated = [...slides];
+                    [updated[activeIdx - 1], updated[activeIdx]] = [updated[activeIdx], updated[activeIdx - 1]];
+                    onChange(updated);
+                    setActiveIdx(activeIdx - 1);
+                  }
+                }}
+                className="btn btn-ghost btn-sm"
+                title="Move Slide Up"
+                disabled={activeIdx === 0}
+                style={{ fontSize: 'var(--font-size-xs)', opacity: activeIdx === 0 ? 0.3 : 1 }}
+              >
+                <ChevronLeft className="w-3 h-3 rotate-90" />
+              </button>
+              <button
+                onClick={() => {
+                  // Move slide down
+                  if (activeIdx < slides.length - 1) {
+                    const updated = [...slides];
+                    [updated[activeIdx], updated[activeIdx + 1]] = [updated[activeIdx + 1], updated[activeIdx]];
+                    onChange(updated);
+                    setActiveIdx(activeIdx + 1);
+                  }
+                }}
+                className="btn btn-ghost btn-sm"
+                title="Move Slide Down"
+                disabled={activeIdx >= slides.length - 1}
+                style={{ fontSize: 'var(--font-size-xs)', opacity: activeIdx >= slides.length - 1 ? 0.3 : 1 }}
+              >
+                <ChevronRight className="w-3 h-3 rotate-90" />
               </button>
               <button onClick={deleteSlide} className="btn btn-ghost btn-sm" title="Delete Slide" disabled={slides.length <= 1}>
                 <Trash2 className="w-3.5 h-3.5" />
