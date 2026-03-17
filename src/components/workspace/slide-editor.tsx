@@ -438,6 +438,22 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
     onChange(updated);
   }, [slides, activeIdx, onChange]);
 
+  const moveElementOrder = useCallback((elementId: string, direction: 'up' | 'down') => {
+    const updated = slides.map((slide, i) => {
+      if (i !== activeIdx) return slide;
+      const els = [...slide.elements];
+      const idx = els.findIndex(el => el.id === elementId);
+      if (idx === -1) return slide;
+      if (direction === 'up' && idx < els.length - 1) {
+        [els[idx], els[idx + 1]] = [els[idx + 1], els[idx]];
+      } else if (direction === 'down' && idx > 0) {
+        [els[idx], els[idx - 1]] = [els[idx - 1], els[idx]];
+      }
+      return { ...slide, elements: els };
+    });
+    onChange(updated);
+  }, [slides, activeIdx, onChange]);
+
   const addElement = useCallback((type: SlideElement['type']) => {
     if (!activeSlide) return;
     const newEl: SlideElement = {
@@ -607,6 +623,14 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
                 title="Add Title"
               >
                 <Type className="w-3.5 h-3.5" /> Title
+              </button>
+              <button
+                onClick={() => addElement('subtitle')}
+                className="btn btn-ghost btn-sm"
+                style={{ fontSize: 'var(--font-size-xs)' }}
+                title="Add Subtitle"
+              >
+                <Type className="w-3 h-3" style={{ opacity: 0.6 }} /> Subtitle
               </button>
               <button
                 onClick={() => addElement('body')}
@@ -838,6 +862,21 @@ export function SlideEditor({ slides, onChange, editable = true }: SlideEditorPr
                             {parseFloat(size) * 16}
                           </button>
                         ))}
+                        <div style={{ width: '1px', height: '16px', background: '#ddd', margin: '0 2px', alignSelf: 'center' }} />
+                        <button
+                          onClick={(e) => { e.stopPropagation(); moveElementOrder(el.id, 'up'); }}
+                          style={{ padding: '1px 3px', fontSize: '10px', border: 'none', borderRadius: '2px', cursor: 'pointer', background: 'transparent', color: '#666' }}
+                          title="Bring forward"
+                        >
+                          ↑
+                        </button>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); moveElementOrder(el.id, 'down'); }}
+                          style={{ padding: '1px 3px', fontSize: '10px', border: 'none', borderRadius: '2px', cursor: 'pointer', background: 'transparent', color: '#666' }}
+                          title="Send backward"
+                        >
+                          ↓
+                        </button>
                       </div>
                       <button
                         onClick={(e) => { e.stopPropagation(); deleteElement(el.id); }}
